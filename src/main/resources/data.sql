@@ -1,54 +1,54 @@
 -- 최상위 CLOTHES 카테고리
-INSERT INTO category (type, code, level) VALUES ('CLOTHES', 100, 1);
+INSERT INTO category (type, level) VALUES ('CLOTHES', 1);
 SET @CLOTHES_ID = LAST_INSERT_ID();
 
 -- CLOTHES 하위 MEN
-INSERT INTO category (type, code, level, parent_id) VALUES ('MEN', 110, 2, @CLOTHES_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('MEN', 2, @CLOTHES_ID);
 SET @MEN_ID = LAST_INSERT_ID();
-INSERT INTO category (type, code, level, parent_id) VALUES ('MEN_TOP', 111, 3, @MEN_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('MEN_TOP', 3, @MEN_ID);
 SET @MEN_TOP_ID = LAST_INSERT_ID();
-INSERT INTO category (type, code, level, parent_id) VALUES ('MEN_BOTTOM', 112, 3, @MEN_ID);
-INSERT INTO category (type, code, level, parent_id) VALUES ('MEN_SHOES', 113, 3, @MEN_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('MEN_BOTTOM', 3, @MEN_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('MEN_SHOES', 3, @MEN_ID);
 
 -- CLOTHES 하위 WOMEN
-INSERT INTO category (type, code, level, parent_id) VALUES ('WOMEN', 120, 2, @CLOTHES_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('WOMEN', 2, @CLOTHES_ID);
 SET @WOMEN_ID = LAST_INSERT_ID();
-INSERT INTO category (type, code, level, parent_id) VALUES ('WOMEN_TOP', 121, 3, @WOMEN_ID);
-INSERT INTO category (type, code, level, parent_id) VALUES ('WOMEN_BOTTOM', 122, 3, @WOMEN_ID);
-INSERT INTO category (type, code, level, parent_id) VALUES ('WOMEN_SHOES', 123, 3, @WOMEN_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('WOMEN_TOP', 3, @WOMEN_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('WOMEN_BOTTOM', 3, @WOMEN_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('WOMEN_SHOES', 3, @WOMEN_ID);
 
 -- CLOTHES 하위 KID
-INSERT INTO category (type, code, level, parent_id) VALUES ('KID', 130, 2, @CLOTHES_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('KID', 2, @CLOTHES_ID);
 SET @KID_ID = LAST_INSERT_ID();
-INSERT INTO category (type, code, level, parent_id) VALUES ('KID_MEN', 131, 3, @KID_ID);
-INSERT INTO category (type, code, level, parent_id) VALUES ('KID_WOMEN', 132, 3, @KID_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('KID_MEN', 3, @KID_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('KID_WOMEN', 3, @KID_ID);
 
 -- 최상위 FOOD 카테고리
-INSERT INTO category (type, code, level) VALUES ('FOOD', 200, 1);
+INSERT INTO category (type, level) VALUES ('FOOD', 1);
 SET @FOOD_ID = LAST_INSERT_ID();
 
 -- FOOD 하위 MEAT
-INSERT INTO category (type, code, level, parent_id) VALUES ('MEAT', 210, 2, @FOOD_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('MEAT', 2, @FOOD_ID);
 SET @MEAT_ID = LAST_INSERT_ID();
-INSERT INTO category (type, code, level, parent_id) VALUES ('MEAT_PIG', 211, 3, @MEAT_ID);
-INSERT INTO category (type, code, level, parent_id) VALUES ('MEAT_COW', 212, 3, @MEAT_ID);
-INSERT INTO category (type, code, level, parent_id) VALUES ('MEAT_ETC', 213, 3, @MEAT_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('MEAT_PIG', 3, @MEAT_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('MEAT_COW', 3, @MEAT_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('MEAT_ETC', 3, @MEAT_ID);
 
 -- FOOD 하위 SEAFOOD
-INSERT INTO category (type, code, level, parent_id) VALUES ('SEAFOOD', 220, 2, @FOOD_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('SEAFOOD', 2, @FOOD_ID);
 SET @SEAFOOD_ID = LAST_INSERT_ID();
-INSERT INTO category (type, code, level, parent_id) VALUES ('FISH', 221, 3, @SEAFOOD_ID);
-INSERT INTO category (type, code, level, parent_id) VALUES ('DRY_FISH', 222, 3, @SEAFOOD_ID);
-INSERT INTO category (type, code, level, parent_id) VALUES ('SHELL_FISH', 223, 3, @SEAFOOD_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('FISH', 3, @SEAFOOD_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('DRY_FISH', 3, @SEAFOOD_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('SHELL_FISH', 3, @SEAFOOD_ID);
 
-INSERT INTO category (type, code, level, parent_id) VALUES ('VEGETABLE', 230, 2, @FOOD_ID);
-INSERT INTO category (type, code, level, parent_id) VALUES ('NUTS', 240, 2, @FOOD_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('VEGETABLE', 2, @FOOD_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('NUTS', 2, @FOOD_ID);
 
 -- 최상위 HOME 카테고리
-INSERT INTO category (type, code, level) VALUES ('HOME', 300, 1);
+INSERT INTO category (type, level) VALUES ('HOME', 1);
 SET @HOME_ID = LAST_INSERT_ID();
 
-INSERT INTO category (type, code, level, parent_id) VALUES ('BED', 310, 2, @HOME_ID);
+INSERT INTO category (type, level, parent_id) VALUES ('BED', 2, @HOME_ID);
 
 -- ----- 옵션
 -- 의류 옵션

@@ -33,9 +33,6 @@ public class Category {
 	@Column(name = "type", nullable = false, unique = true)
 	private String type;
 
-	@Column(name = "code", nullable = false)
-	private int code;
-
 	@Column(name = "level", nullable = false)
 	private int level;
 

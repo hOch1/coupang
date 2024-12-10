@@ -32,7 +32,7 @@ public class AddressController {
 
 	private final AddressService addressService;
 
-	@PostMapping(value = {"", "/"})
+	@PostMapping
 	@Operation(summary = "주소 추가 API", description = "주소를 추가합니다")
 	public ResponseEntity<Void> addAddress(@RequestBody AddAddressRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
@@ -50,7 +50,7 @@ public class AddressController {
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
-	@GetMapping(value = {"", "/"})
+	@GetMapping
 	@Operation(summary = "내 주소록 조회 API", description = "나의 주소 목록을 조회합니다.")
 	public ResponseEntity<List<AddressResponse>> getMyAddresses(@AuthenticationPrincipal CustomUserDetails userDetails) {
 

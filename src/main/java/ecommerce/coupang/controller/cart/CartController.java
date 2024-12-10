@@ -23,7 +23,7 @@ public class CartController {
 	private final CartService cartService;
 
 
-	@PostMapping(value = {"", "/"})
+	@PostMapping
 	public ResponseEntity<Void> addCart(@RequestBody AddCartRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 

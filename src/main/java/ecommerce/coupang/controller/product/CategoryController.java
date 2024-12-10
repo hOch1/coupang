@@ -21,7 +21,7 @@ public class CategoryController {
 
 	private final CategoryService categoryService;
 
-	@GetMapping(value = {"", "/"})
+	@GetMapping
 	@Operation(summary = "전체 카테고리 조회 API", description = "전체 카테고리를 조회합니다.")
 	public ResponseEntity<List<CategoryResponse>> findAllCategories() {
 

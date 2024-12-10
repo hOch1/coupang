@@ -33,7 +33,7 @@ public class ProductController {
 
 	private final ProductService productService;
 
-	@PostMapping(value = {"", "/"})
+	@PostMapping
 	@Operation(summary = "상품 등록 API", description = "상품을 등록합니다.")
 	public ResponseEntity<Void> createProduct(@RequestBody CreateProductRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {

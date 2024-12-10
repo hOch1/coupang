@@ -4,9 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -19,14 +18,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.member.Store;
 import ecommerce.coupang.domain.product.Category;
-import ecommerce.coupang.domain.product.OptionValue;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.ProductOptionValue;
 import ecommerce.coupang.domain.product.ProductStatus;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.repository.member.StoreRepository;
-import ecommerce.coupang.repository.product.OptionValueRepository;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.service.product.CategoryService;
 import ecommerce.coupang.service.product.OptionValueService;
@@ -52,10 +49,10 @@ class ProductServiceImplTest {
 	@Test
 	@DisplayName("상품 등록 테스트")
 	void createProductTest() throws CustomException {
-		Map<Long, Long> options = new HashMap<>();
-		options.put(1L, 1L);
-		options.put(2L, 8L);
-		options.put(3L, 9L);
+		List<Long> options = new ArrayList<>();
+		options.add(1L);
+		options.add(8L);
+		options.add(9L);
 
 		CreateProductRequest request = new CreateProductRequest(
 			"product1",

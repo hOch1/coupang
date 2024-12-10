@@ -1,6 +1,6 @@
 package ecommerce.coupang.dto.request.product;
 
-import java.util.Map;
+import java.util.List;
 
 import ecommerce.coupang.domain.product.ProductStatus;
 import lombok.AllArgsConstructor;
@@ -17,5 +17,5 @@ public class CreateProductRequest {
 	private final Long categoryId;
 	private final ProductStatus status;
 	private final Long storeId;
-	private final Map<Long, Long> options;
+	private final List<Long> options;
 }

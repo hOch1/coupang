@@ -45,10 +45,10 @@ public class ProductServiceImpl implements ProductService {
 		Store store = storeRepository.findById(request.getStoreId()).orElseThrow(() ->
 			new CustomException(ErrorCode.STORE_NOT_FOUND));
 
-		Map<Long, Long> options = request.getOptions();
+		List<Long> options = request.getOptions();
 		List<ProductOptionValue> productOptionValues = new ArrayList<>();
 
-		for (Long optionId : options.values())
+		for (Long optionId : options)
 			productOptionValues.add(optionValueService.createProductOptionValue(optionId));
 
 		Product saveProduct = productRepository.save(Product.create(request, productOptionValues, store, category));
