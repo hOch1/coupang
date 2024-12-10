@@ -1,6 +1,7 @@
 package ecommerce.coupang.controller.product;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
@@ -42,29 +44,53 @@ public class ProductController {
 
 	@GetMapping("/category/{categoryId}")
 	@Operation(summary = "카테고리별 상품 조회 API", description = "해당 카테고리 하위 상품들을 조회합니다.")
-	public ResponseEntity<List<ProductResponse>> getProductsByCategory(@PathVariable Long categoryId) throws CustomException {
+	public ResponseEntity<List<ProductResponse>> getProductsByCategory(
+		@PathVariable Long categoryId) throws CustomException {
 
 		return ResponseEntity.ok(productService.getProductsByCategory(categoryId));
 	}
 
 	@GetMapping("/category/{categoryId}/options")
-	public ResponseEntity<List<ProductResponse>> getProductByCategoryAndOptions(@PathVariable Long categoryId) {
-		// TODO 카테고리 + 옵션으로 상품 조회
-		return null;
+	@Operation(summary = "카테고리 + 옵션별 상품 조회 API", description = "카테고리별 상품 조회 API + 옵션 추가")
+	public ResponseEntity<List<ProductResponse>> getProductsByCategoryAndOptions(
+		@PathVariable Long categoryId,
+		@RequestParam List<Long> options) throws CustomException {
+
+		return ResponseEntity.ok(productService.getProductsByCategoryAndOptions(categoryId, options));
 	}
 
 	@GetMapping("/store/{storeId}")
-	public ResponseEntity<List<ProductResponse>> getProductByStore(@PathVariable Long storeId) {
-		// TODO 상점으로 조회
-		return null;
+	@Operation(summary = "상점별 상품 조회 API", description = "해당 상점 상품들을 조회합니다.")
+	public ResponseEntity<List<ProductResponse>> getProductsByStore(@PathVariable Long storeId) throws CustomException {
+
+		return ResponseEntity.ok(productService.getProductsByStore(storeId));
 	}
 
-	@GetMapping("/my/{storeId}")
-	@Operation(summary = "상점 등록 상품 조회 API", description = "해당 상점에 등록된 상품을 조회합니다.")
-	public ResponseEntity<List<ProductResponse>> getMyProducts(@AuthenticationPrincipal CustomUserDetails userDetails) {
-		List<ProductResponse> responses = productService.getMyProducts(userDetails.getMember());
+	@GetMapping("/store/{storeId}/options")
+	@Operation(summary = "상점 + 옵션별 상품 조회 API", description = "상점별 상품 조회 API + 옵션")
+	public ResponseEntity<List<ProductResponse>> getProductsByStoreAndOptions(
+		@PathVariable Long storeId,
+		@RequestParam List<Long> options) throws CustomException {
 
-		return ResponseEntity.ok(responses);
+		return ResponseEntity.ok(productService.getProductsByStoreAndOptions(storeId, options));
+	}
+
+	@GetMapping("/store/{storeId}/category/{categoryId}")
+	@Operation(summary = "상점 + 카테고리별 상품 조회 API", description = "해당 상점과 하위 카테고리별 상품을 조회합니다.")
+	public ResponseEntity<List<ProductResponse>> getProductsByStoreAndCategory(@PathVariable("storeId") Long storeId,
+		@PathVariable("categoryId") Long categoryId) throws CustomException {
+
+		return ResponseEntity.ok(productService.getProductsByStoreAndCategory(storeId, categoryId));
+	}
+
+	@GetMapping("/store/{storeId}/category/{categoryId}/options")
+	@Operation(summary = "상점 + 카테고리 + 옵션별 상품 조회 API", description = "상점 + 카테고리별 상품 조회 API + 옵션")
+	public ResponseEntity<List<ProductResponse>> getProductsByStoreAndCategoryAndOptions(
+		@PathVariable("storeId") Long storeId,
+		@PathVariable("categoryId") Long categoryId,
+		@RequestParam List<Long> options) throws CustomException {
+
+		return ResponseEntity.ok(productService.getProductsByStoreAndCategoryAndOptions(storeId, categoryId, options));
 	}
 
 	@GetMapping("/{productId}")

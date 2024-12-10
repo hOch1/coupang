@@ -22,9 +22,14 @@ public class CategoryServiceImpl implements CategoryService {
 	private final CategoryRepository categoryRepository;
 
 	@Override
-	public Category findCategoryById(Long categoryId) throws CustomException {
-		return categoryRepository.findById(categoryId).orElseThrow(() ->
+	public List<Category> findAllSubCategories(Long categoryId) throws CustomException {
+		Category category = categoryRepository.findById(categoryId).orElseThrow(() ->
 			new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
+		List<Category> categories = new ArrayList<>();
+
+		addAllSubCategory(category, categories);
+
+		return categories;
 	}
 
 	@Override
@@ -47,5 +52,11 @@ public class CategoryServiceImpl implements CategoryService {
 			responses.add(CategoryResponse.from(category));
 
 		return responses;
+	}
+
+	private void addAllSubCategory(Category category, List<Category> categories) {
+		categories.add(category);
+		for (Category children : category.getChildren())
+			addAllSubCategory(children, categories);
 	}
 }

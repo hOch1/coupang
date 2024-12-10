@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.dto.request.cart.AddCartRequest;
+import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.cart.CartService;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,7 +25,7 @@ public class CartController {
 
 	@PostMapping(value = {"", "/"})
 	public ResponseEntity<Void> addCart(@RequestBody AddCartRequest request,
-		@AuthenticationPrincipal CustomUserDetails userDetails) {
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		cartService.addCart(request, userDetails.getMember());
 

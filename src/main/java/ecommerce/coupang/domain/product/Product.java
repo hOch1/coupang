@@ -87,7 +87,7 @@ public class Product extends BaseTimeEntity {
 			productOptionValues
 		);
 
-		productOptionValues.forEach(o -> o.setProduct(product));
+		productOptionValues.forEach(pov -> pov.setProduct(product));
 		return product;
 	}
 

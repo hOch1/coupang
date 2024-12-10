@@ -12,12 +12,12 @@ import ecommerce.coupang.exception.CustomException;
 public interface CategoryService {
 
 	/**
-	 * ID로 카테고리 조회
+	 * 하위 카테고리 조회
 	 * @param categoryId 카테고리 ID
 	 * @return 조회한 카테고리
 	 */
 	@LogAction("카테고리 조회")
-	Category findCategoryById(Long categoryId) throws CustomException;
+	List<Category> findAllSubCategories(Long categoryId) throws CustomException;
 
 	/**
 	 * ID로 카테고리 조회 (최하위 카테고리 체크)
