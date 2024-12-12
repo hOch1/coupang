@@ -25,7 +25,8 @@ public class OptionController {
 
 	@GetMapping("/{categoryId}")
 	@Operation(summary = "카테고리 관련 옵션 조회 API", description = "해당 카테고리와 하위 카테고리 관련 옵션을 조회합니다.")
-	public ResponseEntity<List<OptionResponse>> findOptions(@PathVariable Long categoryId) throws CustomException {
+	public ResponseEntity<List<OptionResponse>> findOptions(
+		@PathVariable Long categoryId) throws CustomException {
 
 		return ResponseEntity.ok(optionValueService.findCategoryOption(categoryId));
 	}

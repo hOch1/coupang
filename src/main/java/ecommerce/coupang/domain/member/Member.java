@@ -7,6 +7,7 @@ import java.util.Objects;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
+import ecommerce.coupang.domain.cart.Cart;
 import ecommerce.coupang.dto.request.auth.SignupRequest;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -18,6 +19,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -52,24 +54,40 @@ public class Member extends BaseTimeEntity {
 	@Column(name = "is_active", nullable = false)
 	private boolean isActive;
 
-	public Member(String name, String phoneNumber, String email, String password, MemberRole role, boolean isActive) {
+	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Address> addresses;
+
+	@OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	private Cart cart;
+
+	public Member(String name, String phoneNumber, String email, String password, MemberRole role, boolean isActive, List<Address> addresses) {
 		this.name = name;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.password = password;
 		this.role = role;
 		this.isActive = isActive;
+		this.addresses = addresses;
 	}
 
 	public static Member createFromSignupRequest(SignupRequest request, PasswordEncoder passwordEncoder) {
-		return new Member(
+		Member member = new Member(
 			request.getName(),
 			request.getPhoneNumber(),
 			request.getEmail(),
 			passwordEncoder.encode(request.getPassword()),
 			MemberRole.USER,
-			true
+			true,
+			new ArrayList<>()
 		);
+
+		Cart cart = Cart.create(member);
+		member.setCart(cart);
+		return member;
+	}
+
+	private void setCart(Cart cart) {
+		this.cart = cart;
 	}
 
 	@Override

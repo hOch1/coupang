@@ -13,12 +13,14 @@ public enum ErrorCode {
 	CATEGORY_NOT_FOUND(404, "카테고리를 찾을 수 없습니다."),
 	STORE_NOT_FOUND(404, "가게를 찾을 수 없습니다."),
 	OPTION_VALUE_NOT_FOUND(404, "옵션을 찾을 수 없습니다."),
+	CART_ITEM_NOT_FOUND(404, "장바구니에 상품을 찾을 수 없습니다,"),
 
 	PASSWORD_NOT_MATCHED(400, "비밀번호가 맞지 앉습니다."),
 	ALREADY_EXITS_EMAIL(400, "중복된 이메일 입니다."),
 	ALREADY_EXITS_PHONE(400, "중복된 핸드폰 번호 입니다."),
 	ALREADY_EXITS_STORE_NUMBER(400, "이미 등록된 사업자 번호 입니다."),
 	IS_NOT_BOTTOM_CATEGORY(400, "최하위 카테고리가 아닙니다."),
+	QUANTITY_IS_WRONG(400, "수량은 1보다 작을 수 없습니다."),
 
 	FORBIDDEN(401, "권한이 없습니다."),
 

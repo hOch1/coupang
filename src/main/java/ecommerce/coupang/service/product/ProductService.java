@@ -3,6 +3,8 @@ package ecommerce.coupang.service.product;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
@@ -27,6 +29,7 @@ public interface ProductService {
 	/**
 	 * 상품 정보 변경
 	 * @param request 상품 변경 요청 정보
+	 * @param productId 수정할 상품 ID
 	 * @param member 요청한 회원
 	 */
 	@LogAction("상품 수정")

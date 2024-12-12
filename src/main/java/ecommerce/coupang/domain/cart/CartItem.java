@@ -3,6 +3,8 @@ package ecommerce.coupang.domain.cart;
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.dto.request.cart.AddCartRequest;
+import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -24,7 +26,6 @@ public class CartItem extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "cart_item_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -50,5 +51,22 @@ public class CartItem extends BaseTimeEntity {
 			cart,
 			quantity
 		);
+	}
+
+	public void changeQuantity(int quantity) throws CustomException {
+		if (quantity <= 0)
+			throw new CustomException(ErrorCode.QUANTITY_IS_WRONG);
+		this.quantity = quantity;
+	}
+
+	public void addQuantity() {
+		this.quantity++;
+	}
+
+	public void subQuantity() throws CustomException {
+		if (this.quantity <= 1)
+			throw new CustomException(ErrorCode.QUANTITY_IS_WRONG);
+
+		this.quantity--;
 	}
 }

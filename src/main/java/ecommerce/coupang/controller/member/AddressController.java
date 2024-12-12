@@ -34,7 +34,8 @@ public class AddressController {
 
 	@PostMapping
 	@Operation(summary = "주소 추가 API", description = "주소를 추가합니다")
-	public ResponseEntity<Void> addAddress(@RequestBody AddAddressRequest request,
+	public ResponseEntity<Void> addAddress(
+		@RequestBody AddAddressRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		addressService.addAddress(request, userDetails.getMember());
@@ -43,7 +44,8 @@ public class AddressController {
 
 	@PatchMapping("/{addressId}/default")
 	@Operation(summary = "기본 주소 변경 API", description = "기본 주소를 변경합니다.")
-	public ResponseEntity<Void> changeDefaultAddress(@PathVariable Long addressId,
+	public ResponseEntity<Void> changeDefaultAddress(
+		@PathVariable Long addressId,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		addressService.setDefaultAddress(addressId, userDetails.getMember());
@@ -52,7 +54,8 @@ public class AddressController {
 
 	@GetMapping
 	@Operation(summary = "내 주소록 조회 API", description = "나의 주소 목록을 조회합니다.")
-	public ResponseEntity<List<AddressResponse>> getMyAddresses(@AuthenticationPrincipal CustomUserDetails userDetails) {
+	public ResponseEntity<List<AddressResponse>> getMyAddresses(
+		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		List<AddressResponse> response = addressService.getMyAddresses(userDetails.getMember());
 		return ResponseEntity.ok(response);
@@ -60,7 +63,8 @@ public class AddressController {
 
 	@GetMapping("/{addressId}")
 	@Operation(summary = "주소 단건 조회 API", description = "단건 주소를 조회합니다.")
-	public ResponseEntity<AddressResponse> getAddress(@PathVariable Long addressId) throws CustomException {
+	public ResponseEntity<AddressResponse> getAddress(
+		@PathVariable Long addressId) throws CustomException {
 
 		AddressResponse response = addressService.getAddress(addressId);
 		return ResponseEntity.ok(response);
@@ -68,8 +72,9 @@ public class AddressController {
 
 	@PatchMapping("/{addressId}")
 	@Operation(summary = "주소 수정 API", description = "주소를 수정합니다.")
-	public ResponseEntity<Void> updateAddress(@PathVariable Long addressId, @RequestBody UpdateAddressRequest request) throws
-		CustomException {
+	public ResponseEntity<Void> updateAddress(
+		@PathVariable Long addressId,
+		@RequestBody UpdateAddressRequest request) throws CustomException {
 
 		addressService.updateAddress(addressId, request);
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

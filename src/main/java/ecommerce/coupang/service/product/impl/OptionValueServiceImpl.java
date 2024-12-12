@@ -29,6 +29,7 @@ public class OptionValueServiceImpl implements OptionValueService {
 	private final CategoryOptionRepository categoryOptionRepository;
 
 	@Override
+	@Transactional
 	public ProductOptionValue createProductOptionValue(Long optionId) throws CustomException {
 		OptionValue optionValue = optionValueRepository.findById(optionId).orElseThrow(() ->
 			new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));

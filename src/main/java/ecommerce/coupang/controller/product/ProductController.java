@@ -35,7 +35,8 @@ public class ProductController {
 
 	@PostMapping
 	@Operation(summary = "상품 등록 API", description = "상품을 등록합니다.")
-	public ResponseEntity<Void> createProduct(@RequestBody CreateProductRequest request,
+	public ResponseEntity<Void> createProduct(
+		@RequestBody CreateProductRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		productService.createProduct(request, userDetails.getMember());
@@ -61,7 +62,8 @@ public class ProductController {
 
 	@GetMapping("/store/{storeId}")
 	@Operation(summary = "상점별 상품 조회 API", description = "해당 상점 상품들을 조회합니다.")
-	public ResponseEntity<List<ProductResponse>> getProductsByStore(@PathVariable Long storeId) throws CustomException {
+	public ResponseEntity<List<ProductResponse>> getProductsByStore(
+		@PathVariable Long storeId) throws CustomException {
 
 		return ResponseEntity.ok(productService.getProductsByStore(storeId));
 	}
@@ -77,7 +79,8 @@ public class ProductController {
 
 	@GetMapping("/store/{storeId}/category/{categoryId}")
 	@Operation(summary = "상점 + 카테고리별 상품 조회 API", description = "해당 상점과 하위 카테고리별 상품을 조회합니다.")
-	public ResponseEntity<List<ProductResponse>> getProductsByStoreAndCategory(@PathVariable("storeId") Long storeId,
+	public ResponseEntity<List<ProductResponse>> getProductsByStoreAndCategory(
+		@PathVariable("storeId") Long storeId,
 		@PathVariable("categoryId") Long categoryId) throws CustomException {
 
 		return ResponseEntity.ok(productService.getProductsByStoreAndCategory(storeId, categoryId));
@@ -95,14 +98,16 @@ public class ProductController {
 
 	@GetMapping("/{productId}")
 	@Operation(summary = "상품 상세 조회 API", description = "해당 상품을 상세 조회합니다.")
-	public ResponseEntity<ProductResponse> getProductById(@PathVariable Long productId) throws CustomException {
+	public ResponseEntity<ProductResponse> getProductById(
+		@PathVariable Long productId) throws CustomException {
 
 		return ResponseEntity.ok(productService.getProductById(productId));
 	}
 
 	@PatchMapping("/{productId}")
 	@Operation(summary = "상품 수정 API", description = "해당 상품을 수정합니다.")
-	public ResponseEntity<Void> updateProduct(@RequestBody UpdateProductRequest request,
+	public ResponseEntity<Void> updateProduct(
+		@RequestBody UpdateProductRequest request,
 		@PathVariable Long productId,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 

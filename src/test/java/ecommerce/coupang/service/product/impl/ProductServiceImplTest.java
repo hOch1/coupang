@@ -48,7 +48,7 @@ class ProductServiceImplTest {
 
 	@Test
 	@DisplayName("상품 등록 테스트")
-	void createProductTest() throws CustomException {
+	void createProduct() throws CustomException {
 		List<Long> options = new ArrayList<>();
 		options.add(1L);
 		options.add(8L);
@@ -93,11 +93,32 @@ class ProductServiceImplTest {
 
 	@Test
 	@DisplayName("상품 조회 테스트 - 카테고리")
-	void findProductsByCategory() throws CustomException {
+	void getProductsByCategory() throws CustomException {
+
 	}
 
 	@Test
 	@DisplayName("상품 조회 테스트 - 카테고리 + 옵션")
-	void findProductsByCategoryAndOptions() throws CustomException {
+	void getProductsByCategoryAndOptions() throws CustomException {
+	}
+
+	@Test
+	void getProductsByStore() {
+	}
+
+	@Test
+	void getProductsByStoreAndOptions() {
+	}
+
+	@Test
+	void getProductsByStoreAndCategory() {
+	}
+
+	@Test
+	void getProductsByStoreAndCategoryAndOptions() {
+	}
+
+	@Test
+	void updateProduct() {
 	}
 }

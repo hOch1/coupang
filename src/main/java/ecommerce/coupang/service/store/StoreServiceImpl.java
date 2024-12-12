@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
+import ecommerce.coupang.domain.member.MemberRole;
 import ecommerce.coupang.domain.member.Store;
 import ecommerce.coupang.dto.request.store.CreateStoreRequest;
 import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
@@ -28,6 +29,10 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	@Transactional
 	public Long createStore(CreateStoreRequest request, Member member) throws CustomException {
+		// if (!member.getRole().equals(MemberRole.SELLER))
+		// 	throw new CustomException(ErrorCode.FORBIDDEN);
+		// 테스트 환경에서 권한 체크 제외
+
 		if (storeRepository.existsByStoreNumber(request.getStoreNumber()))
 			throw new CustomException(ErrorCode.ALREADY_EXITS_STORE_NUMBER);
 

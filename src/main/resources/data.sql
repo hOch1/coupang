@@ -104,5 +104,3 @@ INSERT INTO option_value (category_option_id, value, description) VALUES (@HOME_
 INSERT INTO option_value (category_option_id, value, description) VALUES (@HOME_MATERIAL_ID, 'METAL', '철제');
 INSERT INTO option_value (category_option_id, value, description) VALUES (@HOME_MATERIAL_ID, 'PLASTIC', '플라스틱');
 
-
-

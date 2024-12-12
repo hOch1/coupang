@@ -152,18 +152,25 @@ public class ProductServiceImpl implements ProductService {
 		Product product = productRepository.findById(productId).orElseThrow(() ->
 			new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
+		validateProductUpdatePermission(product, member);
+
 		product.update(request);
-		// TODO
 		return product.getId();
 	}
 
 	@Override
 	public ProductResponse getProductById(Long productId) throws CustomException {
-		Product product = productRepository.findById(productId).orElseThrow(() ->
-			new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-		// TODO
-		return null;
+		return productRepository.findById(productId)
+			.map(ProductResponse::from)
+			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 	}
 
+	private void validateProductUpdatePermission(Product product, Member member) throws CustomException {
+		Store store = product.getStore();
+
+		if (!store.getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
+
+	}
 }
 

@@ -2,6 +2,7 @@ package ecommerce.coupang.domain.cart;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ecommerce.coupang.domain.member.Member;
 import jakarta.persistence.CascadeType;
@@ -37,7 +38,33 @@ public class Cart {
 	@OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CartItem> cartItems = new ArrayList<>();
 
+	public Cart(Member member) {
+		this.member = member;
+	}
+
+	public static Cart create(Member member) {
+		return new Cart(member);
+	}
+
 	public void addItem(CartItem cartItem) {
 		this.cartItems.add(cartItem);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		Cart cart = (Cart)o;
+		return Objects.equals(id, cart.id) && Objects.equals(member, cart.member);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = Objects.hashCode(id);
+		result = 31 * result + Objects.hashCode(member);
+		return result;
 	}
 }
