@@ -1,5 +1,6 @@
 package ecommerce.coupang.domain.product;
 
+import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -23,22 +24,22 @@ public class ProductOptionValue {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_id", nullable = false)
-	private Product product;
+	@JoinColumn(name = "product_detail_id", nullable = false)
+	private ProductDetail productDetail;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "option_value_id", nullable = false)
 	private OptionValue optionValue;
 
-	public ProductOptionValue(OptionValue optionValue) {
+	public ProductOptionValue(OptionValue optionValue, ProductDetail productDetail) {
 		this.optionValue = optionValue;
+		this.productDetail = productDetail;
 	}
 
-	public static ProductOptionValue create(OptionValue optionValue) {
-		return new ProductOptionValue(optionValue);
-	}
-
-	public void setProduct(Product product) {
-		this.product = product;
+	public static ProductOptionValue create(OptionValue optionValue, ProductDetail productDetail) {
+		return new ProductOptionValue(
+			optionValue,
+			productDetail
+		);
 	}
 }

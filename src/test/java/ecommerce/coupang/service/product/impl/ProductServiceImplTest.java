@@ -1,6 +1,7 @@
 package ecommerce.coupang.service.product.impl;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import ecommerce.coupang.domain.member.Store;
 import ecommerce.coupang.domain.product.Category;
 import ecommerce.coupang.domain.product.OptionValue;
 import ecommerce.coupang.domain.product.Product;
+import ecommerce.coupang.domain.product.ProductDetail;
 import ecommerce.coupang.domain.product.ProductOptionValue;
 import ecommerce.coupang.domain.product.ProductStatus;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
@@ -25,6 +27,7 @@ import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.service.product.CategoryService;
 import ecommerce.coupang.service.product.OptionValueService;
+import ecommerce.coupang.service.product.ProductDetailService;
 import ecommerce.coupang.service.product.ProductOptionService;
 import ecommerce.coupang.service.store.StoreService;
 
@@ -46,50 +49,50 @@ class ProductServiceImplTest {
 	@Mock
 	private OptionValueService optionValueService;
 
+	@Mock
+	private ProductDetailService productDetailService;
+
 	@InjectMocks
 	private ProductServiceImpl productService;
 
 	@Test
 	@DisplayName("상품 등록 테스트")
 	void createProduct() throws CustomException {
-		List<Long> options = new ArrayList<>();
-		options.add(1L);
-		options.add(8L);
-		options.add(9L);
+		// Arrange
+		Long categoryId = 3L;
+		Long storeId = 1L;
+		CreateProductRequest request = request();
 
-		CreateProductRequest request = new CreateProductRequest(
-			"product1",
-			"first product",
-			10000,
-			50,
-			3L,
-			ProductStatus.ACTIVE,
-			1L,
-			options
-		);
-
+		// 준비된 mock 데이터
 		Member mockMember = mock(Member.class);
-		Store mockStore = mock(Store.class);
 		Category mockCategory = mock(Category.class);
+		Store mockStore = mock(Store.class);
 		Product mockProduct = mock(Product.class);
-		when(mockProduct.getId()).thenReturn(1L);
-		ProductOptionValue mockProductOptionValue = mock(ProductOptionValue.class);
+		ProductDetail mockProductDetail = mock(ProductDetail.class);
 		OptionValue mockOptionValue = mock(OptionValue.class);
 
-		when(storeService.findStore(request.getStoreId())).thenReturn(mockStore);
-		when(categoryService.findBottomCategory(request.getCategoryId())).thenReturn(mockCategory);
-		when(productOptionService.createProductOptionValue(any(OptionValue.class))).thenReturn(mockProductOptionValue);
+		when(categoryService.findBottomCategory(categoryId)).thenReturn(mockCategory);
+		when(storeService.findStore(storeId)).thenReturn(mockStore);
 		when(productRepository.save(any(Product.class))).thenReturn(mockProduct);
+		when(productDetailService.save(any(CreateProductRequest.CreateDetailRequest.class), eq(mockProduct)))
+			.thenReturn(mockProductDetail);
 		when(optionValueService.findOptionValue(anyLong())).thenReturn(mockOptionValue);
 
-		Product product = productService.createProduct(request, mockMember);
+		// Act
+		Product result = productService.createProduct(request, mockMember);
 
-		assertThat(product.getId()).isEqualTo(mockProduct.getId());
+		// Assert
+		verify(categoryService).findBottomCategory(categoryId);
+		verify(storeService).findStore(storeId);
+		verify(productRepository).save(any(Product.class));  // 상품이 저장되어야 함
+		verify(productDetailService, times(request.getDetails().size()))
+			.save(any(CreateProductRequest.CreateDetailRequest.class), eq(mockProduct));
+		verify(optionValueService, times(request.getDetails().get(0).getOptions().size()))
+			.findOptionValue(any());
+		verify(productOptionService, times(request.getDetails().get(0).getOptions().size()))
+			.save(any(OptionValue.class), eq(mockProductDetail));  // 옵션이 저장되어야 함
 
-		verify(productRepository).save(any(Product.class));
-		verify(storeService).findStore(request.getStoreId());
-		verify(categoryService).findBottomCategory(request.getCategoryId());
-		verify(productOptionService, times(3)).createProductOptionValue(any(OptionValue.class));
+		assertNotNull(result);
 	}
 
 	@Test
@@ -121,5 +124,22 @@ class ProductServiceImplTest {
 
 	@Test
 	void updateProduct() {
+	}
+
+	private CreateProductRequest request() {
+		CreateProductRequest.CreateDetailRequest detailRequest = new CreateProductRequest.CreateDetailRequest(
+			10000,
+			100,
+			ProductStatus.ACTIVE,
+			List.of(1L, 6L, 9L, 10L, 11L, 12L)
+		);
+
+		return new CreateProductRequest(
+			"ProductA",
+			"Test Product",
+			3L,
+			1L,
+			List.of(detailRequest)
+		);
 	}
 }

@@ -11,7 +11,7 @@ import ecommerce.coupang.domain.member.Store;
 import ecommerce.coupang.domain.product.Category;
 import ecommerce.coupang.domain.product.OptionValue;
 import ecommerce.coupang.domain.product.Product;
-import ecommerce.coupang.domain.product.ProductOptionValue;
+import ecommerce.coupang.domain.product.ProductDetail;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.exception.CustomException;
@@ -19,6 +19,7 @@ import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.service.product.CategoryService;
 import ecommerce.coupang.service.product.OptionValueService;
+import ecommerce.coupang.service.product.ProductDetailService;
 import ecommerce.coupang.service.product.ProductOptionService;
 import ecommerce.coupang.service.product.ProductService;
 import ecommerce.coupang.service.store.StoreService;
@@ -36,23 +37,26 @@ public class ProductServiceImpl implements ProductService {
 	private final ProductOptionService productOptionService;
 	private final StoreService storeService;
 	private final OptionValueService optionValueService;
+	private final ProductDetailService productDetailService;
 
 	@Override
 	@Transactional
 	public Product createProduct(CreateProductRequest request, Member member) throws CustomException {
 		Category category = categoryService.findBottomCategory(request.getCategoryId());
-
 		Store store = storeService.findStore(request.getStoreId());
 
-		List<Long> options = request.getOptions();
-		List<ProductOptionValue> productOptionValues = new ArrayList<>();
+		Product product = productRepository.save(Product.create(request, store, category));
 
-		for (Long optionId : options) {
-			OptionValue optionValue = optionValueService.findOptionValue(optionId);
-			productOptionValues.add(productOptionService.createProductOptionValue(optionValue));
+		for (CreateProductRequest.CreateDetailRequest detail : request.getDetails()) {
+			ProductDetail productDetail = productDetailService.save(detail, product);
+
+			for (Long option : detail.getOptions()) {
+				OptionValue optionValue = optionValueService.findOptionValue(option);
+				productOptionService.save(optionValue, productDetail);
+			}
 		}
 
-		return productRepository.save(Product.create(request, productOptionValues, store, category));
+		return product;
 	}
 
 	@Override

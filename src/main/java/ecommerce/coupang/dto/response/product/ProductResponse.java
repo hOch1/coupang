@@ -17,7 +17,6 @@ public class ProductResponse {
 	private final String category;
 
 	public static ProductResponse from(Product product) {
-
 		return new ProductResponse(
 			product.getId(),
 			product.getName(),

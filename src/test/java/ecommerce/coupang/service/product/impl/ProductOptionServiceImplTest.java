@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 class ProductOptionServiceImplTest {
 
 	@Test
-	void createProductOptionValue() {
+	void save() {
 	}
 
 	@Test

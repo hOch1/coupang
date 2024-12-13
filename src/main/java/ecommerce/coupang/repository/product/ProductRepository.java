@@ -46,7 +46,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 * @param optionValues 포함된 옵션
 	 * @return 상품 리스트
 	 */
-	@Query("SELECT p FROM Product p JOIN p.productOptionValues pov WHERE p.category IN :categories AND pov.optionValue IN :optionValues ORDER BY p.createdAt DESC")
+	@Query("SELECT p FROM Product p "
+		+ "JOIN p.productDetails pd "
+		+ "JOIN pd.productOptionValues pov "
+		+ "WHERE p.category IN :categories "
+		+ "AND pov.optionValue IN :optionValues "
+		+ "ORDER BY p.createdAt DESC")
 	List<Product> findByCategoriesAndOptions(List<Category> categories, List<OptionValue> optionValues);
 
 	/**
@@ -55,7 +60,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 * @param optionValues 포함된 옵션
 	 * @return 상품 리스트
 	 */
-	@Query("SELECT p FROM Product p JOIN p.productOptionValues pov WHERE p.store.id = :storeId AND pov.optionValue IN :optionValues ORDER BY p.createdAt DESC")
+	@Query("SELECT p FROM Product p "
+		+ "JOIN p.productDetails pd "
+		+ "JOIN pd.productOptionValues pov "
+		+ "WHERE p.store.id = :storeId "
+		+ "AND pov.optionValue IN :optionValues "
+		+ "ORDER BY p.createdAt DESC")
 	List<Product> findByStoreAndOptions(Long storeId, List<OptionValue> optionValues);
 
 	/**
@@ -65,6 +75,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 * @param optionValues 포함된 옵션
 	 * @return 상품 리스트
 	 */
-	@Query("SELECT p FROM Product p JOIN p.productOptionValues pov WHERE p.category IN :categories AND p.store.id = :storeId AND pov.optionValue IN :optionValues ORDER BY p.createdAt DESC")
+	@Query("SELECT p FROM Product p "
+		+ "JOIN p.productDetails pd "
+		+ "JOIN pd.productOptionValues pov"
+		+ " WHERE p.category IN :categories "
+		+ "AND p.store.id = :storeId "
+		+ "AND pov.optionValue IN :optionValues "
+		+ "ORDER BY p.createdAt DESC")
 	List<Product> findByStoreAndCategoryAndOptions(Long storeId, List<Category> categories, List<OptionValue> optionValues);
 }

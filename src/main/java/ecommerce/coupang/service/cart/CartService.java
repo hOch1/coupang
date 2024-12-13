@@ -58,6 +58,7 @@ public interface CartService {
 	@LogAction("장바구니 상품 제거")
 	CartItem removeItem(Long cartItemId, Member member) throws CustomException;
 
+	@LogAction("장바구니 전체 제거")
 	/**
 	 * 장바구니 전체 제거
 	 * @param member 요청한 회원

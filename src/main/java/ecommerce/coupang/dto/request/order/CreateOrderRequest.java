@@ -8,6 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CreateOrderRequest {
 
+	private final Long productId;
+	private final int quantity;
 	private final Payment payment;
 	private final String orderMessage;
 }
