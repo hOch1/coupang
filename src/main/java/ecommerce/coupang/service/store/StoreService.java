@@ -8,7 +8,6 @@ import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.member.Store;
 import ecommerce.coupang.dto.request.store.CreateStoreRequest;
 import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
-import ecommerce.coupang.dto.response.store.StoreResponse;
 import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("StoreService")
@@ -22,7 +21,7 @@ public interface StoreService {
 	 * @throws CustomException
 	 */
 	@LogAction("가게 등록")
-	Long createStore(CreateStoreRequest request, Member member) throws CustomException;
+	Store createStore(CreateStoreRequest request, Member member) throws CustomException;
 
 	/**
 	 * 내 가게 목록 조회
@@ -30,7 +29,7 @@ public interface StoreService {
 	 * @return 가게 목록 리스트
 	 */
 	@LogAction("내 가게 목록 조회")
-	List<StoreResponse> findMyStore(Member member);
+	List<Store> findMyStore(Member member);
 
 	/**
 	 * 가게 상세 정보 조회
@@ -39,7 +38,7 @@ public interface StoreService {
 	 * @throws CustomException
 	 */
 	@LogAction("가게 상제 조회")
-	StoreResponse findStore(Long storeId) throws CustomException;
+	Store findStore(Long storeId) throws CustomException;
 
 	/**
 	 * 가게 수정
@@ -50,7 +49,7 @@ public interface StoreService {
 	 * @throws CustomException
 	 */
 	@LogAction("가게 수정")
-	Long updateStore(Long storeId, UpdateStoreRequest request, Member member) throws CustomException;
+	Store updateStore(Long storeId, UpdateStoreRequest request, Member member) throws CustomException;
 
 	/**
 	 * 가게 삭제

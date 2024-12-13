@@ -43,9 +43,9 @@ class StoreServiceImplTest {
 		when(storeRepository.existsByStoreNumber(anyString())).thenReturn(false);
 		when(storeRepository.save(any(Store.class))).thenReturn(mockStore);
 
-		Long saveStore = storeService.createStore(request, mockMember);
+		Store saveStore = storeService.createStore(request, mockMember);
 
-		assertThat(saveStore).isEqualTo(1L);
+		assertThat(saveStore.getId()).isEqualTo(1L);
 		verify(storeRepository).save(any(Store.class));
 	}
 
@@ -67,14 +67,12 @@ class StoreServiceImplTest {
 	@DisplayName("가게 상세 조회 테스트")
 	void getStoreTest() throws CustomException {
 		Store mockStore = mock(Store.class);
-		Member mockMember = mock(Member.class);
 
-		when(mockStore.getMember()).thenReturn(mockMember);
 		when(storeRepository.findById(1L)).thenReturn(Optional.of(mockStore));
 
-		StoreResponse response = storeService.findStore(1L);
+		Store store = storeService.findStore(1L);
 
-		assertThat(response).isNotNull();
+		assertThat(store).isNotNull();
 		verify(storeRepository).findById(1L);
 	}
 
@@ -96,13 +94,12 @@ class StoreServiceImplTest {
 		Store mockStore = mock(Store.class);
 		Member mockMember = mock(Member.class);
 		when(mockMember.getId()).thenReturn(1L);
-		when(mockStore.getMember()).thenReturn(mockMember);
 
 		when(storeRepository.findByMemberId(1L)).thenReturn(List.of(mockStore));
 
-		List<StoreResponse> responses = storeService.findMyStore(mockMember);
+		List<Store> stores = storeService.findMyStore(mockMember);
 
-		assertThat(responses).isNotEmpty();
+		assertThat(stores).isNotEmpty();
 		verify(storeRepository).findByMemberId(1L);
 	}
 
@@ -117,9 +114,9 @@ class StoreServiceImplTest {
 
 		when(storeRepository.findById(1L)).thenReturn(Optional.of(originalStore));
 
-		Long updateStore = storeService.updateStore(1L, request, mockMember);
+		Store store = storeService.updateStore(1L, request, mockMember);
 
-		assertThat(updateStore).isEqualTo(1L);
+		assertThat(store).isEqualTo(originalStore);
 		verify(originalStore).update(request);
 	}
 

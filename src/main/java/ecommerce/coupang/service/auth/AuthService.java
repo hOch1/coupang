@@ -2,6 +2,7 @@ package ecommerce.coupang.service.auth;
 
 import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
+import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.dto.request.auth.LoginRequest;
 import ecommerce.coupang.dto.request.auth.SignupRequest;
 import ecommerce.coupang.dto.response.auth.LoginResponse;
@@ -24,5 +25,5 @@ public interface AuthService {
 	 * @return 회원가입한 회원 ID
 	 */
 	@LogAction("회원가입")
-	Long signup(SignupRequest request) throws CustomException;
+	Member signup(SignupRequest request) throws CustomException;
 }

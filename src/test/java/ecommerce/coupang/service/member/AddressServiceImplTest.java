@@ -37,7 +37,6 @@ class AddressServiceImplTest {
 	void addAddressTest() {
 		Member mockMember = mock(Member.class);
 		Address mockAddress = mock(Address.class);
-		when(mockAddress.getId()).thenReturn(1L);
 		AddAddressRequest request = mock(AddAddressRequest.class);
 
 		when(addressRepository.save(any(Address.class))).thenReturn(mockAddress);
@@ -53,7 +52,6 @@ class AddressServiceImplTest {
 		Address defaultAddress = mock(Address.class);
 
 		Address mockAddress = mock(Address.class);
-		when(mockAddress.getId()).thenReturn(2L);
 		AddAddressRequest request = mock(AddAddressRequest.class);
 		when(request.isDefault()).thenReturn(true);
 
@@ -72,7 +70,6 @@ class AddressServiceImplTest {
 		Address defaultAddress = mock(Address.class);
 
 		Address mockAddress = mock(Address.class);
-		when(mockAddress.getId()).thenReturn(2L);
 		AddAddressRequest request = mock(AddAddressRequest.class);
 		when(request.isDefault()).thenReturn(false);
 
@@ -90,9 +87,9 @@ class AddressServiceImplTest {
 		Address mockAddress = mock(Address.class);
 
 		when(addressRepository.findByMemberId(anyLong())).thenReturn(List.of(mockAddress));
-		List<AddressResponse> responses = addressService.getMyAddresses(mockMember);
+		List<Address> addresses = addressService.getMyAddresses(mockMember);
 
-		assertThat(responses).isNotEmpty();
+		assertThat(addresses).isNotEmpty();
 	}
 
 	@Test
@@ -101,9 +98,9 @@ class AddressServiceImplTest {
 		Address mockAddress = mock(Address.class);
 
 		when(addressRepository.findById(anyLong())).thenReturn(Optional.of(mockAddress));
-		AddressResponse response = addressService.getAddress(anyLong());
+		Address address = addressService.getAddress(anyLong());
 
-		assertThat(response).isNotNull();
+		assertThat(address).isNotNull();
 	}
 
 	@Test

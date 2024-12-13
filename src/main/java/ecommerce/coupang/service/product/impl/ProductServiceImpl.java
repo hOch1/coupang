@@ -2,7 +2,6 @@ package ecommerce.coupang.service.product.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,14 +14,14 @@ import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.ProductOptionValue;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
-import ecommerce.coupang.dto.response.product.ProductResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
-import ecommerce.coupang.repository.member.StoreRepository;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.service.product.CategoryService;
 import ecommerce.coupang.service.product.OptionValueService;
+import ecommerce.coupang.service.product.ProductOptionService;
 import ecommerce.coupang.service.product.ProductService;
+import ecommerce.coupang.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,134 +33,103 @@ public class ProductServiceImpl implements ProductService {
 
 	private final ProductRepository productRepository;
 	private final CategoryService categoryService;
+	private final ProductOptionService productOptionService;
+	private final StoreService storeService;
 	private final OptionValueService optionValueService;
-	private final StoreRepository storeRepository;
 
 	@Override
 	@Transactional
-	public Long createProduct(CreateProductRequest request, Member member) throws CustomException {
+	public Product createProduct(CreateProductRequest request, Member member) throws CustomException {
 		Category category = categoryService.findBottomCategory(request.getCategoryId());
 
-		Store store = storeRepository.findById(request.getStoreId()).orElseThrow(() ->
-			new CustomException(ErrorCode.STORE_NOT_FOUND));
+		Store store = storeService.findStore(request.getStoreId());
 
 		List<Long> options = request.getOptions();
 		List<ProductOptionValue> productOptionValues = new ArrayList<>();
 
-		for (Long optionId : options)
-			productOptionValues.add(optionValueService.createProductOptionValue(optionId));
+		for (Long optionId : options) {
+			OptionValue optionValue = optionValueService.findOptionValue(optionId);
+			productOptionValues.add(productOptionService.createProductOptionValue(optionValue));
+		}
 
-		Product saveProduct = productRepository.save(Product.create(request, productOptionValues, store, category));
-
-		return saveProduct.getId();
+		return productRepository.save(Product.create(request, productOptionValues, store, category));
 	}
 
 	@Override
-	public List<ProductResponse> getProductsByCategory(Long categoryId) throws CustomException {
+	public List<Product> getProductsByCategory(Long categoryId) throws CustomException {
 		List<Category> categories = categoryService.findAllSubCategories(categoryId);
-		List<Product> products = productRepository.findByCategories(categories);
-
-		return products.stream()
-			.map(ProductResponse::from)
-			.toList();
+		return productRepository.findByCategories(categories);
 	}
 
 	@Override
-	public List<ProductResponse> getProductsByCategoryAndOptions(Long categoryId, List<Long> options) throws
-		CustomException {
+	public List<Product> getProductsByCategoryAndOptions(Long categoryId, List<Long> options) throws CustomException {
 		List<Category> categories = categoryService.findAllSubCategories(categoryId);
 		List<OptionValue> optionValues = new ArrayList<>();
 
 		for (Long optionId : options)
 			optionValues.add(optionValueService.findOptionValue(optionId));
 
-		List<Product> products = productRepository.findByCategoriesAndOptions(categories, optionValues);
-
-		return products.stream()
-			.map(ProductResponse::from)
-			.toList();
+		return productRepository.findByCategoriesAndOptions(categories, optionValues);
 	}
 
 	@Override
-	public List<ProductResponse> getProductsByStore(Long storeId) throws CustomException {
-		Store store = storeRepository.findById(storeId).orElseThrow(() ->
-			new CustomException(ErrorCode.STORE_NOT_FOUND));
+	public List<Product> getProductsByStore(Long storeId) throws CustomException {
+		Store store = storeService.findStore(storeId);
 
-		List<Product> products = productRepository.findByStore(store.getId());
-
-		return products.stream()
-			.map(ProductResponse::from)
-			.toList();
+		return productRepository.findByStore(store.getId());
 	}
 
 	@Override
-	public List<ProductResponse> getProductsByStoreAndOptions(Long storeId, List<Long> options) throws CustomException {
-		Store store = storeRepository.findById(storeId).orElseThrow(() ->
-			new CustomException(ErrorCode.STORE_NOT_FOUND));
+	public List<Product> getProductsByStoreAndOptions(Long storeId, List<Long> options) throws CustomException {
+		Store store = storeService.findStore(storeId);
 
 		List<OptionValue> optionValues = new ArrayList<>();
 
 		for (Long optionId : options)
 			optionValues.add(optionValueService.findOptionValue(optionId));
 
-		List<Product> products = productRepository.findByStoreAndOptions(store.getId(),
+		return productRepository.findByStoreAndOptions(store.getId(),
 			optionValues);
-
-		return products.stream()
-			.map(ProductResponse::from)
-			.toList();
 	}
 
 	@Override
-	public List<ProductResponse> getProductsByStoreAndCategory(Long storeId, Long categoryId) throws CustomException {
+	public List<Product> getProductsByStoreAndCategory(Long storeId, Long categoryId) throws CustomException {
 		List<Category> categories = categoryService.findAllSubCategories(categoryId);
 
-		Store store = storeRepository.findById(storeId).orElseThrow(() ->
-			new CustomException(ErrorCode.STORE_NOT_FOUND));
+		Store store = storeService.findStore(storeId);
 
-		List<Product> products = productRepository.findByCategoriesAndStore(store.getId(), categories);
-
-		return products.stream()
-			.map(ProductResponse::from)
-			.toList();
+		return productRepository.findByCategoriesAndStore(store.getId(), categories);
 	}
 
 	@Override
-	public List<ProductResponse> getProductsByStoreAndCategoryAndOptions(Long storeId, Long categoryId,
+	public List<Product> getProductsByStoreAndCategoryAndOptions(Long storeId, Long categoryId,
 		List<Long> options) throws CustomException {
 
 		List<Category> categories = categoryService.findAllSubCategories(categoryId);
-		Store store = storeRepository.findById(storeId).orElseThrow(() ->
-			new CustomException(ErrorCode.STORE_NOT_FOUND));
+		Store store = storeService.findStore(storeId);
 		List<OptionValue> optionValues = new ArrayList<>();
 
 		for (Long optionId : options)
 			optionValues.add(optionValueService.findOptionValue(optionId));
 
-		List<Product> products = productRepository.findByStoreAndCategoryAndOptions(store.getId(),
+		return productRepository.findByStoreAndCategoryAndOptions(store.getId(),
 			categories, optionValues);
-
-		return products.stream()
-			.map(ProductResponse::from)
-			.toList();
 	}
 
 	@Override
 	@Transactional
-	public Long updateProduct(UpdateProductRequest request, Long productId, Member member) throws CustomException {
-		Product product = productRepository.findById(productId).orElseThrow(() ->
-			new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+	public Product updateProduct(UpdateProductRequest request, Long productId, Member member) throws CustomException {
+		Product product = getProductById(productId);
 
 		validateProductUpdatePermission(product, member);
 
 		product.update(request);
-		return product.getId();
+		return product;
 	}
 
 	@Override
-	public ProductResponse getProductById(Long productId) throws CustomException {
+	public Product getProductById(Long productId) throws CustomException {
 		return productRepository.findById(productId)
-			.map(ProductResponse::from)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 	}
 
@@ -170,7 +138,6 @@ public class ProductServiceImpl implements ProductService {
 
 		if (!store.getMember().equals(member))
 			throw new CustomException(ErrorCode.FORBIDDEN);
-
 	}
 }
 

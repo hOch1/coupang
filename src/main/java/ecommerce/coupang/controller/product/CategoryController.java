@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ecommerce.coupang.domain.product.Category;
 import ecommerce.coupang.dto.response.product.CategoryResponse;
 import ecommerce.coupang.service.product.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +25,9 @@ public class CategoryController {
 	@GetMapping
 	@Operation(summary = "전체 카테고리 조회 API", description = "전체 카테고리를 조회합니다.")
 	public ResponseEntity<List<CategoryResponse>> findAllCategories() {
-
-		return ResponseEntity.ok(categoryService.findAll());
+		List<Category> categories = categoryService.findAll();
+		return ResponseEntity.ok(categories.stream()
+			.map(CategoryResponse::from)
+			.toList());
 	}
 }

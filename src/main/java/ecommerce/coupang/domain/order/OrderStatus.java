@@ -10,5 +10,5 @@ public enum OrderStatus {
 	PAID("결제완료"),
 	CANCELLED("주문취소");
 
-	private final String name;
+	private final String displayName;
 }

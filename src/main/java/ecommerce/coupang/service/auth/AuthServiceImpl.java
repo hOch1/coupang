@@ -34,14 +34,12 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	@Transactional
-	public Long signup(SignupRequest request) throws CustomException {
+	public Member signup(SignupRequest request) throws CustomException {
 		validateDuplicateMember(request);
 
 		Member member = Member.createFromSignupRequest(request, passwordEncoder);
 
-		Member saveMember = memberRepository.save(member);
-
-		return saveMember.getId();
+		return memberRepository.save(member);
 	}
 
 	private Member validateLoginInfo(LoginRequest request) throws CustomException {

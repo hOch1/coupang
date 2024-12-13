@@ -15,6 +15,7 @@ import ecommerce.coupang.repository.cart.CartItemRepository;
 import ecommerce.coupang.repository.cart.CartRepository;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.service.cart.CartService;
+import ecommerce.coupang.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,16 +25,15 @@ public class CartServiceImpl implements CartService {
 
 	private final CartRepository cartRepository;
 	private final CartItemRepository cartItemRepository;
-	private final ProductRepository productRepository;
+	private final ProductService productService;
 
 	@Override
 	@Transactional
-	public void addCart(AddCartRequest request, Member member) throws CustomException {
+	public Cart addCart(AddCartRequest request, Member member) throws CustomException {
 		Cart cart = cartRepository.findByMember(member).orElseThrow(() ->
 			new CustomException(ErrorCode.CART_NOT_FOUND));
 
-		Product product = productRepository.findById(request.getProductId()).orElseThrow(() ->
-			new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+		Product product = productService.getProductById(request.getProductId());
 
 		CartItem existingCartItem = cart.getCartItems()
 			.stream()
@@ -47,18 +47,19 @@ public class CartServiceImpl implements CartService {
 			CartItem cartItem = CartItem.create(cart, product, request.getQuantity());
 			cart.addItem(cartItem);
 		}
+
+		return cart;
 	}
 
 	@Override
-	public CartResponse findMyCart(Member member) throws CustomException {
+	public Cart findMyCart(Member member) throws CustomException {
 		return cartRepository.findByMember(member)
-			.map(CartResponse::from)
 			.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
 	}
 
 	@Override
 	@Transactional
-	public Long updateItemQuantity(Long cartItemId, int quantity, Member member) throws CustomException {
+	public CartItem updateItemQuantity(Long cartItemId, int quantity, Member member) throws CustomException {
 		Cart cart = cartRepository.findByMember(member)
 			.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
 
@@ -70,12 +71,12 @@ public class CartServiceImpl implements CartService {
 
 		cartItem.changeQuantity(quantity);
 
-		return cartItem.getId();
+		return cartItem;
 	}
 
 	@Override
 	@Transactional
-	public Long updateItemQuantity(Long cartItemId, Member member, boolean add) throws CustomException {
+	public CartItem updateItemQuantity(Long cartItemId, Member member, boolean add) throws CustomException {
 		Cart cart = cartRepository.findByMember(member)
 			.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
 
@@ -90,12 +91,12 @@ public class CartServiceImpl implements CartService {
 		else
 			cartItem.subQuantity();
 
-		return cartItem.getId();
+		return cartItem;
 	}
 
 	@Override
 	@Transactional
-	public Long removeItem(Long cartItemId, Member member) throws CustomException {
+	public CartItem removeItem(Long cartItemId, Member member) throws CustomException {
 		Cart cart = cartRepository.findByMember(member)
 			.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
 
@@ -104,7 +105,7 @@ public class CartServiceImpl implements CartService {
 
 		cart.getCartItems().remove(cartItem);
 
-		return cartItem.getId();
+		return cartItem;
 	}
 
 	@Override

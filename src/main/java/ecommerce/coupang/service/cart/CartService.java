@@ -2,6 +2,8 @@ package ecommerce.coupang.service.cart;
 
 import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
+import ecommerce.coupang.domain.cart.Cart;
+import ecommerce.coupang.domain.cart.CartItem;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.dto.request.cart.AddCartRequest;
 import ecommerce.coupang.dto.response.cart.CartResponse;
@@ -17,7 +19,7 @@ public interface CartService {
 	 * @param member 요청한 회원
 	 */
 	@LogAction("장바구니 상품 추가")
-	void addCart(AddCartRequest request, Member member) throws CustomException;
+	Cart addCart(AddCartRequest request, Member member) throws CustomException;
 
 	/**
 	 * 내 장바구니 조회
@@ -25,7 +27,7 @@ public interface CartService {
 	 * @return 장바구니 목록
 	 */
 	@LogAction("장바구니 조회")
-	CartResponse findMyCart(Member member) throws CustomException;
+	Cart findMyCart(Member member) throws CustomException;
 
 	/**
 	 * 장바구니 상푼 수량 변경
@@ -35,7 +37,7 @@ public interface CartService {
 	 * @return 수정한 장바구니 상품 ID
 	 */
 	@LogAction("장바구니 상품 수량 변경")
-	Long updateItemQuantity(Long cartItemId, int quantity, Member member) throws CustomException;
+	CartItem updateItemQuantity(Long cartItemId, int quantity, Member member) throws CustomException;
 
 	/**
 	 * 장바구니 상품 수량 변경 (+1)
@@ -45,7 +47,7 @@ public interface CartService {
 	 * @return 수정한 장바구니 상품 ID
 	 */
 	@LogAction("장바구니 상품 수량 변경 - (+-1)")
-	Long updateItemQuantity(Long cartItemId, Member member, boolean add) throws CustomException;
+	CartItem updateItemQuantity(Long cartItemId, Member member, boolean add) throws CustomException;
 
 	/**
 	 * 장바구니 상품 제거
@@ -54,7 +56,7 @@ public interface CartService {
 	 * @return 삭제한 장바구니 상품 ID
 	 */
 	@LogAction("장바구니 상품 제거")
-	Long removeItem(Long cartItemId, Member member) throws CustomException;
+	CartItem removeItem(Long cartItemId, Member member) throws CustomException;
 
 	/**
 	 * 장바구니 전체 제거

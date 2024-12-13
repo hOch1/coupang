@@ -29,7 +29,7 @@ public class CartResponse {
 
 	@Getter
 	@AllArgsConstructor
-	public static class CartItemResponse {
+	private static class CartItemResponse {
 
 		private final Long cartItemId;
 		private final StoreResponse store;

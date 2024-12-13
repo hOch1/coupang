@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ecommerce.coupang.domain.member.Store;
 import ecommerce.coupang.dto.request.store.CreateStoreRequest;
 import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
 import ecommerce.coupang.dto.response.store.StoreResponse;
@@ -41,14 +42,16 @@ public class StoreController {
 
 	@GetMapping("/{storeId}")
 	public ResponseEntity<StoreResponse> getStoreDetail(@PathVariable Long storeId) throws CustomException {
-
-		return ResponseEntity.ok(storeService.findStore(storeId));
+		Store store = storeService.findStore(storeId);
+		return ResponseEntity.ok(StoreResponse.from(store));
 	}
 
 	@GetMapping("/my")
 	public ResponseEntity<List<StoreResponse>> getMyStore(@AuthenticationPrincipal CustomUserDetails userDetails) {
-
-		return ResponseEntity.ok(storeService.findMyStore(userDetails.getMember()));
+		List<Store> stores = storeService.findMyStore(userDetails.getMember());
+		return ResponseEntity.ok(stores.stream()
+			.map(StoreResponse::from)
+			.toList());
 	}
 
 	@PatchMapping("/{storeId}")

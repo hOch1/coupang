@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.domain.product.Category;
-import ecommerce.coupang.dto.response.product.CategoryResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.product.CategoryRepository;
@@ -44,14 +43,8 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
-	public List<CategoryResponse> findAll() {
-		List<Category> categories = categoryRepository.findByLevel(1);
-		List<CategoryResponse> responses = new ArrayList<>();
-
-		for (Category category : categories)
-			responses.add(CategoryResponse.from(category));
-
-		return responses;
+	public List<Category> findAll() {
+		return categoryRepository.findByLevel(1);
 	}
 
 	private void addAllSubCategory(Category category, List<Category> categories) {

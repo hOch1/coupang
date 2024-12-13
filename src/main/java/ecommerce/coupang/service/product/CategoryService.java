@@ -33,5 +33,5 @@ public interface CategoryService {
 	 * @return 전체 카테고리 목록
 	 */
 	@LogAction("전체 카테고리 조회")
-	List<CategoryResponse> findAll();
+	List<Category> findAll();
 }

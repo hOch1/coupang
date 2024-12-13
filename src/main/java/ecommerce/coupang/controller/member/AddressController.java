@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ecommerce.coupang.domain.member.Address;
 import ecommerce.coupang.dto.request.member.AddAddressRequest;
 import ecommerce.coupang.dto.request.member.UpdateAddressRequest;
 import ecommerce.coupang.dto.response.member.AddressResponse;
@@ -57,8 +57,10 @@ public class AddressController {
 	public ResponseEntity<List<AddressResponse>> getMyAddresses(
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-		List<AddressResponse> response = addressService.getMyAddresses(userDetails.getMember());
-		return ResponseEntity.ok(response);
+		List<Address> addresses = addressService.getMyAddresses(userDetails.getMember());
+		return ResponseEntity.ok(addresses.stream()
+			.map(AddressResponse::from)
+			.toList());
 	}
 
 	@GetMapping("/{addressId}")
@@ -66,8 +68,8 @@ public class AddressController {
 	public ResponseEntity<AddressResponse> getAddress(
 		@PathVariable Long addressId) throws CustomException {
 
-		AddressResponse response = addressService.getAddress(addressId);
-		return ResponseEntity.ok(response);
+		Address address = addressService.getAddress(addressId);
+		return ResponseEntity.ok(AddressResponse.from(address));
 	}
 
 	@PatchMapping("/{addressId}")

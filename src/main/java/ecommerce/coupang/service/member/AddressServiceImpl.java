@@ -16,7 +16,6 @@ import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.member.AddressRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +27,7 @@ public class AddressServiceImpl implements AddressService {
 	@Override
 	@Transactional
 	@LogAction("주소 추가")
-	public Long addAddress(AddAddressRequest request, Member member) {
+	public Address addAddress(AddAddressRequest request, Member member) {
 		List<Address> addressList = addressRepository.findByMemberId(member.getId());
 		Address address;
 
@@ -41,47 +40,40 @@ public class AddressServiceImpl implements AddressService {
 			address = Address.createFromRequest(request, member, request.isDefault());
 		}
 
-		Address saveAddress = addressRepository.save(address);
-		return saveAddress.getId();
+		return addressRepository.save(address);
 	}
 
 	@Override
 	@Transactional
-	public Long setDefaultAddress(Long addressId, Member member) throws CustomException {
+	public Address setDefaultAddress(Long addressId, Member member) throws CustomException {
 		unsetDefaultAddress(member.getId());
 
 		Address newDefaultAddress = addressRepository.findById(addressId)
 			.orElseThrow(() -> new CustomException(ErrorCode.ADDRESS_NOT_FOUND));
 
 		newDefaultAddress.setAsDefault();
-		return newDefaultAddress.getId();
+		return newDefaultAddress;
 	}
 
 	@Override
-	public List<AddressResponse> getMyAddresses(Member member) {
-		List<Address> addressList = addressRepository.findByMemberId(member.getId());
-
-		return addressList.stream()
-			.map(AddressResponse::from)
-			.toList();
+	public List<Address> getMyAddresses(Member member) {
+		return addressRepository.findByMemberId(member.getId());
 	}
 
 	@Override
-	public AddressResponse getAddress(Long addressId) throws CustomException {
-		Address address = addressRepository.findById(addressId)
+	public Address getAddress(Long addressId) throws CustomException {
+		return addressRepository.findById(addressId)
 			.orElseThrow(() -> new CustomException(ErrorCode.ADDRESS_NOT_FOUND));
-
-		return AddressResponse.from(address);
 	}
 
 	@Override
 	@Transactional
-	public Long updateAddress(Long addressId, UpdateAddressRequest request) throws CustomException {
+	public Address updateAddress(Long addressId, UpdateAddressRequest request) throws CustomException {
 		Address address = addressRepository.findById(addressId)
 			.orElseThrow(() -> new CustomException(ErrorCode.ADDRESS_NOT_FOUND));
 
 		address.update(request);
-		return addressId;
+		return address;
 	}
 
 	private void unsetDefaultAddress(Long memberId) {

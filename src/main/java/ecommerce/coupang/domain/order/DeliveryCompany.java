@@ -12,5 +12,5 @@ public enum DeliveryCompany {
 	HANHWA("힌화 택배"),
 	KOR("우체국 택배");
 
-	private final String name;
+	private final String displayName;
 }

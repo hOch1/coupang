@@ -93,9 +93,9 @@ class AuthServiceImplTest {
 		when(passwordEncoder.encode(request.getPassword())).thenReturn(encodedPassword);
 		when(memberRepository.save(any(Member.class))).thenReturn(mockMember);
 
-		Long saveId = authService.signup(request);
+		Member saveMember = authService.signup(request);
 
-		assertThat(saveId).isEqualTo(mockMember.getId());
+		assertThat(saveMember.getId()).isEqualTo(mockMember.getId());
 		verify(memberRepository).save(any(Member.class));
 	}
 

@@ -10,5 +10,5 @@ public enum DeliveryStatus {
 	PROGRESS("배송 진행중"),
 	COMPLETE("배송 완료");
 
-	private final String name;
+	private final String displayName;
 }
