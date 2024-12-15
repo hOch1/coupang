@@ -28,6 +28,7 @@ public class ProductDetail {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "product_detail_id")
 	private Long id;
 
 	@Column(name = "price", nullable = false)
@@ -45,7 +46,7 @@ public class ProductDetail {
 	private Product product;
 
 	@OneToMany(mappedBy = "productDetail", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ProductOptionValue> productOptionValues;
+	private List<ProductOption> productOptions;
 
 	public ProductDetail(int price, int stockQuantity, ProductStatus status, Product product) {
 		this.price = price;

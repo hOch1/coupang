@@ -6,6 +6,7 @@ import java.util.List;
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Address;
 import ecommerce.coupang.domain.member.Member;
+import ecommerce.coupang.dto.request.order.CreateOrderRequest;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,6 +35,7 @@ public class Order extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "order_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -61,8 +63,7 @@ public class Order extends BaseTimeEntity {
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderItem> orderItems = new ArrayList<>();
 
-	public Order(Member member, Address address, Payment payment, OrderStatus status, int totalPrice, String orderMessage,
-		List<OrderItem> orderItems) {
+	public Order(Member member, Address address, Payment payment, OrderStatus status, int totalPrice, String orderMessage) {
 
 		this.member = member;
 		this.address = address;
@@ -70,6 +71,16 @@ public class Order extends BaseTimeEntity {
 		this.status = status;
 		this.totalPrice = totalPrice;
 		this.orderMessage = orderMessage;
-		this.orderItems = orderItems;
+	}
+
+	public static Order createByProduct(CreateOrderRequest request, Member member, Address address) {
+		return new Order(
+			member,
+			address,
+			request.getPayment(),
+			(request.getPayment().equals(Payment.TRANSFER) ? OrderStatus.PENDING : OrderStatus.PAID),
+			0,
+			request.getOrderMessage()
+		);
 	}
 }

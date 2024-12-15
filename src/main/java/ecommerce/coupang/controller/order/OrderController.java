@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.dto.request.order.CreateOrderRequest;
 import ecommerce.coupang.dto.response.order.OrderResponse;
+import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.order.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,7 +35,7 @@ public class OrderController {
 	@Operation(summary = "상품 주문 API", description = "상품을 직접 주문합니다 ")
 	public ResponseEntity<Void> createOrderByProduct(
 		@RequestBody CreateOrderRequest request,
-		@AuthenticationPrincipal CustomUserDetails userDetails) {
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		orderService.createOrderByProduct(request, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.CREATED).build();

@@ -24,6 +24,7 @@ public class Delivery extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "delivery_id")
 	private Long id;
 
 	@OneToOne(fetch = FetchType.LAZY)

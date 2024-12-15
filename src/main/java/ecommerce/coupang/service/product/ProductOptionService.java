@@ -5,7 +5,7 @@ import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.product.OptionValue;
 import ecommerce.coupang.domain.product.ProductDetail;
-import ecommerce.coupang.domain.product.ProductOptionValue;
+import ecommerce.coupang.domain.product.ProductOption;
 import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("ProductOptionService")
@@ -19,5 +19,5 @@ public interface ProductOptionService {
 	 * @throws CustomException
 	 */
 	@LogAction("상품 옶션 저장")
-	ProductOptionValue save(OptionValue optionValue, ProductDetail productDetail) throws CustomException;
+	ProductOption save(OptionValue optionValue, ProductDetail productDetail) throws CustomException;
 }

@@ -4,12 +4,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.domain.product.OptionValue;
-import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.ProductDetail;
-import ecommerce.coupang.domain.product.ProductOptionValue;
-import ecommerce.coupang.dto.request.product.CreateProductRequest;
+import ecommerce.coupang.domain.product.ProductOption;
 import ecommerce.coupang.exception.CustomException;
-import ecommerce.coupang.repository.product.ProductOptionValueRepository;
+import ecommerce.coupang.repository.product.ProductOptionRepository;
 import ecommerce.coupang.service.product.ProductOptionService;
 import lombok.RequiredArgsConstructor;
 
@@ -18,13 +16,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductOptionServiceImpl implements ProductOptionService {
 
-	private final ProductOptionValueRepository productOptionValueRepository;
+	private final ProductOptionRepository productOptionRepository;
 
 	@Override
 	@Transactional
-	public ProductOptionValue save(OptionValue optionValue, ProductDetail productDetail) throws CustomException {
-		ProductOptionValue productOptionValue = ProductOptionValue.create(optionValue, productDetail);
+	public ProductOption save(OptionValue optionValue, ProductDetail productDetail) throws CustomException {
+		ProductOption productOption = ProductOption.create(optionValue, productDetail);
 
-		return productOptionValueRepository.save(productOptionValue);
+		return productOptionRepository.save(productOption);
 	}
 }

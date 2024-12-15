@@ -6,6 +6,7 @@ import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.ProductDetail;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
+import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("ProductDetailService")
 public interface ProductDetailService {
@@ -18,4 +19,6 @@ public interface ProductDetailService {
 	 */
 	@LogAction("상품 상세 저장")
 	ProductDetail save(CreateProductRequest.CreateDetailRequest request, Product product);
+
+	ProductDetail getProductDetail(Long productDetailId) throws CustomException;
 }

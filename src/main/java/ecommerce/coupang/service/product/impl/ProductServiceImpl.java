@@ -41,7 +41,7 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	@Transactional
-	public Product createProduct(CreateProductRequest request, Member member) throws CustomException {
+	public Product save(CreateProductRequest request, Member member) throws CustomException {
 		Category category = categoryService.findBottomCategory(request.getCategoryId());
 		Store store = storeService.findStore(request.getStoreId());
 

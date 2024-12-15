@@ -1,6 +1,6 @@
 package ecommerce.coupang.domain.product;
 
-import ecommerce.coupang.dto.request.product.CreateProductRequest;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -17,10 +17,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ProductOptionValue {
+public class ProductOption {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "product_option_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -31,13 +32,13 @@ public class ProductOptionValue {
 	@JoinColumn(name = "option_value_id", nullable = false)
 	private OptionValue optionValue;
 
-	public ProductOptionValue(OptionValue optionValue, ProductDetail productDetail) {
+	public ProductOption(OptionValue optionValue, ProductDetail productDetail) {
 		this.optionValue = optionValue;
 		this.productDetail = productDetail;
 	}
 
-	public static ProductOptionValue create(OptionValue optionValue, ProductDetail productDetail) {
-		return new ProductOptionValue(
+	public static ProductOption create(OptionValue optionValue, ProductDetail productDetail) {
+		return new ProductOption(
 			optionValue,
 			productDetail
 		);

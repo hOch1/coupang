@@ -23,6 +23,7 @@ public class CategoryOption {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "category_option_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)

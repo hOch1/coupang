@@ -2,6 +2,7 @@ package ecommerce.coupang.domain.cart;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.product.Product;
+import ecommerce.coupang.domain.product.ProductDetail;
 import ecommerce.coupang.dto.request.cart.AddCartRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
@@ -26,11 +27,12 @@ public class CartItem extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "cart_item_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_id", nullable = false)
-	private Product product;
+	@JoinColumn(name = "product_detail_id", nullable = false)
+	private ProductDetail productDetail;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cart_id", nullable = false)
@@ -39,15 +41,15 @@ public class CartItem extends BaseTimeEntity {
 	@Column(name = "quantity", nullable = false)
 	private int quantity;
 
-	public CartItem(Product product, Cart cart, int quantity) {
-		this.product = product;
+	public CartItem(ProductDetail productDetail, Cart cart, int quantity) {
+		this.productDetail = productDetail;
 		this.cart = cart;
 		this.quantity = quantity;
 	}
 
-	public static CartItem create(Cart cart, Product product, int quantity) {
+	public static CartItem create(Cart cart, ProductDetail productDetail, int quantity) {
 		return new CartItem(
-			product,
+			productDetail,
 			cart,
 			quantity
 		);

@@ -5,10 +5,16 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ecommerce.coupang.domain.cart.CartItem;
+import ecommerce.coupang.domain.member.Address;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.order.Order;
+import ecommerce.coupang.domain.order.OrderItem;
 import ecommerce.coupang.dto.request.order.CreateOrderRequest;
+import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.repository.order.OrderRepository;
+import ecommerce.coupang.service.member.AddressService;
+import ecommerce.coupang.service.order.OrderItemService;
 import ecommerce.coupang.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 
@@ -18,14 +24,22 @@ import lombok.RequiredArgsConstructor;
 public class OrderServiceImpl implements OrderService {
 
 	private final OrderRepository orderRepository;
+	private final OrderItemService orderItemService;
+	private final AddressService addressService;
 
 	@Override
-	public Order createOrderByProduct(CreateOrderRequest request, Member member) {
-		return null;
+	public Order createOrderByProduct(CreateOrderRequest request, Member member) throws CustomException {
+		Address address = addressService.getAddress(request.getAddressId());
+		Order order = Order.createByProduct(request, member, address);
+		Order saveOrder = orderRepository.save(order);
+
+		orderItemService.save(saveOrder, request);
+		return saveOrder;
 	}
 
 	@Override
 	public Order createOrderByCart(Member member) {
+
 		return null;
 	}
 

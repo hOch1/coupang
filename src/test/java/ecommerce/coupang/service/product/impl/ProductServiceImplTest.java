@@ -1,10 +1,8 @@
 package ecommerce.coupang.service.product.impl;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -20,7 +18,6 @@ import ecommerce.coupang.domain.product.Category;
 import ecommerce.coupang.domain.product.OptionValue;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.ProductDetail;
-import ecommerce.coupang.domain.product.ProductOptionValue;
 import ecommerce.coupang.domain.product.ProductStatus;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.exception.CustomException;

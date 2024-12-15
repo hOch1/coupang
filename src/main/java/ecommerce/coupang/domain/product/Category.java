@@ -28,10 +28,14 @@ public class Category {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "category_id")
 	private Long id;
 
 	@Column(name = "type", nullable = false, unique = true)
 	private String type;
+
+	@Column(name = "name", nullable = false, unique = true)
+	private String name;
 
 	@Column(name = "level", nullable = false)
 	private int level;

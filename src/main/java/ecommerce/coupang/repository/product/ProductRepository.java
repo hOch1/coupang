@@ -48,7 +48,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 */
 	@Query("SELECT p FROM Product p "
 		+ "JOIN p.productDetails pd "
-		+ "JOIN pd.productOptionValues pov "
+		+ "JOIN pd.productOptions pov "
 		+ "WHERE p.category IN :categories "
 		+ "AND pov.optionValue IN :optionValues "
 		+ "ORDER BY p.createdAt DESC")
@@ -62,7 +62,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 */
 	@Query("SELECT p FROM Product p "
 		+ "JOIN p.productDetails pd "
-		+ "JOIN pd.productOptionValues pov "
+		+ "JOIN pd.productOptions pov "
 		+ "WHERE p.store.id = :storeId "
 		+ "AND pov.optionValue IN :optionValues "
 		+ "ORDER BY p.createdAt DESC")
@@ -77,7 +77,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 */
 	@Query("SELECT p FROM Product p "
 		+ "JOIN p.productDetails pd "
-		+ "JOIN pd.productOptionValues pov"
+		+ "JOIN pd.productOptions pov"
 		+ " WHERE p.category IN :categories "
 		+ "AND p.store.id = :storeId "
 		+ "AND pov.optionValue IN :optionValues "

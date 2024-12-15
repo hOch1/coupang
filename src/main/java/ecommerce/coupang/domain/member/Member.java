@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.cart.Cart;
 import ecommerce.coupang.dto.request.auth.SignupRequest;
+import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.exception.ErrorCode;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,6 +35,7 @@ public class Member extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "member_id")
 	private Long id;
 
 	@Column(name = "name", nullable = false)
@@ -55,7 +58,7 @@ public class Member extends BaseTimeEntity {
 	private boolean isActive;
 
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Address> addresses;
+	private List<Address> addresses = new ArrayList<>();
 
 	@OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Cart cart;
@@ -76,7 +79,7 @@ public class Member extends BaseTimeEntity {
 			request.getPhoneNumber(),
 			request.getEmail(),
 			passwordEncoder.encode(request.getPassword()),
-			MemberRole.USER,
+			request.getRole(),
 			true,
 			new ArrayList<>()
 		);
@@ -84,6 +87,13 @@ public class Member extends BaseTimeEntity {
 		Cart cart = Cart.create(member);
 		member.setCart(cart);
 		return member;
+	}
+
+	public void changeRoleSeller() throws CustomException {
+		if (this.role.equals(MemberRole.SELLER))
+			throw new CustomException(ErrorCode.ALREADY_ROLE_SELLER);
+
+		this.role = MemberRole.SELLER;
 	}
 
 	private void setCart(Cart cart) {

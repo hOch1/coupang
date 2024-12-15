@@ -1,6 +1,8 @@
 package ecommerce.coupang.domain.order;
 
 import ecommerce.coupang.domain.product.Product;
+import ecommerce.coupang.domain.product.ProductDetail;
+import ecommerce.coupang.dto.request.order.CreateOrderRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,6 +25,7 @@ public class OrderItem {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "order_item_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -43,6 +46,24 @@ public class OrderItem {
 	private int totalPrice;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "delivery_id", nullable = false)
+	@JoinColumn(name = "delivery_id")
 	private Delivery delivery;
+
+	public OrderItem(Order order, Product product, int price, int quantity, int totalPrice) {
+		this.order = order;
+		this.product = product;
+		this.price = price;
+		this.quantity = quantity;
+		this.totalPrice = totalPrice;
+	}
+
+	public static OrderItem create(Order order, ProductDetail productDetail, CreateOrderRequest request) {
+		return new OrderItem(
+			order,
+			productDetail.getProduct(),
+			productDetail.getPrice(),
+			request.getQuantity(),
+			productDetail.getPrice() * request.getQuantity()
+		);
+	}
 }

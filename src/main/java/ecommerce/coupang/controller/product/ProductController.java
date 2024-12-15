@@ -39,7 +39,7 @@ public class ProductController {
 		@RequestBody CreateProductRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		productService.createProduct(request, userDetails.getMember());
+		productService.save(request, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
