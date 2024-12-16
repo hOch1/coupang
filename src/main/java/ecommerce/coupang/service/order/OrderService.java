@@ -44,7 +44,7 @@ public interface OrderService {
 	 * @return 주문 내역
 	 */
 	@LogAction("주문 상세 조회")
-	Order findOrder(Long orderId, Member member);
+	Order findOrder(Long orderId, Member member) throws CustomException;
 
 	/**
 	 * 주문 취소
@@ -53,5 +53,5 @@ public interface OrderService {
 	 * @return 취소한 주문 ID
 	 */
 	@LogAction("주문 취소")
-	Long cancelOrder(Long orderId, Member member);
+	Order cancelOrder(Long orderId, Member member) throws CustomException;
 }

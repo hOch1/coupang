@@ -7,6 +7,8 @@ import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Address;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.dto.request.order.CreateOrderRequest;
+import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.exception.ErrorCode;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -64,7 +66,6 @@ public class Order extends BaseTimeEntity {
 	private List<OrderItem> orderItems = new ArrayList<>();
 
 	public Order(Member member, Address address, Payment payment, OrderStatus status, int totalPrice, String orderMessage) {
-
 		this.member = member;
 		this.address = address;
 		this.payment = payment;
@@ -82,5 +83,14 @@ public class Order extends BaseTimeEntity {
 			0,
 			request.getOrderMessage()
 		);
+	}
+
+	public void cancel() throws CustomException {
+		for (OrderItem orderItem : this.orderItems) {
+			if (!orderItem.getDelivery().getDeliveryStatus().equals(DeliveryStatus.PENDING))
+				throw new CustomException(ErrorCode.ALREADY_DELIVERY_START);
+		}
+
+		this.status = OrderStatus.CANCELLED;
 	}
 }

@@ -12,6 +12,7 @@ import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.domain.order.OrderItem;
 import ecommerce.coupang.dto.request.order.CreateOrderRequest;
 import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.order.OrderRepository;
 import ecommerce.coupang.service.member.AddressService;
 import ecommerce.coupang.service.order.OrderItemService;
@@ -45,16 +46,29 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public List<Order> findOrders(Member member) {
-		return List.of();
+		return orderRepository.findByMember(member);
 	}
 
 	@Override
-	public Order findOrder(Long orderId, Member member) {
-		return null;
+	public Order findOrder(Long orderId, Member member) throws CustomException {
+		Order order = orderRepository.findById(orderId).orElseThrow(() ->
+			new CustomException(ErrorCode.ORDER_NOT_FOUND));
+
+		if (!order.getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
+
+		return order;
 	}
 
 	@Override
-	public Long cancelOrder(Long orderId, Member member) {
-		return 0L;
+	public Order cancelOrder(Long orderId, Member member) throws CustomException {
+		Order order = orderRepository.findById(orderId).orElseThrow(() ->
+			new CustomException(ErrorCode.ORDER_NOT_FOUND));
+
+		if (!order.getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
+
+		order.cancel();
+		return order;
 	}
 }

@@ -14,6 +14,7 @@ public enum ErrorCode {
 	STORE_NOT_FOUND(404, "가게를 찾을 수 없습니다."),
 	OPTION_VALUE_NOT_FOUND(404, "옵션을 찾을 수 없습니다."),
 	CART_ITEM_NOT_FOUND(404, "장바구니에 상품을 찾을 수 없습니다,"),
+	ORDER_NOT_FOUND(404, "주문을 찾을 수 없습니다."),
 
 	PASSWORD_NOT_MATCHED(400, "비밀번호가 맞지 앉습니다."),
 	ALREADY_EXITS_EMAIL(400, "중복된 이메일 입니다."),
@@ -26,7 +27,8 @@ public enum ErrorCode {
 	FORBIDDEN(401, "권한이 없습니다."),
 
 	CART_NOT_FOUND(500, "장바구니를 찾을 수 없습니다."),
-	NOT_ENOUGH_QUANTITY(500, "재고가 부족합니다.")
+	NOT_ENOUGH_QUANTITY(500, "재고가 부족합니다."),
+	ALREADY_DELIVERY_START(500, "이미 배송이 시작되었습니다.")
 
 
 	;

@@ -62,7 +62,8 @@ public class OrderController {
 	@Operation(summary = "주문 상세 조회 API", description = "주문 상세 내역을 조회합니다.")
 	public ResponseEntity<OrderResponse> findOrder(
 		@PathVariable Long orderId,
-		@AuthenticationPrincipal CustomUserDetails userDetails) {
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
+
 		Order order = orderService.findOrder(orderId, userDetails.getMember());
 		return ResponseEntity.ok(null);
 	}
@@ -71,7 +72,7 @@ public class OrderController {
 	@Operation(summary = "주문 취소 API", description = "주문을 취소합니다.")
 	public ResponseEntity<Void> cancelOrder(
 		@PathVariable Long orderId,
-		@AuthenticationPrincipal CustomUserDetails userDetails) {
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		orderService.cancelOrder(orderId, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

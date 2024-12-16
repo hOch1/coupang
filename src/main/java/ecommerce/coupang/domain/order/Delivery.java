@@ -1,6 +1,7 @@
 package ecommerce.coupang.domain.order;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
+import ecommerce.coupang.domain.member.Store;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -10,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -31,6 +33,10 @@ public class Delivery extends BaseTimeEntity {
 	@JoinColumn(name = "order_item_id", nullable = false)
 	private OrderItem orderItem;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "store_id", nullable = false)
+	private Store store;
+
 	@Enumerated(EnumType.STRING)
 	@Column(name = "delivery_status", nullable = false)
 	private DeliveryStatus deliveryStatus;
@@ -42,10 +48,15 @@ public class Delivery extends BaseTimeEntity {
 	@Column(name = "code")
 	private String code;
 
-	public Delivery(OrderItem orderItem, DeliveryStatus deliveryStatus, DeliveryCompany deliveryCompany, String code) {
+	public Delivery(OrderItem orderItem, Store store, DeliveryStatus deliveryStatus, DeliveryCompany deliveryCompany, String code) {
 		this.orderItem = orderItem;
+		this.store = store;
 		this.deliveryStatus = deliveryStatus;
 		this.deliveryCompany = deliveryCompany;
 		this.code = code;
+	}
+
+	public static Delivery create() {
+
 	}
 }
