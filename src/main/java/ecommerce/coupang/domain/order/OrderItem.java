@@ -58,8 +58,7 @@ public class OrderItem {
 		this.totalPrice = totalPrice;
 	}
 
-	public static OrderItem create(Order order, ProductDetail productDetail, CreateOrderRequest request) throws
-		CustomException {
+	public static OrderItem create(Order order, ProductDetail productDetail, CreateOrderRequest request) throws CustomException {
 		productDetail.order(request.getQuantity());
 
 		return new OrderItem(
@@ -69,5 +68,9 @@ public class OrderItem {
 			request.getQuantity(),
 			productDetail.getPrice() * request.getQuantity()
 		);
+	}
+
+	public void setDelivery(Delivery delivery) {
+		this.delivery = delivery;
 	}
 }

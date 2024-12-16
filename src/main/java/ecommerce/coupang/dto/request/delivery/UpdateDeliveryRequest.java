@@ -6,9 +6,8 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CreateDeliveryRequest {
+public class UpdateDeliveryRequest {
 
-	private final Long storeId;
 	private final DeliveryCompany deliveryCompany;
 	private final String code;
 }

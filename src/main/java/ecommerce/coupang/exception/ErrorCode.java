@@ -15,6 +15,7 @@ public enum ErrorCode {
 	OPTION_VALUE_NOT_FOUND(404, "옵션을 찾을 수 없습니다."),
 	CART_ITEM_NOT_FOUND(404, "장바구니에 상품을 찾을 수 없습니다,"),
 	ORDER_NOT_FOUND(404, "주문을 찾을 수 없습니다."),
+	DELIVERY_NOT_FOUND(404, "배송 정보를 찾을 수 없습니다."),
 
 	PASSWORD_NOT_MATCHED(400, "비밀번호가 맞지 앉습니다."),
 	ALREADY_EXITS_EMAIL(400, "중복된 이메일 입니다."),

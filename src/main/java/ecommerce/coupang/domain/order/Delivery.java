@@ -2,6 +2,7 @@ package ecommerce.coupang.domain.order;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Store;
+import ecommerce.coupang.dto.request.delivery.UpdateDeliveryRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -42,21 +43,25 @@ public class Delivery extends BaseTimeEntity {
 	private DeliveryStatus deliveryStatus;
 
 	@Enumerated(EnumType.STRING)
-	@Column(name = "delivery_company", nullable = false)
+	@Column(name = "delivery_company")
 	private DeliveryCompany deliveryCompany;
 
 	@Column(name = "code")
 	private String code;
 
-	public Delivery(OrderItem orderItem, Store store, DeliveryStatus deliveryStatus, DeliveryCompany deliveryCompany, String code) {
-		this.orderItem = orderItem;
+	public Delivery(OrderItem orderItem, Store store) {
 		this.store = store;
-		this.deliveryStatus = deliveryStatus;
-		this.deliveryCompany = deliveryCompany;
-		this.code = code;
+		this.orderItem = orderItem;
+		this.deliveryStatus = DeliveryStatus.PENDING;
+		orderItem.setDelivery(this);
 	}
 
-	public static Delivery create() {
+	public static Delivery create(OrderItem orderItem) {
+		return new Delivery(orderItem, orderItem.getProduct().getStore());
+	}
 
+	public void setCompanyInfo(UpdateDeliveryRequest request) {
+		this.deliveryCompany = request.getDeliveryCompany();
+		this.code = request.getCode();
 	}
 }

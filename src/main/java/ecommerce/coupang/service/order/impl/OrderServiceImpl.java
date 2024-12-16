@@ -14,6 +14,7 @@ import ecommerce.coupang.dto.request.order.CreateOrderRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.order.OrderRepository;
+import ecommerce.coupang.service.delivery.DeliveryService;
 import ecommerce.coupang.service.member.AddressService;
 import ecommerce.coupang.service.order.OrderItemService;
 import ecommerce.coupang.service.order.OrderService;
@@ -27,14 +28,17 @@ public class OrderServiceImpl implements OrderService {
 	private final OrderRepository orderRepository;
 	private final OrderItemService orderItemService;
 	private final AddressService addressService;
+	private final DeliveryService deliveryService;
 
 	@Override
+	@Transactional
 	public Order createOrderByProduct(CreateOrderRequest request, Member member) throws CustomException {
 		Address address = addressService.getAddress(request.getAddressId());
 		Order order = Order.createByProduct(request, member, address);
 		Order saveOrder = orderRepository.save(order);
 
-		orderItemService.save(saveOrder, request);
+		OrderItem orderItem = orderItemService.save(saveOrder, request);
+		deliveryService.createDelivery(orderItem);
 		return saveOrder;
 	}
 

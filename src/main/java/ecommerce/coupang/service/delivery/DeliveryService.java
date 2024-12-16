@@ -1,12 +1,25 @@
 package ecommerce.coupang.service.delivery;
 
+import java.util.List;
+
 import ecommerce.coupang.aop.log.LogLevel;
+import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.member.Store;
 import ecommerce.coupang.domain.order.Delivery;
 import ecommerce.coupang.domain.order.OrderItem;
+import ecommerce.coupang.dto.request.delivery.UpdateDeliveryRequest;
+import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("DeliveryService")
 public interface DeliveryService {
 
-	Delivery createDelivery(OrderItem orderItem, Store store);
+	Delivery createDelivery(OrderItem orderItem);
+
+	Delivery updateDelivery(UpdateDeliveryRequest request, Member member, Long deliveryId) throws CustomException;
+
+	Delivery findDelivery(Long deliveryId);
+
+	List<Delivery> findDeliveryByMember(Member member);
+
+	List<Delivery> findDeliveryByStore(Long StoreId);
 }
