@@ -35,6 +35,7 @@ public class ProductOption {
 	public ProductOption(OptionValue optionValue, ProductDetail productDetail) {
 		this.optionValue = optionValue;
 		this.productDetail = productDetail;
+		productDetail.getProductOptions().add(this);
 	}
 
 	public static ProductOption create(OptionValue optionValue, ProductDetail productDetail) {

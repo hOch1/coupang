@@ -59,12 +59,15 @@ public class ProductDetail {
 	}
 
 	public static ProductDetail create(CreateProductRequest.CreateDetailRequest request, Product product) {
-		return new ProductDetail(
+		ProductDetail productDetail = new ProductDetail(
 			request.getPrice(),
 			request.getStockQuantity(),
 			request.getStatus(),
 			product
 		);
+
+		product.getProductDetails().add(productDetail);
+		return productDetail;
 	}
 
 	public void order(int quantity) throws CustomException {

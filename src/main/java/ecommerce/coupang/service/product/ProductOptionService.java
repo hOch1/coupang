@@ -13,11 +13,11 @@ public interface ProductOptionService {
 
 	/**
 	 * 상품 옵션 저장
-	 * @param optionValue 옵션 값
+	 * @param optionId 옵션 값 ID
 	 * @param productDetail 상품 상세
 	 * @return 저장된 상품 옵션
 	 * @throws CustomException
 	 */
 	@LogAction("상품 옶션 저장")
-	ProductOption createProductOption(OptionValue optionValue, ProductDetail productDetail) throws CustomException;
+	ProductOption createProductOption(Long optionId, ProductDetail productDetail) throws CustomException;
 }

@@ -83,11 +83,11 @@ class ProductServiceImplTest {
 		verify(storeService).findStore(storeId);
 		verify(productRepository).save(any(Product.class));  // 상품이 저장되어야 함
 		verify(productDetailService, times(request.getDetails().size()))
-			.createProductDetail(any(CreateProductRequest.CreateDetailRequest.class), eq(mockProduct));
+			.createProductDetail(any(CreateProductRequest.CreateDetailRequest.class), mockProduct);
 		verify(optionValueService, times(request.getDetails().get(0).getOptions().size()))
 			.findOptionValue(any());
 		verify(productOptionService, times(request.getDetails().get(0).getOptions().size()))
-			.createProductOption(any(OptionValue.class), eq(mockProductDetail));  // 옵션이 저장되어야 함
+			.createProductOption(anyLong(), eq(mockProductDetail));  // 옵션이 저장되어야 함
 
 		assertNotNull(result);
 	}

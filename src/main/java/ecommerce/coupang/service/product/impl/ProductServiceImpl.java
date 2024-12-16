@@ -33,11 +33,11 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductServiceImpl implements ProductService {
 
 	private final ProductRepository productRepository;
+	private final ProductDetailService productDetailService;
 	private final CategoryService categoryService;
 	private final ProductOptionService productOptionService;
 	private final StoreService storeService;
 	private final OptionValueService optionValueService;
-	private final ProductDetailService productDetailService;
 
 	@Override
 	@Transactional
@@ -45,15 +45,17 @@ public class ProductServiceImpl implements ProductService {
 		Category category = categoryService.findBottomCategory(request.getCategoryId());
 		Store store = storeService.findStore(request.getStoreId());
 
-		Product product = productRepository.save(Product.create(request, store, category));
+		if (!store.getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
 
-		for (CreateProductRequest.CreateDetailRequest detail : request.getDetails()) {
-			ProductDetail productDetail = productDetailService.createProductDetail(detail, product);
+		Product product = Product.create(request, store, category);
+		productRepository.save(product);
 
-			for (Long option : detail.getOptions()) {
-				OptionValue optionValue = optionValueService.findOptionValue(option);
-				productOptionService.createProductOption(optionValue, productDetail);
-			}
+		for (CreateProductRequest.CreateDetailRequest detailRequest : request.getDetails()) {
+			ProductDetail productDetail = productDetailService.createProductDetail(detailRequest, product);
+
+			for (Long optionId : detailRequest.getOptions())
+				productOptionService.createProductOption(optionId, productDetail);
 		}
 
 		return product;
