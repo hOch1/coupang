@@ -1,8 +1,11 @@
 package ecommerce.coupang.domain.product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
+import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.exception.ErrorCode;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,7 +49,7 @@ public class ProductDetail {
 	private Product product;
 
 	@OneToMany(mappedBy = "productDetail", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ProductOption> productOptions;
+	private List<ProductOption> productOptions = new ArrayList<>();
 
 	public ProductDetail(int price, int stockQuantity, ProductStatus status, Product product) {
 		this.price = price;
@@ -62,5 +65,12 @@ public class ProductDetail {
 			request.getStatus(),
 			product
 		);
+	}
+
+	public void order(int quantity) throws CustomException {
+		if (this.stockQuantity - quantity < 0)
+			throw new CustomException(ErrorCode.NOT_ENOUGH_QUANTITY);
+
+		this.stockQuantity -= quantity;
 	}
 }

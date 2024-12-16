@@ -71,7 +71,7 @@ class ProductServiceImplTest {
 		when(categoryService.findBottomCategory(categoryId)).thenReturn(mockCategory);
 		when(storeService.findStore(storeId)).thenReturn(mockStore);
 		when(productRepository.save(any(Product.class))).thenReturn(mockProduct);
-		when(productDetailService.save(any(CreateProductRequest.CreateDetailRequest.class), eq(mockProduct)))
+		when(productDetailService.createProductDetail(any(CreateProductRequest.CreateDetailRequest.class), eq(mockProduct)))
 			.thenReturn(mockProductDetail);
 		when(optionValueService.findOptionValue(anyLong())).thenReturn(mockOptionValue);
 
@@ -83,11 +83,11 @@ class ProductServiceImplTest {
 		verify(storeService).findStore(storeId);
 		verify(productRepository).save(any(Product.class));  // 상품이 저장되어야 함
 		verify(productDetailService, times(request.getDetails().size()))
-			.save(any(CreateProductRequest.CreateDetailRequest.class), eq(mockProduct));
+			.createProductDetail(any(CreateProductRequest.CreateDetailRequest.class), eq(mockProduct));
 		verify(optionValueService, times(request.getDetails().get(0).getOptions().size()))
 			.findOptionValue(any());
 		verify(productOptionService, times(request.getDetails().get(0).getOptions().size()))
-			.save(any(OptionValue.class), eq(mockProductDetail));  // 옵션이 저장되어야 함
+			.createProductOption(any(OptionValue.class), eq(mockProductDetail));  // 옵션이 저장되어야 함
 
 		assertNotNull(result);
 	}

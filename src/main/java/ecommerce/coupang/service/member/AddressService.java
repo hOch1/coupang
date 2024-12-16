@@ -8,7 +8,6 @@ import ecommerce.coupang.domain.member.Address;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.dto.request.member.AddAddressRequest;
 import ecommerce.coupang.dto.request.member.UpdateAddressRequest;
-import ecommerce.coupang.dto.response.member.AddressResponse;
 import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("AddressService")

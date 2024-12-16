@@ -26,6 +26,7 @@ public enum ErrorCode {
 	FORBIDDEN(401, "권한이 없습니다."),
 
 	CART_NOT_FOUND(500, "장바구니를 찾을 수 없습니다."),
+	NOT_ENOUGH_QUANTITY(500, "재고가 부족합니다.")
 
 
 	;

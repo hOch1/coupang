@@ -21,7 +21,7 @@ public interface ProductService {
 	 * @throws CustomException
 	 */
 	@LogAction("상품 등록")
-	Product save(CreateProductRequest request, Member member) throws CustomException;
+	Product createProduct(CreateProductRequest request, Member member) throws CustomException;
 
 	/**
 	 * 상품 정보 변경
@@ -39,7 +39,7 @@ public interface ProductService {
 	 * @return 상품 리스트
 	 */
 	@LogAction("상품 목록 조회 - 카테고리")
-	List<Product> getProductsByCategory(Long categoryId) throws CustomException;
+	List<Product> findProductsByCategory(Long categoryId) throws CustomException;
 
 	/**
 	 * 카테고리 + 옵션별 상품 조회 (하위 카테고리 포함)
@@ -49,7 +49,7 @@ public interface ProductService {
 	 * @return 상품 리스트
 	 */
 	@LogAction("상품 목록 조회 카테고리 + 옵션")
-	List<Product> getProductsByCategoryAndOptions(Long categoryId, List<Long> options) throws
+	List<Product> findProductsByCategoryAndOptions(Long categoryId, List<Long> options) throws
 		CustomException;
 
 	/**
@@ -59,7 +59,7 @@ public interface ProductService {
 	 * @return 상품 리스트
 	 */
 	@LogAction("상품 목록 조회 - 상점")
-	List<Product> getProductsByStore(Long storeId) throws CustomException;
+	List<Product> findProductsByStore(Long storeId) throws CustomException;
 
 	/**
 	 * 상점 + 옵션별 상품 조회
@@ -69,7 +69,7 @@ public interface ProductService {
 	 * @return 상품 리스트
 	 */
 	@LogAction("상품 목록 조회 - 상점 + 옵션")
-	List<Product> getProductsByStoreAndOptions(Long storeId, List<Long> options) throws CustomException;
+	List<Product> findProductsByStoreAndOptions(Long storeId, List<Long> options) throws CustomException;
 
 	/**
 	 * 상점 + 카테고리 별 상품 조회 (하위 카테고리 포함)
@@ -78,7 +78,7 @@ public interface ProductService {
 	 * @return 상품 리스트
 	 */
 	@LogAction("상품 목록 조회 - 상점 + 카테고리")
-	List<Product> getProductsByStoreAndCategory(Long storeId, Long categoryId) throws CustomException;
+	List<Product> findProductsByStoreAndCategory(Long storeId, Long categoryId) throws CustomException;
 
 	/**
 	 * 상점 + 카테고리 + 옵션별 상품 조회 (하위 카테고리 포함)
@@ -88,7 +88,7 @@ public interface ProductService {
 	 * @return 상품 리스트
 	 */
 	@LogAction("상품 목록 조회 - 상점 + 카테고리 + 옵션")
-	List<Product> getProductsByStoreAndCategoryAndOptions(Long storeId, Long categoryId, List<Long> options) throws
+	List<Product> findProductsByStoreAndCategoryAndOptions(Long storeId, Long categoryId, List<Long> options) throws
 		CustomException;
 
 	/**
@@ -98,5 +98,5 @@ public interface ProductService {
 	 * @return 상품 상세 조회정보
 	 */
 	@LogAction("상품 상세 조회")
-	Product getProductById(Long productId) throws CustomException;
+	Product findProduct(Long productId) throws CustomException;
 }

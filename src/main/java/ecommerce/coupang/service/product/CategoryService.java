@@ -5,7 +5,6 @@ import java.util.List;
 import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.product.Category;
-import ecommerce.coupang.dto.response.product.CategoryResponse;
 import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("CategoryService")

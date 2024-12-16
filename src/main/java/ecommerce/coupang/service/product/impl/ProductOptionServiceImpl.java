@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ecommerce.coupang.domain.product.OptionValue;
 import ecommerce.coupang.domain.product.ProductDetail;
 import ecommerce.coupang.domain.product.ProductOption;
-import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.repository.product.ProductOptionRepository;
 import ecommerce.coupang.service.product.ProductOptionService;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,7 @@ public class ProductOptionServiceImpl implements ProductOptionService {
 
 	@Override
 	@Transactional
-	public ProductOption save(OptionValue optionValue, ProductDetail productDetail) throws CustomException {
+	public ProductOption createProductOption(OptionValue optionValue, ProductDetail productDetail) {
 		ProductOption productOption = ProductOption.create(optionValue, productDetail);
 
 		return productOptionRepository.save(productOption);

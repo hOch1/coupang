@@ -21,12 +21,12 @@ public class ProductDetailServiceImpl implements ProductDetailService {
 
 	@Override
 	@Transactional
-	public ProductDetail save(CreateProductRequest.CreateDetailRequest request, Product product) {
+	public ProductDetail createProductDetail(CreateProductRequest.CreateDetailRequest request, Product product) {
 		return productDetailRepository.save(ProductDetail.create(request, product));
 	}
 
 	@Override
-	public ProductDetail getProductDetail(Long productDetailId) throws CustomException {
+	public ProductDetail findProductDetail(Long productDetailId) throws CustomException {
 		return productDetailRepository.findById(productDetailId).orElseThrow(() ->
 			new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 	}

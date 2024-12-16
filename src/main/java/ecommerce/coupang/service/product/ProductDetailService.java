@@ -18,7 +18,7 @@ public interface ProductDetailService {
 	 * @return 저장한 상품 상세
 	 */
 	@LogAction("상품 상세 저장")
-	ProductDetail save(CreateProductRequest.CreateDetailRequest request, Product product);
+	ProductDetail createProductDetail(CreateProductRequest.CreateDetailRequest request, Product product);
 
-	ProductDetail getProductDetail(Long productDetailId) throws CustomException;
+	ProductDetail findProductDetail(Long productDetailId) throws CustomException;
 }

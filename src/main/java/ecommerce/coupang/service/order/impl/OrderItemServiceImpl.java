@@ -12,7 +12,6 @@ import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.repository.order.OrderItemRepository;
 import ecommerce.coupang.service.order.OrderItemService;
 import ecommerce.coupang.service.product.ProductDetailService;
-import ecommerce.coupang.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -24,8 +23,9 @@ public class OrderItemServiceImpl implements OrderItemService {
 	private final ProductDetailService productDetailService;
 
 	@Override
+	@Transactional
 	public OrderItem save(Order order, CreateOrderRequest request) throws CustomException {
-		ProductDetail productDetail = productDetailService.getProductDetail(request.getProductId());
+		ProductDetail productDetail = productDetailService.findProductDetail(request.getProductId());
 		OrderItem orderItem = OrderItem.create(order, productDetail, request);
 
 		return orderItemRepository.save(orderItem);

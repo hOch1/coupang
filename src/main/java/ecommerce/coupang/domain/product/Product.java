@@ -1,5 +1,6 @@
 package ecommerce.coupang.domain.product;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,7 +49,7 @@ public class Product extends BaseTimeEntity {
 	private Category category;
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ProductDetail> productDetails;
+	private List<ProductDetail> productDetails = new ArrayList<>();
 
 	public Product(String name, String description, Store store, Category category) {
 		this.name = name;

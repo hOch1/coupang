@@ -7,7 +7,6 @@ import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.dto.request.order.CreateOrderRequest;
-import ecommerce.coupang.dto.response.order.OrderResponse;
 import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("OrderService")

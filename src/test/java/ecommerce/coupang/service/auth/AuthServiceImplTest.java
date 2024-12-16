@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ecommerce.coupang.domain.member.Member;
+import ecommerce.coupang.domain.member.MemberRole;
 import ecommerce.coupang.dto.request.auth.LoginRequest;
 import ecommerce.coupang.dto.request.auth.SignupRequest;
 import ecommerce.coupang.dto.response.auth.LoginResponse;
@@ -85,7 +86,7 @@ class AuthServiceImplTest {
 	@Test
 	@DisplayName("회원가입 테스트 - 성공")
 	void signupSuccess() throws CustomException {
-		SignupRequest request = new SignupRequest("user1","010-0000-0000", "user1@example.com", "password");
+		SignupRequest request = new SignupRequest("user1","010-0000-0000", "user1@example.com", "password", MemberRole.USER);
 		String encodedPassword = "encodedPassword";
 		Member mockMember = mock(Member.class);
 
@@ -102,7 +103,7 @@ class AuthServiceImplTest {
 	@Test
 	@DisplayName("회원가입 테스트 - 실패 (이미 가입된 이메일)")
 	void signupFailExitsEmail() {
-		SignupRequest request = new SignupRequest("user1","010-0000-0000", "user1@example.com", "password");
+		SignupRequest request = new SignupRequest("user1","010-0000-0000", "user1@example.com", "password", MemberRole.USER);
 
 		when(memberRepository.existsByEmail(anyString())).thenReturn(true);
 
@@ -112,7 +113,7 @@ class AuthServiceImplTest {
 	@Test
 	@DisplayName("회원가입 테스트 - 실패 (이미 가입된 핸드폰 번호)")
 	void signupFailExitsPhoneNumber() {
-		SignupRequest request = new SignupRequest("user1","010-0000-0000", "user1@example.com", "password");
+		SignupRequest request = new SignupRequest("user1","010-0000-0000", "user1@example.com", "password", MemberRole.USER);
 
 		when(memberRepository.existsByPhoneNumber(anyString())).thenReturn(true);
 

@@ -41,18 +41,18 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	@Transactional
-	public Product save(CreateProductRequest request, Member member) throws CustomException {
+	public Product createProduct(CreateProductRequest request, Member member) throws CustomException {
 		Category category = categoryService.findBottomCategory(request.getCategoryId());
 		Store store = storeService.findStore(request.getStoreId());
 
 		Product product = productRepository.save(Product.create(request, store, category));
 
 		for (CreateProductRequest.CreateDetailRequest detail : request.getDetails()) {
-			ProductDetail productDetail = productDetailService.save(detail, product);
+			ProductDetail productDetail = productDetailService.createProductDetail(detail, product);
 
 			for (Long option : detail.getOptions()) {
 				OptionValue optionValue = optionValueService.findOptionValue(option);
-				productOptionService.save(optionValue, productDetail);
+				productOptionService.createProductOption(optionValue, productDetail);
 			}
 		}
 
@@ -60,13 +60,13 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> getProductsByCategory(Long categoryId) throws CustomException {
+	public List<Product> findProductsByCategory(Long categoryId) throws CustomException {
 		List<Category> categories = categoryService.findAllSubCategories(categoryId);
 		return productRepository.findByCategories(categories);
 	}
 
 	@Override
-	public List<Product> getProductsByCategoryAndOptions(Long categoryId, List<Long> options) throws CustomException {
+	public List<Product> findProductsByCategoryAndOptions(Long categoryId, List<Long> options) throws CustomException {
 		List<Category> categories = categoryService.findAllSubCategories(categoryId);
 		List<OptionValue> optionValues = new ArrayList<>();
 
@@ -77,14 +77,14 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> getProductsByStore(Long storeId) throws CustomException {
+	public List<Product> findProductsByStore(Long storeId) throws CustomException {
 		Store store = storeService.findStore(storeId);
 
 		return productRepository.findByStore(store.getId());
 	}
 
 	@Override
-	public List<Product> getProductsByStoreAndOptions(Long storeId, List<Long> options) throws CustomException {
+	public List<Product> findProductsByStoreAndOptions(Long storeId, List<Long> options) throws CustomException {
 		Store store = storeService.findStore(storeId);
 
 		List<OptionValue> optionValues = new ArrayList<>();
@@ -97,7 +97,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> getProductsByStoreAndCategory(Long storeId, Long categoryId) throws CustomException {
+	public List<Product> findProductsByStoreAndCategory(Long storeId, Long categoryId) throws CustomException {
 		List<Category> categories = categoryService.findAllSubCategories(categoryId);
 
 		Store store = storeService.findStore(storeId);
@@ -106,7 +106,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> getProductsByStoreAndCategoryAndOptions(Long storeId, Long categoryId,
+	public List<Product> findProductsByStoreAndCategoryAndOptions(Long storeId, Long categoryId,
 		List<Long> options) throws CustomException {
 
 		List<Category> categories = categoryService.findAllSubCategories(categoryId);
@@ -123,7 +123,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@Transactional
 	public Product updateProduct(UpdateProductRequest request, Long productId, Member member) throws CustomException {
-		Product product = getProductById(productId);
+		Product product = findProduct(productId);
 
 		validateProductUpdatePermission(product, member);
 
@@ -132,7 +132,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Product getProductById(Long productId) throws CustomException {
+	public Product findProduct(Long productId) throws CustomException {
 		return productRepository.findById(productId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 	}

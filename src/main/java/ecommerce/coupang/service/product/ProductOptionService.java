@@ -19,5 +19,5 @@ public interface ProductOptionService {
 	 * @throws CustomException
 	 */
 	@LogAction("상품 옶션 저장")
-	ProductOption save(OptionValue optionValue, ProductDetail productDetail) throws CustomException;
+	ProductOption createProductOption(OptionValue optionValue, ProductDetail productDetail) throws CustomException;
 }

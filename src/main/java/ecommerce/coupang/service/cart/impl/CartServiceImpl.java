@@ -36,7 +36,7 @@ public class CartServiceImpl implements CartService {
 		Cart cart = cartRepository.findByMember(member).orElseThrow(() ->
 			new CustomException(ErrorCode.CART_NOT_FOUND));
 
-		ProductDetail productDetail = productDetailService.getProductDetail(request.getProductDetailId());
+		ProductDetail productDetail = productDetailService.findProductDetail(request.getProductDetailId());
 
 		CartItem existingCartItem = cart.getCartItems()
 			.stream()

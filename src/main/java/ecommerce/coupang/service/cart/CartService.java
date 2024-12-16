@@ -6,7 +6,6 @@ import ecommerce.coupang.domain.cart.Cart;
 import ecommerce.coupang.domain.cart.CartItem;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.dto.request.cart.AddCartRequest;
-import ecommerce.coupang.dto.response.cart.CartResponse;
 import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("CartService")

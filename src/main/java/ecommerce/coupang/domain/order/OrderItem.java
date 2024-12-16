@@ -3,6 +3,7 @@ package ecommerce.coupang.domain.order;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.ProductDetail;
 import ecommerce.coupang.dto.request.order.CreateOrderRequest;
+import ecommerce.coupang.exception.CustomException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -57,7 +58,10 @@ public class OrderItem {
 		this.totalPrice = totalPrice;
 	}
 
-	public static OrderItem create(Order order, ProductDetail productDetail, CreateOrderRequest request) {
+	public static OrderItem create(Order order, ProductDetail productDetail, CreateOrderRequest request) throws
+		CustomException {
+		productDetail.order(request.getQuantity());
+
 		return new OrderItem(
 			order,
 			productDetail.getProduct(),
