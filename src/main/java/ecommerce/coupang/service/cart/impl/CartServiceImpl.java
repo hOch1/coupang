@@ -6,18 +6,14 @@ import org.springframework.transaction.annotation.Transactional;
 import ecommerce.coupang.domain.cart.Cart;
 import ecommerce.coupang.domain.cart.CartItem;
 import ecommerce.coupang.domain.member.Member;
-import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.ProductDetail;
 import ecommerce.coupang.dto.request.cart.AddCartRequest;
-import ecommerce.coupang.dto.response.cart.CartResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.cart.CartItemRepository;
 import ecommerce.coupang.repository.cart.CartRepository;
-import ecommerce.coupang.repository.product.ProductRepository;
+import ecommerce.coupang.repository.product.ProductDetailRepository;
 import ecommerce.coupang.service.cart.CartService;
-import ecommerce.coupang.service.product.ProductDetailService;
-import ecommerce.coupang.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -27,16 +23,15 @@ public class CartServiceImpl implements CartService {
 
 	private final CartRepository cartRepository;
 	private final CartItemRepository cartItemRepository;
-	private final ProductService productService;
-	private final ProductDetailService productDetailService;
+	private final ProductDetailRepository productDetailRepository;
 
 	@Override
 	@Transactional
 	public Cart addCart(AddCartRequest request, Member member) throws CustomException {
-		Cart cart = cartRepository.findByMember(member).orElseThrow(() ->
-			new CustomException(ErrorCode.CART_NOT_FOUND));
+		Cart cart = member.getCart();
 
-		ProductDetail productDetail = productDetailService.findProductDetail(request.getProductDetailId());
+		ProductDetail productDetail = productDetailRepository.findById(request.getProductDetailId())
+			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
 		CartItem existingCartItem = cart.getCartItems()
 			.stream()
