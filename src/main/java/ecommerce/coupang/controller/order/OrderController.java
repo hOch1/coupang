@@ -54,6 +54,7 @@ public class OrderController {
 	@Operation(summary = "주문 목록 조회 API", description = "주문 내역 목록을 조회합니다")
 	public ResponseEntity<List<OrderResponse>> findOrders(
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
+
 		List<Order> orders = orderService.findOrders(userDetails.getMember());
 		return ResponseEntity.ok(null);
 	}

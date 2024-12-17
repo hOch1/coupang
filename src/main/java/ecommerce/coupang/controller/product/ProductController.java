@@ -108,8 +108,7 @@ public class ProductController {
 		@PathVariable("categoryId") Long categoryId,
 		@RequestParam List<Long> options) throws CustomException {
 
-		List<Product> products = productService.findProductsByStoreAndCategoryAndOptions(
-			storeId, categoryId, options);
+		List<Product> products = productService.findProductsByStoreAndCategoryAndOptions(storeId, categoryId, options);
 		return ResponseEntity.ok(products.stream()
 			.map(ProductResponse::from)
 			.toList());
@@ -119,6 +118,7 @@ public class ProductController {
 	@Operation(summary = "상품 상세 조회 API", description = "해당 상품을 상세 조회합니다.")
 	public ResponseEntity<ProductResponse> getProductById(
 		@PathVariable Long productId) throws CustomException {
+
 		Product product = productService.findProduct(productId);
 		return ResponseEntity.ok(ProductResponse.from(product));
 	}

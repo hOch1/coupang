@@ -43,14 +43,14 @@ public class StoreController {
 	@GetMapping("/{storeId}")
 	public ResponseEntity<StoreResponse> getStoreDetail(@PathVariable Long storeId) throws CustomException {
 		Store store = storeService.findStore(storeId);
-		return ResponseEntity.ok(StoreResponse.from(store));
+		return ResponseEntity.ok(StoreResponse.from(store, true));
 	}
 
 	@GetMapping("/my")
 	public ResponseEntity<List<StoreResponse>> getMyStore(@AuthenticationPrincipal CustomUserDetails userDetails) {
 		List<Store> stores = storeService.findMyStore(userDetails.getMember());
 		return ResponseEntity.ok(stores.stream()
-			.map(StoreResponse::from)
+			.map(s -> StoreResponse.from(s, false))
 			.toList());
 	}
 

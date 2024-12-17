@@ -28,7 +28,8 @@ public class JwtProvider {
 
 	public String createToken(String email) {
 		Date now = new Date();
-		Date expiration = new Date(now.getTime() + 30 * 60 * 1000);
+		// Date expiration = new Date(now.getTime() + 30 * 60 * 1000);
+		Date expiration = new Date(Long.MAX_VALUE); // 테스트 - 만료없음
 
 		String token = Jwts.builder()
 			.setSubject(email)
