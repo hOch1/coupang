@@ -7,11 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.product.Category;
-import ecommerce.coupang.domain.product.CategoryType;
 
 @LogLevel("CategoryRepository")
 public interface CategoryRepository extends JpaRepository<Category, Long> {
-	Optional<Category> findByType(String categoryType);
-
 	List<Category> findByLevel(int level);
 }

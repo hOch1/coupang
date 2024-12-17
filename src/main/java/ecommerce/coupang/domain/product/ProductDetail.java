@@ -2,6 +2,7 @@ package ecommerce.coupang.domain.product;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.exception.CustomException;
@@ -75,5 +76,21 @@ public class ProductDetail {
 			throw new CustomException(ErrorCode.NOT_ENOUGH_QUANTITY);
 
 		this.stockQuantity -= quantity;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		ProductDetail that = (ProductDetail)o;
+		return Objects.equals(id, that.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(id);
 	}
 }

@@ -8,12 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ecommerce.coupang.domain.product.OptionValue;
 import ecommerce.coupang.dto.response.product.OptionResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.service.product.OptionService;
-import ecommerce.coupang.service.product.OptionValueService;
-import ecommerce.coupang.service.product.ProductOptionService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

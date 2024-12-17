@@ -19,4 +19,8 @@ public class CustomException extends Exception{
 	public String getError() {
 		return errorCode.name();
 	}
+
+	public ErrorCode getErrorCode() {
+		return errorCode;
+	}
 }

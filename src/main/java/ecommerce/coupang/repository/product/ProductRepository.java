@@ -19,7 +19,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 * @param storeId 상점 ID
 	 * @return 상품 리스트
 	 */
-	@Query("SELECT p FROM Product p WHERE p.store.id = :storeId ORDER BY p.createdAt DESC")
+	@Query("SELECT p FROM Product p "
+		+ "WHERE p.store.id = :storeId "
+		+ "ORDER BY p.createdAt DESC")
 	List<Product> findByStore(Long storeId);
 
 	/**
@@ -28,7 +30,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 * @param categories 포함된 카테고리
 	 * @return 상품 리스트
 	 */
-	@Query("SELECT p FROM Product p WHERE p.category IN :categories ORDER BY p.createdAt DESC")
+	@Query("SELECT p FROM Product p "
+		+ "WHERE p.category IN :categories "
+		+ "ORDER BY p.createdAt DESC")
 	List<Product> findByCategories(List<Category> categories);
 
 	/**
@@ -37,50 +41,53 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 * @param categories 포함된 카테고리
 	 * @return 상품 리스트
 	 */
-	@Query("SELECT p FROM Product p WHERE p.category IN :categories AND p.store.id = :storeId ORDER BY p.createdAt DESC")
+	@Query("SELECT p FROM Product p "
+		+ "WHERE p.category IN :categories "
+		+ "AND p.store.id = :storeId "
+		+ "ORDER BY p.createdAt DESC")
 	List<Product> findByCategoriesAndStore(Long storeId, List<Category> categories);
 
 	/**
 	 * 카테고리 + 옵션별 상품 조회
 	 * @param categories 포함된 카테고리
-	 * @param optionValues 포함된 옵션
+	 * @param options 포함된 옵션
 	 * @return 상품 리스트
 	 */
 	@Query("SELECT p FROM Product p "
 		+ "JOIN p.productDetails pd "
 		+ "JOIN pd.productOptions pov "
 		+ "WHERE p.category IN :categories "
-		+ "AND pov.optionValue IN :optionValues "
+		+ "AND pov.optionValue.id IN :options "
 		+ "ORDER BY p.createdAt DESC")
-	List<Product> findByCategoriesAndOptions(List<Category> categories, List<OptionValue> optionValues);
+	List<Product> findByCategoriesAndOptions(List<Category> categories, List<Long> options);
 
 	/**
 	 * 상점 + 옵션별 상품 조회
 	 * @param storeId 상점 ID
-	 * @param optionValues 포함된 옵션
+	 * @param options 포함된 옵션
 	 * @return 상품 리스트
 	 */
 	@Query("SELECT p FROM Product p "
 		+ "JOIN p.productDetails pd "
 		+ "JOIN pd.productOptions pov "
 		+ "WHERE p.store.id = :storeId "
-		+ "AND pov.optionValue IN :optionValues "
+		+ "AND pov.optionValue.id IN :options "
 		+ "ORDER BY p.createdAt DESC")
-	List<Product> findByStoreAndOptions(Long storeId, List<OptionValue> optionValues);
+	List<Product> findByStoreAndOptions(Long storeId, List<Long> options);
 
 	/**
 	 * 상점 + 카테고리 + 옵션별 상품 조회
 	 * @param storeId 상점 ID
 	 * @param categories 포함된 카테고리
-	 * @param optionValues 포함된 옵션
+	 * @param options 포함된 옵션
 	 * @return 상품 리스트
 	 */
 	@Query("SELECT p FROM Product p "
 		+ "JOIN p.productDetails pd "
-		+ "JOIN pd.productOptions pov"
-		+ " WHERE p.category IN :categories "
+		+ "JOIN pd.productOptions pov "
+		+ "WHERE p.category IN :categories "
 		+ "AND p.store.id = :storeId "
-		+ "AND pov.optionValue IN :optionValues "
+		+ "AND pov.optionValue.id IN :options "
 		+ "ORDER BY p.createdAt DESC")
-	List<Product> findByStoreAndCategoryAndOptions(Long storeId, List<Category> categories, List<OptionValue> optionValues);
+	List<Product> findByStoreAndCategoryAndOptions(Long storeId, List<Category> categories, List<Long> options);
 }
