@@ -10,11 +10,17 @@ spring:
     open-in-view: true
     hibernate:
       ddl-auto: create
+      format_sql: true
 
   sql:
     init:
       mode: always
       data-locations: classpath:data.sql
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+
 jwt:
   secret: qweqweqqweqweqweqweqeqweqweqwewqeqeqweqweqwe123
 

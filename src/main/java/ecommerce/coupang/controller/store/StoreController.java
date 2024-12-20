@@ -17,10 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import ecommerce.coupang.domain.member.Store;
 import ecommerce.coupang.dto.request.store.CreateStoreRequest;
 import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
+import ecommerce.coupang.dto.response.GlobalResponse;
 import ecommerce.coupang.dto.response.store.StoreResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.store.StoreService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
@@ -33,7 +35,9 @@ public class StoreController {
 	private final StoreService storeService;
 
 	@PostMapping
-	public ResponseEntity<Void> createStore(@RequestBody CreateStoreRequest request,
+	@Operation(summary = "상점 등록 API", description = "상점을 등록합니다")
+	public ResponseEntity<Void> createStore(
+		@RequestBody CreateStoreRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		storeService.createStore(request, userDetails.getMember());
@@ -41,21 +45,33 @@ public class StoreController {
 	}
 
 	@GetMapping("/{storeId}")
-	public ResponseEntity<StoreResponse> getStoreDetail(@PathVariable Long storeId) throws CustomException {
+	@Operation(summary = "상점 상세 조회 API", description = "상점 상세 정보를 조회합니다")
+	public ResponseEntity<GlobalResponse<StoreResponse>> getStoreDetail(
+		@PathVariable Long storeId) throws CustomException {
+
 		Store store = storeService.findStore(storeId);
-		return ResponseEntity.ok(StoreResponse.from(store, true));
+		StoreResponse response = StoreResponse.from(store, true);
+
+		return ResponseEntity.ok(new GlobalResponse<>(response));
 	}
 
 	@GetMapping("/my")
-	public ResponseEntity<List<StoreResponse>> getMyStore(@AuthenticationPrincipal CustomUserDetails userDetails) {
+	@Operation(summary = "내 상점 모록 조회", description = "나의 상점 목록을 조회합니다")
+	public ResponseEntity<GlobalResponse<List<StoreResponse>>> getMyStore(
+		@AuthenticationPrincipal CustomUserDetails userDetails) {
+
 		List<Store> stores = storeService.findMyStore(userDetails.getMember());
-		return ResponseEntity.ok(stores.stream()
+		List<StoreResponse> responses = stores.stream()
 			.map(s -> StoreResponse.from(s, false))
-			.toList());
+			.toList();
+
+		return ResponseEntity.ok(new GlobalResponse<>(responses, responses.size()));
 	}
 
 	@PatchMapping("/{storeId}")
-	public ResponseEntity<Void> updateStore(@RequestBody UpdateStoreRequest request,
+	@Operation(summary = "상점 수정 API", description = "상점 정보를 수정합니다")
+	public ResponseEntity<Void> updateStore(
+		@RequestBody UpdateStoreRequest request,
 		@PathVariable Long storeId,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
@@ -64,7 +80,9 @@ public class StoreController {
 	}
 
 	@DeleteMapping("/{storeId}")
-	public ResponseEntity<Void> deleteStore(@PathVariable Long storeId,
+	@Operation(summary = "상점 삭제 API", description = "상점을 삭제합니다")
+	public ResponseEntity<Void> deleteStore(
+		@PathVariable Long storeId,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		storeService.deleteStore(storeId, userDetails.getMember());
