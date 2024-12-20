@@ -4,10 +4,8 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import ecommerce.coupang.domain.product.OptionValue;
 import ecommerce.coupang.domain.product.Product;
-import ecommerce.coupang.domain.product.ProductDetail;
-import ecommerce.coupang.domain.product.ProductOption;
+import ecommerce.coupang.domain.product.sub.ProductSubOption;
 import ecommerce.coupang.domain.product.ProductStatus;
 import ecommerce.coupang.dto.response.store.StoreResponse;
 import lombok.AllArgsConstructor;
@@ -26,16 +24,17 @@ public class ProductResponse {
 	private final List<ProductDetailResponse> details;
 
 	public static ProductResponse from(Product product) {
-		return new ProductResponse(
-			product.getId(),
-			product.getName(),
-			product.getDescription(),
-			StoreResponse.from(product.getStore(), false),
-			CategoryResponse.from(product.getCategory(), false),
-			product.getProductDetails().stream()
-				.map(ProductDetailResponse::from)
-				.toList()
-		);
+		// return new ProductResponse(
+		// 	product.getId(),
+		// 	product.getName(),
+		// 	product.getDescription(),
+		// 	StoreResponse.from(product.getStore(), false),
+		// 	CategoryResponse.from(product.getCategory(), false),
+		// 	product.getProductDetails().stream()
+		// 		.map(ProductDetailResponse::from)
+		// 		.toList()
+		// );
+		return null;
 	}
 
 	@Getter
@@ -48,17 +47,17 @@ public class ProductResponse {
 		private final ProductStatus status;
 		private final List<ProductOptionResponse> options;
 
-		private static ProductDetailResponse from(ProductDetail productDetail) {
-			return new ProductDetailResponse(
-				productDetail.getId(),
-				productDetail.getPrice(),
-				productDetail.getStockQuantity(),
-				productDetail.getStatus(),
-				productDetail.getProductOptions().stream()
-					.map(ProductOptionResponse::from)
-					.toList()
-			);
-		}
+		// private static ProductDetailResponse from(ProductDetail productDetail) {
+		// 	return new ProductDetailResponse(
+		// 		productDetail.getId(),
+		// 		productDetail.getPrice(),
+		// 		productDetail.getStockQuantity(),
+		// 		productDetail.getStatus(),
+		// 		productDetail.getProductOptions().stream()
+		// 			.map(ProductOptionResponse::from)
+		// 			.toList()
+		// 	);
+		// }
 	}
 
 	@Getter
@@ -68,11 +67,11 @@ public class ProductResponse {
 		private final String name;
 		private final String value;
 
-		private static ProductOptionResponse from(ProductOption productOption) {
+		private static ProductOptionResponse from(ProductSubOption productSubOption) {
 			return new ProductOptionResponse(
-				productOption.getId(),
-				productOption.getOptionValue().getCategoryOption().getOptionName(),
-				productOption.getOptionValue().getValue()
+				productSubOption.getId(),
+				productSubOption.getSubOptionValue().getCategorySubOption().getOptionName(),
+				productSubOption.getSubOptionValue().getValue()
 			);
 		}
 	}

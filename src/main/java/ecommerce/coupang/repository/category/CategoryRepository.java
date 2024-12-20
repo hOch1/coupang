@@ -1,7 +1,6 @@
-package ecommerce.coupang.repository.product;
+package ecommerce.coupang.repository.category;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

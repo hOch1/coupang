@@ -43,14 +43,14 @@ public class StoreServiceImpl implements StoreService{
 
 	@Override
 	public Store findStore(Long storeId) throws CustomException {
-		return storeRepository.findById(storeId).orElseThrow(() ->
+		return storeRepository.findByIdWithMember(storeId).orElseThrow(() ->
 			new CustomException(ErrorCode.STORE_NOT_FOUND));
 	}
 
 	@Override
 	@Transactional
 	public Store updateStore(Long storeId, UpdateStoreRequest request, Member member) throws CustomException {
-		Store store = storeRepository.findById(storeId).orElseThrow(() ->
+		Store store = storeRepository.findByIdWithMember(storeId).orElseThrow(() ->
 			new CustomException(ErrorCode.STORE_NOT_FOUND));
 
 		if (!Objects.equals(store.getMember().getId(), member.getId()))
@@ -64,7 +64,7 @@ public class StoreServiceImpl implements StoreService{
 	@Override
 	@Transactional
 	public Long deleteStore(Long storeId, Member member) throws CustomException {
-		Store store = storeRepository.findById(storeId).orElseThrow(() ->
+		Store store = storeRepository.findByIdWithMember(storeId).orElseThrow(() ->
 			new CustomException(ErrorCode.STORE_NOT_FOUND));
 
 		if (!Objects.equals(store.getMember().getId(), member.getId()))

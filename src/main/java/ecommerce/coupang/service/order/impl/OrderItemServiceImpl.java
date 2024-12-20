@@ -5,12 +5,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.domain.order.OrderItem;
-import ecommerce.coupang.domain.product.ProductDetail;
 import ecommerce.coupang.dto.request.order.CreateOrderRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.order.OrderItemRepository;
-import ecommerce.coupang.repository.product.ProductDetailRepository;
 import ecommerce.coupang.service.order.OrderItemService;
 import lombok.RequiredArgsConstructor;
 
@@ -20,15 +18,14 @@ import lombok.RequiredArgsConstructor;
 public class OrderItemServiceImpl implements OrderItemService {
 
 	private final OrderItemRepository orderItemRepository;
-	private final ProductDetailRepository productDetailRepository;
 
 	@Override
 	@Transactional
 	public OrderItem save(Order order, CreateOrderRequest request) throws CustomException {
-		ProductDetail productDetail = productDetailRepository.findById(request.getProductId())
-			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-		OrderItem orderItem = OrderItem.create(order, productDetail, request);
+		// OrderItem orderItem = OrderItem.create(order, , request);
+		//
+		// return orderItemRepository.save(orderItem);
 
-		return orderItemRepository.save(orderItem);
+		return null;
 	}
 }

@@ -17,33 +17,21 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ProductOption {
+public class ProductBaseOption {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "product_option_id")
+	@Column(name = "product_base_option_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_detail_id", nullable = false)
-	private ProductDetail productDetail;
+	@JoinColumn(name = "product_id", nullable = false)
+	private Product product;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "option_value_id", nullable = false)
-	private OptionValue optionValue;
+	@JoinColumn(name = "base_option_value_id", nullable = false)
+	private BaseOptionValue baseOptionValue;
 
-	public ProductOption(OptionValue optionValue, ProductDetail productDetail) {
-		this.optionValue = optionValue;
-		this.productDetail = productDetail;
-	}
-
-	public static ProductOption create(OptionValue optionValue, ProductDetail productDetail) {
-		ProductOption productOption = new ProductOption(
-			optionValue,
-			productDetail
-		);
-
-		productDetail.getProductOptions().add(productOption);
-		return productOption;
-	}
+	@Column(name = "price", nullable = false)
+	private int price;
 }

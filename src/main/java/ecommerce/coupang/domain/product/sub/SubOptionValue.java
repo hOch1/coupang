@@ -1,4 +1,4 @@
-package ecommerce.coupang.domain.product;
+package ecommerce.coupang.domain.product.sub;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,16 +17,16 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class OptionValue {
+public class SubOptionValue {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "option_value_id")
+	@Column(name = "sub_option_value_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "category_option_id", nullable = false)
-	private CategoryOption categoryOption;
+	@JoinColumn(name = "category_sub_option_id", nullable = false)
+	private CategorySubOption categorySubOption;
 
 	@Column(name = "value", nullable = false)
 	private String value;

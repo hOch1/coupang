@@ -17,7 +17,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 	@Query("select s from Store s "
 		+ "join fetch s.member m "
 		+ "where s.id = :storeId")
-	Optional<Store> findById(Long storeId);
+	Optional<Store> findByIdWithMember(Long storeId);
 
 	@Query("select s from Store s "
 		+ "join fetch s.member m "

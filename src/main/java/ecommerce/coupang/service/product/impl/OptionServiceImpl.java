@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.domain.product.Category;
-import ecommerce.coupang.domain.product.CategoryOption;
-import ecommerce.coupang.domain.product.OptionValue;
+import ecommerce.coupang.domain.product.sub.CategorySubOption;
+import ecommerce.coupang.domain.product.sub.SubOptionValue;
 import ecommerce.coupang.dto.response.product.OptionResponse;
 import ecommerce.coupang.exception.CustomException;
-import ecommerce.coupang.repository.product.CategoryOptionRepository;
-import ecommerce.coupang.repository.product.OptionValueRepository;
+import ecommerce.coupang.repository.category.CategorySubOptionRepository;
+import ecommerce.coupang.repository.product.SubOptionValueRepository;
 import ecommerce.coupang.service.product.CategoryService;
 import ecommerce.coupang.service.product.OptionService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ import lombok.RequiredArgsConstructor;
 public class OptionServiceImpl implements OptionService {
 
 	private final CategoryService categoryService;
-	private final CategoryOptionRepository categoryOptionRepository;
-	private final OptionValueRepository optionValueRepository;
+	private final CategorySubOptionRepository categorySubOptionRepository;
+	private final SubOptionValueRepository subOptionValueRepository;
 
 	@Override
 	public List<OptionResponse> findCategoryOption(Long categoryId) throws CustomException {
@@ -32,11 +32,12 @@ public class OptionServiceImpl implements OptionService {
 		Category category = categoryService.findBottomCategory(categoryId);
 
 		while (category != null) {
-			List<CategoryOption> categoryOptions = categoryOptionRepository.findByCategory(category);
+			List<CategorySubOption> categorySubOptions = categorySubOptionRepository.findByCategory(category);
 
-			for (CategoryOption categoryOption : categoryOptions) {
-				List<OptionValue> optionValues = optionValueRepository.findByCategoryOption(categoryOption);
-				responses.add(OptionResponse.from(categoryOption, optionValues));
+			for (CategorySubOption categorySubOption : categorySubOptions) {
+				List<SubOptionValue> subOptionValues = subOptionValueRepository.findByCategorySubOption(
+					categorySubOption);
+				responses.add(OptionResponse.from(categorySubOption, subOptionValues));
 			}
 
 			category = category.getParent();

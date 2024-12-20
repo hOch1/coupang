@@ -2,8 +2,8 @@ package ecommerce.coupang.dto.response.product;
 
 import java.util.List;
 
-import ecommerce.coupang.domain.product.CategoryOption;
-import ecommerce.coupang.domain.product.OptionValue;
+import ecommerce.coupang.domain.product.sub.CategorySubOption;
+import ecommerce.coupang.domain.product.sub.SubOptionValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -16,15 +16,15 @@ public class OptionResponse {
 	private final String description;
 	private final List<OptionValueResponse> values;
 
-	public static OptionResponse from(CategoryOption categoryOption, List<OptionValue> optionValues) {
-		List<OptionValueResponse> values = optionValues.stream()
+	public static OptionResponse from(CategorySubOption categorySubOption, List<SubOptionValue> subOptionValues) {
+		List<OptionValueResponse> values = subOptionValues.stream()
 			.map(OptionValueResponse::from)
 			.toList();
 
 		return new OptionResponse(
-			categoryOption.getId(),
-			categoryOption.getOptionName(),
-			categoryOption.getDescription(),
+			categorySubOption.getId(),
+			categorySubOption.getOptionName(),
+			categorySubOption.getDescription(),
 			values
 		);
 	}
@@ -37,11 +37,11 @@ public class OptionResponse {
 		private final String value;
 		private final String description;
 
-		public static OptionValueResponse from(OptionValue optionValue) {
+		public static OptionValueResponse from(SubOptionValue subOptionValue) {
 			return new OptionValueResponse(
-				optionValue.getId(),
-				optionValue.getValue(),
-				optionValue.getDescription()
+				subOptionValue.getId(),
+				subOptionValue.getValue(),
+				subOptionValue.getDescription()
 			);
 		}
 	}

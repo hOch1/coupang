@@ -14,7 +14,6 @@ import lombok.Getter;
 public class CategoryResponse {
 
 	private final Long id;
-	private final String type;
 	private final String name;
 	private final List<CategoryResponse> children;
 
@@ -22,7 +21,6 @@ public class CategoryResponse {
 		return new CategoryResponse(
 			category.getId(),
 			category.getType(),
-			category.getName(),
 			includeChildren ?
 				category.getChildren().stream()
 				.map(c -> CategoryResponse.from(c, true))

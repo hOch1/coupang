@@ -2,8 +2,6 @@ package ecommerce.coupang.domain.cart;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.product.Product;
-import ecommerce.coupang.domain.product.ProductDetail;
-import ecommerce.coupang.dto.request.cart.AddCartRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import jakarta.persistence.Column;
@@ -31,8 +29,8 @@ public class CartItem extends BaseTimeEntity {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_detail_id", nullable = false)
-	private ProductDetail productDetail;
+	@JoinColumn(name = "product_id", nullable = false)
+	private Product product;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cart_id", nullable = false)
@@ -41,15 +39,15 @@ public class CartItem extends BaseTimeEntity {
 	@Column(name = "quantity", nullable = false)
 	private int quantity;
 
-	public CartItem(ProductDetail productDetail, Cart cart, int quantity) {
-		this.productDetail = productDetail;
+	public CartItem(Product product, Cart cart, int quantity) {
+		this.product = product;
 		this.cart = cart;
 		this.quantity = quantity;
 	}
 
-	public static CartItem create(Cart cart, ProductDetail productDetail, int quantity) {
+	public static CartItem create(Cart cart, Product product, int quantity) {
 		return new CartItem(
-			productDetail,
+			product,
 			cart,
 			quantity
 		);

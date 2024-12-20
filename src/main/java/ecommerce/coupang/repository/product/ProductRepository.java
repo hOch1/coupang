@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.product.Category;
-import ecommerce.coupang.domain.product.OptionValue;
 import ecommerce.coupang.domain.product.Product;
 
 @LogLevel("ProductRepository")
@@ -19,9 +18,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 * @param storeId 상점 ID
 	 * @return 상품 리스트
 	 */
-	@Query("SELECT p FROM Product p "
-		+ "WHERE p.store.id = :storeId "
-		+ "ORDER BY p.createdAt DESC")
+	@Query("select p from Product p "
+		+ "join fetch p.store s "
+		+ "join fetch p.category c "
+		+ "where p.store.id = :storeId "
+		+ "order by p.createdAt desc ")
 	List<Product> findByStore(Long storeId);
 
 	/**
@@ -30,9 +31,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 * @param categories 포함된 카테고리
 	 * @return 상품 리스트
 	 */
-	@Query("SELECT p FROM Product p "
-		+ "WHERE p.category IN :categories "
-		+ "ORDER BY p.createdAt DESC")
+	@Query("select p from Product p "
+		+ "join fetch p.store s "
+		+ "join fetch p.category c "
+		+ "where p.category in :categories "
+		+ "order by p.createdAt desc ")
 	List<Product> findByCategories(List<Category> categories);
 
 	/**
@@ -41,10 +44,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 * @param categories 포함된 카테고리
 	 * @return 상품 리스트
 	 */
-	@Query("SELECT p FROM Product p "
-		+ "WHERE p.category IN :categories "
-		+ "AND p.store.id = :storeId "
-		+ "ORDER BY p.createdAt DESC")
+	@Query("select p from Product p "
+		+ "join fetch p.store s "
+		+ "join fetch p.category c "
+		+ "where p.category in :categories "
+		+ "and p.store.id = :storeId "
+		+ "order by p.createdAt desc ")
 	List<Product> findByCategoriesAndStore(Long storeId, List<Category> categories);
 
 	/**
@@ -53,12 +58,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 * @param options 포함된 옵션
 	 * @return 상품 리스트
 	 */
-	@Query("SELECT p FROM Product p "
-		+ "JOIN p.productDetails pd "
-		+ "JOIN pd.productOptions pov "
-		+ "WHERE p.category IN :categories "
-		+ "AND pov.optionValue.id IN :options "
-		+ "ORDER BY p.createdAt DESC")
+	@Query("select p from Product p "
+		+ "join fetch p.store s "
+		+ "join fetch p.category c "
+		+ "where p.category in :categories "
+		+ "order by p.createdAt desc ")
 	List<Product> findByCategoriesAndOptions(List<Category> categories, List<Long> options);
 
 	/**
@@ -67,12 +71,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 * @param options 포함된 옵션
 	 * @return 상품 리스트
 	 */
-	@Query("SELECT p FROM Product p "
-		+ "JOIN p.productDetails pd "
-		+ "JOIN pd.productOptions pov "
-		+ "WHERE p.store.id = :storeId "
-		+ "AND pov.optionValue.id IN :options "
-		+ "ORDER BY p.createdAt DESC")
+	@Query("select p from Product p "
+		+ "join fetch p.store s "
+		+ "join fetch p.category c "
+		+ "where p.store.id = :storeId "
+		+ "order by p.createdAt desc ")
 	List<Product> findByStoreAndOptions(Long storeId, List<Long> options);
 
 	/**
@@ -82,12 +85,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	 * @param options 포함된 옵션
 	 * @return 상품 리스트
 	 */
-	@Query("SELECT p FROM Product p "
-		+ "JOIN p.productDetails pd "
-		+ "JOIN pd.productOptions pov "
-		+ "WHERE p.category IN :categories "
-		+ "AND p.store.id = :storeId "
-		+ "AND pov.optionValue.id IN :options "
-		+ "ORDER BY p.createdAt DESC")
+	@Query("select p from Product p "
+		+ "join fetch p.store s "
+		+ "join fetch p.category c "
+		+ "where p.category in :categories "
+		+ "and p.store.id = :storeId "
+		+ "order by p.createdAt desc ")
 	List<Product> findByStoreAndCategoryAndOptions(Long storeId, List<Category> categories, List<Long> options);
 }

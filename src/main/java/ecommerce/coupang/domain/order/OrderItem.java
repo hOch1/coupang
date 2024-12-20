@@ -1,7 +1,6 @@
 package ecommerce.coupang.domain.order;
 
 import ecommerce.coupang.domain.product.Product;
-import ecommerce.coupang.domain.product.ProductDetail;
 import ecommerce.coupang.dto.request.order.CreateOrderRequest;
 import ecommerce.coupang.exception.CustomException;
 import jakarta.persistence.Column;
@@ -58,16 +57,17 @@ public class OrderItem {
 		this.totalPrice = totalPrice;
 	}
 
-	public static OrderItem create(Order order, ProductDetail productDetail, CreateOrderRequest request) throws CustomException {
-		productDetail.order(request.getQuantity());
-
-		return new OrderItem(
-			order,
-			productDetail.getProduct(),
-			productDetail.getPrice(),
-			request.getQuantity(),
-			productDetail.getPrice() * request.getQuantity()
-		);
+	public static OrderItem create(Order order, Product productDetail, CreateOrderRequest request) throws CustomException {
+		// p.order(request.getQuantity());
+		//
+		// return new OrderItem(
+		// 	order,
+		// 	productDetail.getProduct(),
+		// 	productDetail.getPrice(),
+		// 	request.getQuantity(),
+		// 	productDetail.getPrice() * request.getQuantity()
+		// );
+		return null;
 	}
 
 	public void setDelivery(Delivery delivery) {

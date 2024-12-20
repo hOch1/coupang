@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.hibernate.annotations.BatchSize;
+
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Store;
+import ecommerce.coupang.domain.product.sub.ProductSubOption;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import jakarta.persistence.CascadeType;
@@ -49,7 +52,12 @@ public class Product extends BaseTimeEntity {
 	private Category category;
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ProductDetail> productDetails = new ArrayList<>();
+	@BatchSize(size = 100)
+	private List<ProductBaseOption> productOptions = new ArrayList<>();
+
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+	@BatchSize(size = 100)
+	private List<ProductSubOption> productSubOptions = new ArrayList<>();
 
 	public Product(String name, String description, Store store, Category category) {
 		this.name = name;
