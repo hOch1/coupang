@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import ecommerce.coupang.aop.log.LogLevel;
-import ecommerce.coupang.domain.product.Category;
+import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.domain.product.Product;
 
 @LogLevel("ProductRepository")

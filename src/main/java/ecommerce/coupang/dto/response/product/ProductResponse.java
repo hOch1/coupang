@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.sub.ProductSubOption;
-import ecommerce.coupang.domain.product.ProductStatus;
+import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.dto.response.store.StoreResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

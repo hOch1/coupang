@@ -2,7 +2,7 @@ package ecommerce.coupang.dto.request.product;
 
 import java.util.List;
 
-import ecommerce.coupang.domain.product.ProductStatus;
+import ecommerce.coupang.domain.product.variant.ProductStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

@@ -1,4 +1,4 @@
-package ecommerce.coupang.domain.product;
+package ecommerce.coupang.domain.product.variant;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,20 +17,18 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class BaseOptionValue {
+public class ProductVariantOption {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "base_option_value_id")
+	@Column(name = "product_variant_option_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "category_base_option_id", nullable = false)
-	private CategoryBaseOption categoryBaseOption;
+	@JoinColumn(name = "product_variant_id", nullable = false)
+	private ProductVariant productVariant;
 
-	@Column(name = "value", nullable = false)
-	private String value;
-
-	@Column(name = "description", nullable = false)
-	private String description;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "varant_option_value_id", nullable = false)
+	private VariantOptionValue variantOptionValue;
 }

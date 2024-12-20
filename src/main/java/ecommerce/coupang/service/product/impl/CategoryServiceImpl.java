@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ecommerce.coupang.domain.product.Category;
+import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.category.CategoryRepository;

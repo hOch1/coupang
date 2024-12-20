@@ -1,4 +1,4 @@
-package ecommerce.coupang.domain.product;
+package ecommerce.coupang.domain.category;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class CategoryBaseOption {
+public class CategoryOption {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

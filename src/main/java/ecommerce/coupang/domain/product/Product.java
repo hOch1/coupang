@@ -7,8 +7,9 @@ import java.util.Objects;
 import org.hibernate.annotations.BatchSize;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
+import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.domain.member.Store;
-import ecommerce.coupang.domain.product.sub.ProductSubOption;
+import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import jakarta.persistence.CascadeType;
@@ -53,11 +54,11 @@ public class Product extends BaseTimeEntity {
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
 	@BatchSize(size = 100)
-	private List<ProductBaseOption> productOptions = new ArrayList<>();
+	private List<ProductCategoryOption> productOptions = new ArrayList<>();
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
 	@BatchSize(size = 100)
-	private List<ProductSubOption> productSubOptions = new ArrayList<>();
+	private List<ProductVariant> productVariants = new ArrayList<>();
 
 	public Product(String name, String description, Store store, Category category) {
 		this.name = name;

@@ -1,10 +1,7 @@
 package ecommerce.coupang.dto.response.cart;
 
-import java.util.List;
-
 import ecommerce.coupang.domain.cart.Cart;
-import ecommerce.coupang.domain.cart.CartItem;
-import ecommerce.coupang.domain.product.ProductStatus;
+import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.dto.response.member.MemberResponse;
 import ecommerce.coupang.dto.response.product.OptionResponse;
 import ecommerce.coupang.dto.response.store.StoreResponse;

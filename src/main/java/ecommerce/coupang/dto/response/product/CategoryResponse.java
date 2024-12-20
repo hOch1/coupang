@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
-import ecommerce.coupang.domain.product.Category;
+import ecommerce.coupang.domain.category.Category;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

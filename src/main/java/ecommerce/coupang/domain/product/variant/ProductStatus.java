@@ -1,4 +1,4 @@
-package ecommerce.coupang.domain.product;
+package ecommerce.coupang.domain.product.variant;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

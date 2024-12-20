@@ -1,9 +1,8 @@
-package ecommerce.coupang.domain.product.sub;
+package ecommerce.coupang.domain.category;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ecommerce.coupang.domain.product.Category;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -23,30 +22,46 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class CategorySubOption {
+public class Category {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "category_sub_option_id")
+	@Column(name = "category_id")
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "category_id", nullable = false)
-	private Category category;
+	@Column(name = "type", nullable = false, unique = true)
+	private String type;
+
+	@Column(name = "name", nullable = false, unique = true)
+	private String name;
 
 	@Column(name = "level", nullable = false)
 	private int level;
 
-	@Column(name = "option_name", nullable = false)
-	private String optionName;
-
-	@Column(name = "description", nullable = false)
-	private String description;
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "parent_id")
-	private CategorySubOption parent;
+	private Category parent;
 
 	@OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<CategorySubOption> children = new ArrayList<>();
+	private List<Category> children = new ArrayList<>();
+
+	/**
+	 * 최하위 카테고리 확인
+	 * @return 자식 카테고리가 없으면 true, 있으면 false
+	 */
+	public boolean isBottom(){
+		return children.isEmpty();
+	}
+
+	/**
+	 * 최상위 카테고리 찾기
+	 * @return 현재 카테고리 중 최상위 카테고리 반환
+	 */
+	public Category findTopLevelCategory() {
+		Category current = this;
+		while (current.getParent() != null) {
+			current = current.getParent();
+		}
+		return current;
+	}
 }
