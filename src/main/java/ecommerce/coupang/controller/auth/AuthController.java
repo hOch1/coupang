@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.dto.request.auth.LoginRequest;
 import ecommerce.coupang.dto.request.auth.SignupRequest;
-import ecommerce.coupang.dto.response.GlobalResponse;
+import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.auth.LoginResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.service.auth.AuthService;
@@ -27,10 +27,10 @@ public class AuthController {
 
 	@PostMapping("/login")
 	@Operation(summary = "로그인 API", description = "로그인 진행 후 JWT 발급")
-	public ResponseEntity<GlobalResponse<LoginResponse>> login(@RequestBody LoginRequest request) throws CustomException {
+	public ResponseEntity<Result<LoginResponse>> login(@RequestBody LoginRequest request) throws CustomException {
 
 		return ResponseEntity.ok(
-			new GlobalResponse<>(authService.login(request))
+			new Result<>(authService.login(request))
 		);
 	}
 

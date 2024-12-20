@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ecommerce.coupang.domain.member.Address;
 import ecommerce.coupang.dto.request.member.AddAddressRequest;
 import ecommerce.coupang.dto.request.member.UpdateAddressRequest;
-import ecommerce.coupang.dto.response.GlobalResponse;
+import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.member.AddressResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
@@ -55,7 +55,7 @@ public class AddressController {
 
 	@GetMapping
 	@Operation(summary = "내 주소록 조회 API", description = "나의 주소 목록을 조회합니다.")
-	public ResponseEntity<GlobalResponse<List<AddressResponse>>> getMyAddresses(
+	public ResponseEntity<Result<List<AddressResponse>>> getMyAddresses(
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		List<Address> addresses = addressService.getMyAddresses(userDetails.getMember());
@@ -63,17 +63,17 @@ public class AddressController {
 			.map(AddressResponse::from)
 			.toList();
 
-		return ResponseEntity.ok(new GlobalResponse<>(responses, responses.size()));
+		return ResponseEntity.ok(new Result<>(responses, responses.size()));
 	}
 
 	@GetMapping("/{addressId}")
 	@Operation(summary = "주소 단건 조회 API", description = "단건 주소를 조회합니다.")
-	public ResponseEntity<GlobalResponse<AddressResponse>> getAddress(
+	public ResponseEntity<Result<AddressResponse>> getAddress(
 		@PathVariable Long addressId) throws CustomException {
 
 		Address address = addressService.getAddress(addressId);
 		return ResponseEntity.ok(
-			new GlobalResponse<>(AddressResponse.from(address)));
+			new Result<>(AddressResponse.from(address)));
 	}
 
 	@PatchMapping("/{addressId}")

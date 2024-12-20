@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ecommerce.coupang.dto.response.GlobalResponse;
+import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.member.MemberResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
@@ -25,11 +25,11 @@ public class MemberController {
 
 	@GetMapping
 	@Operation(summary = "내정보 조회 API", description = "내 정보를 조회합니다.")
-	public ResponseEntity<GlobalResponse<MemberResponse>> getMyInfo(
+	public ResponseEntity<Result<MemberResponse>> getMyInfo(
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		return ResponseEntity.ok(
-			new GlobalResponse<>(MemberResponse.from(userDetails.getMember()))
+			new Result<>(MemberResponse.from(userDetails.getMember()))
 		);
 	}
 

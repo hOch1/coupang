@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ecommerce.coupang.domain.member.Store;
 import ecommerce.coupang.dto.request.store.CreateStoreRequest;
 import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
-import ecommerce.coupang.dto.response.GlobalResponse;
+import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.store.StoreResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
@@ -46,18 +46,18 @@ public class StoreController {
 
 	@GetMapping("/{storeId}")
 	@Operation(summary = "상점 상세 조회 API", description = "상점 상세 정보를 조회합니다")
-	public ResponseEntity<GlobalResponse<StoreResponse>> getStoreDetail(
+	public ResponseEntity<Result<StoreResponse>> getStoreDetail(
 		@PathVariable Long storeId) throws CustomException {
 
 		Store store = storeService.findStore(storeId);
 		StoreResponse response = StoreResponse.from(store, true);
 
-		return ResponseEntity.ok(new GlobalResponse<>(response));
+		return ResponseEntity.ok(new Result<>(response));
 	}
 
 	@GetMapping("/my")
 	@Operation(summary = "내 상점 모록 조회", description = "나의 상점 목록을 조회합니다")
-	public ResponseEntity<GlobalResponse<List<StoreResponse>>> getMyStore(
+	public ResponseEntity<Result<List<StoreResponse>>> getMyStore(
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		List<Store> stores = storeService.findMyStore(userDetails.getMember());
@@ -65,7 +65,7 @@ public class StoreController {
 			.map(s -> StoreResponse.from(s, false))
 			.toList();
 
-		return ResponseEntity.ok(new GlobalResponse<>(responses, responses.size()));
+		return ResponseEntity.ok(new Result<>(responses, responses.size()));
 	}
 
 	@PatchMapping("/{storeId}")
