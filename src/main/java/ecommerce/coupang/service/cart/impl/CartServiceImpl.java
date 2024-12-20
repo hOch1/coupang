@@ -28,7 +28,8 @@ public class CartServiceImpl implements CartService {
 	@Override
 	@Transactional
 	public Cart addCart(AddCartRequest request, Member member) throws CustomException {
-		Cart cart = member.getCart();
+		Cart cart = cartRepository.findByMember(member)
+			.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
 
 		ProductDetail productDetail = productDetailRepository.findById(request.getProductDetailId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));

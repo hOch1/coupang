@@ -31,12 +31,12 @@ public class Cart {
 	@Column(name = "cart_id")
 	private Long id;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
-	private Member member;
-
 	@OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CartItem> cartItems = new ArrayList<>();
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id", nullable = false)
+	private Member member;
 
 	public Cart(Member member) {
 		this.member = member;
@@ -52,19 +52,14 @@ public class Cart {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
 		Cart cart = (Cart)o;
-		return Objects.equals(id, cart.id) && Objects.equals(member, cart.member);
+		return Objects.equals(id, cart.id);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = Objects.hashCode(id);
-		result = 31 * result + Objects.hashCode(member);
-		return result;
+		return Objects.hashCode(id);
 	}
 }

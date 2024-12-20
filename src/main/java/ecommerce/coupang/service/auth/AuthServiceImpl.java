@@ -4,12 +4,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import ecommerce.coupang.domain.cart.Cart;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.dto.request.auth.LoginRequest;
 import ecommerce.coupang.dto.request.auth.SignupRequest;
 import ecommerce.coupang.dto.response.auth.LoginResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
+import ecommerce.coupang.repository.cart.CartRepository;
 import ecommerce.coupang.repository.member.MemberRepository;
 import ecommerce.coupang.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class AuthServiceImpl implements AuthService {
 
 	private final MemberRepository memberRepository;
+	private final CartRepository cartRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtProvider jwtProvider;
 
@@ -38,8 +41,12 @@ public class AuthServiceImpl implements AuthService {
 		validateDuplicateMember(request);
 
 		Member member = Member.createFromSignupRequest(request, passwordEncoder);
+		memberRepository.save(member);
 
-		return memberRepository.save(member);
+		Cart cart = Cart.create(member);
+		cartRepository.save(cart);
+
+		return member;
 	}
 
 	private Member validateLoginInfo(LoginRequest request) throws CustomException {

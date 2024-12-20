@@ -7,7 +7,6 @@ import java.util.Objects;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
-import ecommerce.coupang.domain.cart.Cart;
 import ecommerce.coupang.dto.request.auth.SignupRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
@@ -16,12 +15,10 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -60,9 +57,6 @@ public class Member extends BaseTimeEntity {
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Address> addresses = new ArrayList<>();
 
-	@OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-	private Cart cart;
-
 	public Member(String name, String phoneNumber, String email, String password, MemberRole role, boolean isActive, List<Address> addresses) {
 		this.name = name;
 		this.phoneNumber = phoneNumber;
@@ -74,7 +68,7 @@ public class Member extends BaseTimeEntity {
 	}
 
 	public static Member createFromSignupRequest(SignupRequest request, PasswordEncoder passwordEncoder) {
-		Member member = new Member(
+		return new Member(
 			request.getName(),
 			request.getPhoneNumber(),
 			request.getEmail(),
@@ -83,10 +77,6 @@ public class Member extends BaseTimeEntity {
 			true,
 			new ArrayList<>()
 		);
-
-		Cart cart = Cart.create(member);
-		member.setCart(cart);
-		return member;
 	}
 
 	public void changeRoleSeller() throws CustomException {
@@ -94,10 +84,6 @@ public class Member extends BaseTimeEntity {
 			throw new CustomException(ErrorCode.ALREADY_ROLE_SELLER);
 
 		this.role = MemberRole.SELLER;
-	}
-
-	private void setCart(Cart cart) {
-		this.cart = cart;
 	}
 
 	@Override
