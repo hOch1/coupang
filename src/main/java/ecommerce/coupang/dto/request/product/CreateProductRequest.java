@@ -30,11 +30,11 @@ public class CreateProductRequest {
 		private final int price;
 		private final int stock;
 		private final ProductStatus status;
-		private final List<Options> options;
+		private final List<VariantOption> variantOptions;
 
 		@Getter
 		@AllArgsConstructor
-		public static class Options {
+		public static class VariantOption {
 			private Long optionId;
 			private Long optionValueId;
 		}

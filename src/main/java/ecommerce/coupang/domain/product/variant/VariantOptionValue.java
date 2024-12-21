@@ -28,6 +28,9 @@ public class VariantOptionValue {
 	@JoinColumn(name = "variant_option_id")
 	private VariantOption variantOption;
 
-	@Column(name = "value")
+	@Column(name = "value", nullable = false)
 	private String value;
+
+	@Column(name = "description", nullable = false)
+	private String description;
 }

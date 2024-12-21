@@ -31,6 +31,6 @@ public class CategoryOption {
 	@Column(name = "option_name", nullable = false)
 	private String optionName;
 
-	@Column(name = "description")
+	@Column(name = "description", nullable = false)
 	private String description;
 }

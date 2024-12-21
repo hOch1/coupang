@@ -53,9 +53,9 @@ INSERT INTO category (type, name, level, parent_id) VALUES ('KID_WOMEN', "여아
 
 -- ----- 공통 옵션
 -- 의류 옵션
-INSERT INTO category_base_option (category_id, option_name, description) VALUES (@CLOTHES_ID, 'FIT', '의류 핏');
+INSERT INTO category_option (category_id, option_name, description) VALUES (@CLOTHES_ID, 'FIT', '의류 핏');
 SET @CLOTHES_FIT_ID = LAST_INSERT_ID();
-INSERT INTO category_base_option (category_id, option_name, description) VALUES (@CLOTHES_ID, 'MATERIAL', '의류 재질');
+INSERT INTO category_option (category_id, option_name, description) VALUES (@CLOTHES_ID, 'MATERIAL', '의류 재질');
 SET @CLOTHES_MATERIAL_ID = LAST_INSERT_ID();
 
 # -- 음식 옵셥
@@ -66,12 +66,20 @@ SET @CLOTHES_MATERIAL_ID = LAST_INSERT_ID();
 # INSERT INTO category_base_option (category_id, option_name, description) VALUES (@HOME_ID, 'MATERIAL', '원자재');
 # SET @HOME_MATERIAL_ID = LAST_INSERT_ID();
 
+INSERT INTO category_option_value (category_option_id, value, description) VALUES (@CLOTHES_MATERIAL_ID, 'COTTON', '면');
+INSERT INTO category_option_value (category_option_id, value, description) VALUES (@CLOTHES_MATERIAL_ID, 'POLYESTER', '폴리에스테르');
+INSERT INTO category_option_value (category_option_id, value, description) VALUES (@CLOTHES_MATERIAL_ID, 'WOOL', '울');
+INSERT INTO category_option_value (category_option_id, value, description) VALUES (@CLOTHES_MATERIAL_ID, 'MIX', '혼합');
+
+INSERT INTO category_option_value (category_option_id, value, description) VALUES (@CLOTHES_FIT_ID, 'SLIM', '슬림핏');
+INSERT INTO category_option_value (category_option_id, value, description) VALUES (@CLOTHES_FIT_ID, 'OVER', '오버핏');
+INSERT INTO category_option_value (category_option_id, value, description) VALUES (@CLOTHES_FIT_ID, 'REGULAR', '레귤러 핏');
 
 -- ---- 서브 옵션
 -- 의류
-INSERT INTO category_sub_option (category_id, option_name, description, parent_id, level) VALUES (@CLOTHES_ID, 'CLOTHES_COLOR', '의류 색상', null, 1);
+INSERT INTO variant_option (category_id, option_name, description) VALUES (@CLOTHES_ID, 'CLOTHES_COLOR', '의류 색상');
 SET @CLOTHES_COLOR_ID = LAST_INSERT_ID();
-INSERT INTO category_sub_option (category_id, option_name, description, parent_id, level) VALUES (@CLOTHES_ID, 'CLOTHES_SIZE', '의류 사이즈', @CLOTHES_COLOR_ID, 2);
+INSERT INTO variant_option (category_id, option_name, description) VALUES (@CLOTHES_ID, 'CLOTHES_SIZE', '의류 사이즈');
 SET @CLOTHES_SIZE_ID = LAST_INSERT_ID();
 
 # INSERT INTO category_sub_option (category_id, option_name, description) VALUES (@MEN_ID, 'AGE', '남성 나이대');
@@ -85,14 +93,7 @@ SET @CLOTHES_SIZE_ID = LAST_INSERT_ID();
 
 -- ----- 공통 옵션 값
 -- 의류
-INSERT INTO base_option_value (category_base_option_id, value, description) VALUES (@CLOTHES_MATERIAL_ID, 'COTTON', '면');
-INSERT INTO base_option_value (category_base_option_id, value, description) VALUES (@CLOTHES_MATERIAL_ID, 'POLYESTER', '폴리에스테르');
-INSERT INTO base_option_value (category_base_option_id, value, description) VALUES (@CLOTHES_MATERIAL_ID, 'WOOL', '울');
-INSERT INTO base_option_value (category_base_option_id, value, description) VALUES (@CLOTHES_MATERIAL_ID, 'MIX', '혼합');
 
-INSERT INTO base_option_value (category_base_option_id, value, description) VALUES (@CLOTHES_FIT_ID, 'SLIM', '슬림핏');
-INSERT INTO base_option_value (category_base_option_id, value, description) VALUES (@CLOTHES_FIT_ID, 'OVER', '오버핏');
-INSERT INTO base_option_value (category_base_option_id, value, description) VALUES (@CLOTHES_FIT_ID, 'REGULAR', '레귤러 핏');
 
 # -- 음식
 # INSERT INTO base_option_value (category_base_option_id, value, description) VALUES (@FOOD_DOMESTIC_yn, 'Y', '국내산');
@@ -105,16 +106,16 @@ INSERT INTO base_option_value (category_base_option_id, value, description) VALU
 
 -- ----- 서브 옵션 값
 -- 의류
-INSERT INTO sub_option_value (category_sub_option_id, value, description) VALUES (@CLOTHES_COLOR_ID, 'WHITE', '화이트');
-INSERT INTO sub_option_value (category_sub_option_id, value, description) VALUES (@CLOTHES_COLOR_ID, 'BLACK', '블랙');
-INSERT INTO sub_option_value (category_sub_option_id, value, description) VALUES (@CLOTHES_COLOR_ID, 'RED', '빨강');
-INSERT INTO sub_option_value (category_sub_option_id, value, description) VALUES (@CLOTHES_COLOR_ID, 'GREEN', '녹색');
-INSERT INTO sub_option_value (category_sub_option_id, value, description) VALUES (@CLOTHES_COLOR_ID, 'BLUE', '파랑');
+INSERT INTO variant_option_value (variant_option_id, value, description) VALUES (@CLOTHES_COLOR_ID, 'WHITE', '화이트');
+INSERT INTO variant_option_value (variant_option_id, value, description) VALUES (@CLOTHES_COLOR_ID, 'BLACK', '블랙');
+INSERT INTO variant_option_value (variant_option_id, value, description) VALUES (@CLOTHES_COLOR_ID, 'RED', '빨강');
+INSERT INTO variant_option_value (variant_option_id, value, description) VALUES (@CLOTHES_COLOR_ID, 'GREEN', '녹색');
+INSERT INTO variant_option_value (variant_option_id, value, description) VALUES (@CLOTHES_COLOR_ID, 'BLUE', '파랑');
 
-INSERT INTO sub_option_value (category_sub_option_id, value, description) VALUES (@CLOTHES_SIZE_ID, 'S', '스몰');
-INSERT INTO sub_option_value (category_sub_option_id, value, description) VALUES (@CLOTHES_SIZE_ID, 'M', '미디엄');
-INSERT INTO sub_option_value (category_sub_option_id, value, description) VALUES (@CLOTHES_SIZE_ID, 'L', '라지');
-INSERT INTO sub_option_value (category_sub_option_id, value, description) VALUES (@CLOTHES_SIZE_ID, 'XL', '엑스라지');
+INSERT INTO variant_option_value (variant_option_id, value, description) VALUES (@CLOTHES_SIZE_ID, 'S', '스몰');
+INSERT INTO variant_option_value (variant_option_id, value, description) VALUES (@CLOTHES_SIZE_ID, 'M', '미디엄');
+INSERT INTO variant_option_value (variant_option_id, value, description) VALUES (@CLOTHES_SIZE_ID, 'L', '라지');
+INSERT INTO variant_option_value (variant_option_id, value, description) VALUES (@CLOTHES_SIZE_ID, 'XL', '엑스라지');
 
 # INSERT INTO sub_option_value (category_sub_option_id, value, description) VALUES (@MEN_AGE_ID, '10', '10대');
 # INSERT INTO sub_option_value (category_sub_option_id, value, description) VALUES (@MEN_AGE_ID, '20', '20대');

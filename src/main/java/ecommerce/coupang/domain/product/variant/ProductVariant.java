@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -36,7 +37,7 @@ public class ProductVariant {
 	private ProductStatus status;
 
 	@OneToMany(mappedBy = "productVariant", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ProductVariantOption> productVariantOption;
+	private List<ProductVariantOption> productVariantOption = new ArrayList<>();
 
 	public ProductVariant(Product product, int price, int stockQuantity, ProductStatus status) {
 		this.product = product;

@@ -8,7 +8,6 @@ import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.domain.product.variant.VariantOptionValue;
 import ecommerce.coupang.repository.category.CategoryOptionValueRepository;
-import ecommerce.coupang.repository.product.ProductCategoryOptionRepository;
 import ecommerce.coupang.repository.product.VariantOptionValueRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,7 +34,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductServiceImpl implements ProductService {
 
 	private final ProductRepository productRepository;
-	private final ProductCategoryOptionRepository productCategoryOptionRepository;
 	private final VariantOptionValueRepository variantOptionValueRepository;
 	private final CategoryService categoryService;
 	private final CategoryOptionValueRepository categoryOptionValueRepository;
@@ -65,13 +63,15 @@ public class ProductServiceImpl implements ProductService {
 		for (CreateProductRequest.VariantRequest v : request.getVariants()) {
 			ProductVariant productVariant = ProductVariant.create(v, product);
 
-			for (CreateProductRequest.VariantRequest.Options o : v.getOptions()) {
+			for (CreateProductRequest.VariantRequest.VariantOption o : v.getVariantOptions()) {
 				VariantOptionValue variantOptionValue = variantOptionValueRepository.findById(o.getOptionValueId())
 						.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
 
 				ProductVariantOption productVariantOption = ProductVariantOption.create(productVariant, variantOptionValue);
 				productVariant.addProductVariantOption(productVariantOption);
 			}
+
+			product.addProductVariant(productVariant);
 		}
 
 		return product;

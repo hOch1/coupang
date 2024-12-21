@@ -5,7 +5,6 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import ecommerce.coupang.domain.product.Product;
-import ecommerce.coupang.domain.product.sub.ProductSubOption;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.dto.response.store.StoreResponse;
 import lombok.AllArgsConstructor;
@@ -66,13 +65,5 @@ public class ProductResponse {
 		private Long id;
 		private final String name;
 		private final String value;
-
-		private static ProductOptionResponse from(ProductSubOption productSubOption) {
-			return new ProductOptionResponse(
-				productSubOption.getId(),
-				productSubOption.getSubOptionValue().getCategorySubOption().getOptionName(),
-				productSubOption.getSubOptionValue().getValue()
-			);
-		}
 	}
 }
