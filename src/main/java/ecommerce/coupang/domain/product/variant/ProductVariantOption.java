@@ -31,4 +31,16 @@ public class ProductVariantOption {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "varant_option_value_id", nullable = false)
 	private VariantOptionValue variantOptionValue;
+
+	public ProductVariantOption(ProductVariant productVariant, VariantOptionValue variantOptionValue) {
+		this.productVariant = productVariant;
+		this.variantOptionValue = variantOptionValue;
+	}
+
+	public static ProductVariantOption create(ProductVariant productVariant, VariantOptionValue variantOptionValue) {
+		return new ProductVariantOption(
+				productVariant,
+				variantOptionValue
+		);
+	}
 }

@@ -2,6 +2,14 @@ package ecommerce.coupang.service.product.impl;
 
 import java.util.List;
 
+import ecommerce.coupang.domain.category.CategoryOptionValue;
+import ecommerce.coupang.domain.product.ProductCategoryOption;
+import ecommerce.coupang.domain.product.variant.ProductVariant;
+import ecommerce.coupang.domain.product.variant.ProductVariantOption;
+import ecommerce.coupang.domain.product.variant.VariantOptionValue;
+import ecommerce.coupang.repository.category.CategoryOptionValueRepository;
+import ecommerce.coupang.repository.product.ProductCategoryOptionRepository;
+import ecommerce.coupang.repository.product.VariantOptionValueRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,9 +34,47 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProductServiceImpl implements ProductService {
 
+	private final ProductRepository productRepository;
+	private final ProductCategoryOptionRepository productCategoryOptionRepository;
+	private final VariantOptionValueRepository variantOptionValueRepository;
+	private final CategoryService categoryService;
+	private final CategoryOptionValueRepository categoryOptionValueRepository;
+	private final StoreRepository storeRepository;
+
 	@Override
+	@Transactional
 	public Product createProduct(CreateProductRequest request, Member member) throws CustomException {
-		return null;
+		Category category = categoryService.findBottomCategory(request.getCategoryId());
+		Store store = storeRepository.findByIdWithMember(request.getStoreId())
+				.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+
+		if (!store.getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
+
+		Product product = Product.create(request, store, category);
+		productRepository.save(product);
+
+		for (CreateProductRequest.CategoryOptionsRequest c : request.getCategoryOptions()) {
+			CategoryOptionValue categoryOptionValue = categoryOptionValueRepository.findById(c.getOptionValueId())
+					.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
+
+			ProductCategoryOption productCategoryOption = ProductCategoryOption.create(product, categoryOptionValue);
+			product.addProductOptions(productCategoryOption);
+		}
+
+		for (CreateProductRequest.VariantRequest v : request.getVariants()) {
+			ProductVariant productVariant = ProductVariant.create(v, product);
+
+			for (CreateProductRequest.VariantRequest.Options o : v.getOptions()) {
+				VariantOptionValue variantOptionValue = variantOptionValueRepository.findById(o.getOptionValueId())
+						.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
+
+				ProductVariantOption productVariantOption = ProductVariantOption.create(productVariant, variantOptionValue);
+				productVariant.addProductVariantOption(productVariantOption);
+			}
+		}
+
+		return product;
 	}
 
 	@Override
@@ -62,8 +108,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> findProductsByStoreAndCategoryAndOptions(Long storeId, Long categoryId,
-		List<Long> options) throws CustomException {
+	public List<Product> findProductsByStoreAndCategoryAndOptions(Long storeId, Long categoryId, List<Long> options) throws CustomException {
 		return List.of();
 	}
 

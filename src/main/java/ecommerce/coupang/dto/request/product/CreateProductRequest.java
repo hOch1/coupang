@@ -14,15 +14,29 @@ public class CreateProductRequest {
 	private final String description;
 	private final Long categoryId;
 	private final Long storeId;
-	private final List<CreateDetailRequest> details;
+	private final List<CategoryOptionsRequest> categoryOptions;
+	private final List<VariantRequest> variants;
 
 	@Getter
 	@AllArgsConstructor
-	public static class CreateDetailRequest {
+	public static class CategoryOptionsRequest {
+		private final Long optionId;
+		private final Long optionValueId;
+	}
 
+	@Getter
+	@AllArgsConstructor
+	public static class VariantRequest {
 		private final int price;
-		private final int stockQuantity;
+		private final int stock;
 		private final ProductStatus status;
-		private final List<Long> options;
+		private final List<Options> options;
+
+		@Getter
+		@AllArgsConstructor
+		public static class Options {
+			private Long optionId;
+			private Long optionValueId;
+		}
 	}
 }

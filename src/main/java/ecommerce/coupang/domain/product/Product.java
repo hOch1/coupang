@@ -80,6 +80,10 @@ public class Product extends BaseTimeEntity {
 		// TODO
 	}
 
+	public void addProductOptions(ProductCategoryOption productCategoryOption) {
+		this.productOptions.add(productCategoryOption);
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)

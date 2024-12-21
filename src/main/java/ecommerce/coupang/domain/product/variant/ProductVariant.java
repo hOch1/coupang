@@ -1,20 +1,14 @@
 package ecommerce.coupang.domain.product.variant;
 
 import ecommerce.coupang.domain.product.Product;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import ecommerce.coupang.dto.request.product.CreateProductRequest;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -40,4 +34,27 @@ public class ProductVariant {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	private ProductStatus status;
+
+	@OneToMany(mappedBy = "productVariant", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ProductVariantOption> productVariantOption;
+
+	public ProductVariant(Product product, int price, int stockQuantity, ProductStatus status) {
+		this.product = product;
+		this.price = price;
+		this.stockQuantity = stockQuantity;
+		this.status = status;
+	}
+
+	public static ProductVariant create(CreateProductRequest.VariantRequest v, Product product) {
+		return new ProductVariant(
+				product,
+				v.getPrice(),
+				v.getStock(),
+				v.getStatus()
+		);
+	}
+
+	public void addProductVariantOption(ProductVariantOption productVariantOption) {
+		this.productVariantOption.add(productVariantOption);
+	}
 }

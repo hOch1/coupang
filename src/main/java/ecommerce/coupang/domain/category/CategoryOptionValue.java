@@ -21,11 +21,11 @@ public class CategoryOptionValue {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "base_option_value_id")
+	@Column(name = "category_option_value_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "category_base_option_id", nullable = false)
+	@JoinColumn(name = "category_option_id", nullable = false)
 	private CategoryOption categoryOption;
 
 	@Column(name = "value", nullable = false)
