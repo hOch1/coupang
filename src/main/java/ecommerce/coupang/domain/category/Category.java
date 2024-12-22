@@ -54,10 +54,10 @@ public class Category {
 	}
 
 	/**
-	 * 최상위 카테고리 찾기
-	 * @return 현재 카테고리 중 최상위 카테고리 반환
+	 * 최상위(루트) 카테고리 찾기
+	 * @return 현재 카테고리 중 최상위(루트) 카테고리 반환
 	 */
-	public Category findTopLevelCategory() {
+	public Category findRootCategory() {
 		Category current = this;
 		while (current.getParent() != null) {
 			current = current.getParent();

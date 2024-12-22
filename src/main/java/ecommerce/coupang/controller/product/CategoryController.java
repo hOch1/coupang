@@ -27,7 +27,7 @@ public class CategoryController {
 	public ResponseEntity<List<CategoryResponse>> findAllCategories() {
 		List<Category> categories = categoryService.findAll();
 		return ResponseEntity.ok(categories.stream()
-			.map(c -> CategoryResponse.from(c, true))
+			.map(c -> CategoryResponse.includeChildrenFrom(c))
 			.toList());
 	}
 }

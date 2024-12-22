@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.domain.product.Product;
+import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.dto.response.product.ProductDetailResponse;
@@ -49,8 +50,8 @@ public class ProductController {
 	public ResponseEntity<List<ProductResponse>> getProductsByCategory(
 		@PathVariable Long categoryId) throws CustomException {
 
-		List<Product> products = productService.findProductsByCategory(categoryId);
-		return ResponseEntity.ok(products.stream()
+		List<ProductVariant> productVariants = productService.findProductsByCategory(categoryId);
+		return ResponseEntity.ok(productVariants.stream()
 			.map(ProductResponse::from)
 			.toList());
 	}
@@ -62,9 +63,10 @@ public class ProductController {
 		@RequestParam List<Long> options) throws CustomException {
 
 		List<Product> products = productService.findProductsByCategoryAndOptions(categoryId, options);
-		return ResponseEntity.ok(products.stream()
-			.map(ProductResponse::from)
-			.toList());
+		// return ResponseEntity.ok(products.stream()
+		// 	.map(ProductResponse::from)
+		// 	.toList());
+		return null;
 	}
 
 	@GetMapping("/store/{storeId}")
@@ -72,8 +74,8 @@ public class ProductController {
 	public ResponseEntity<List<ProductResponse>> getProductsByStore(
 		@PathVariable Long storeId) throws CustomException {
 
-		List<Product> products = productService.findProductsByStore(storeId);
-		return ResponseEntity.ok(products.stream()
+		List<ProductVariant> productVariants = productService.findProductsByStore(storeId);
+		return ResponseEntity.ok(productVariants.stream()
 			.map(ProductResponse::from)
 			.toList());
 	}
@@ -85,9 +87,10 @@ public class ProductController {
 		@RequestParam List<Long> options) throws CustomException {
 
 		List<Product> products = productService.findProductsByStoreAndOptions(storeId, options);
-		return ResponseEntity.ok(products.stream()
-			.map(ProductResponse::from)
-			.toList());
+		// return ResponseEntity.ok(products.stream()
+		// 	.map(ProductResponse::from)
+		// 	.toList());
+		return null;
 	}
 
 	@GetMapping("/store/{storeId}/category/{categoryId}")
@@ -96,8 +99,8 @@ public class ProductController {
 		@PathVariable("storeId") Long storeId,
 		@PathVariable("categoryId") Long categoryId) throws CustomException {
 
-		List<Product> products = productService.findProductsByStoreAndCategory(storeId, categoryId);
-		return ResponseEntity.ok(products.stream()
+		List<ProductVariant> productVariants = productService.findProductsByStoreAndCategory(storeId, categoryId);
+		return ResponseEntity.ok(productVariants.stream()
 			.map(ProductResponse::from)
 			.toList());
 	}
@@ -110,9 +113,10 @@ public class ProductController {
 		@RequestParam List<Long> options) throws CustomException {
 
 		List<Product> products = productService.findProductsByStoreAndCategoryAndOptions(storeId, categoryId, options);
-		return ResponseEntity.ok(products.stream()
-			.map(ProductResponse::from)
-			.toList());
+		// return ResponseEntity.ok(products.stream()
+		// 	.map(ProductResponse::from)
+		// 	.toList());
+		return null;
 	}
 
 	@GetMapping("/{productId}")
@@ -121,6 +125,7 @@ public class ProductController {
 		@PathVariable Long productId) throws CustomException {
 
 		Product product = productService.findProduct(productId);
+
 		return ResponseEntity.ok(ProductDetailResponse.from(product));
 	}
 

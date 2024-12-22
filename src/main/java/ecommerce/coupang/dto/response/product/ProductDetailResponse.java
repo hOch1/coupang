@@ -18,8 +18,8 @@ public class ProductDetailResponse {
 	private final Long id;
 	private final String name;
 	private final String description;
-	private final CategoryResponse category; // 현재부터 최상위까지만
-	private final StoreResponse store; // 상점 ID, 이름
+	private final CategoryResponse category; // 현재부터 최상위 까지
+	private final StoreResponse store;
 	private final List<CategoryOptionsResponse> categoryOptions;
 	private final List<VariantResponse> variants;
 
@@ -28,8 +28,8 @@ public class ProductDetailResponse {
 			product.getId(),
 			product.getName(),
 			product.getDescription(),
-			CategoryResponse.from(product.getCategory(), false),
-			StoreResponse.from(product.getStore(), false),
+			CategoryResponse.includeParentFrom(product.getCategory()),
+			StoreResponse.from(product.getStore()),
 			product.getProductOptions().stream()
 				.map(CategoryOptionsResponse::from)
 				.toList(),
@@ -50,9 +50,9 @@ public class ProductDetailResponse {
 		public static CategoryOptionsResponse from(ProductCategoryOption productCategoryOption) {
 			return new CategoryOptionsResponse(
 				productCategoryOption.getCategoryOptionValue().getCategoryOption().getId(),
-				productCategoryOption.getCategoryOptionValue().getCategoryOption().getOptionName(),
+				productCategoryOption.getCategoryOptionValue().getCategoryOption().getDescription(),
 				productCategoryOption.getCategoryOptionValue().getId(),
-				productCategoryOption.getCategoryOptionValue().getValue()
+				productCategoryOption.getCategoryOptionValue().getDescription()
 			);
 		}
 	}
@@ -89,9 +89,9 @@ public class ProductDetailResponse {
 			public static VariantOptionResponse from(ProductVariantOption productVariantOption) {
 				return new VariantOptionResponse(
 					productVariantOption.getVariantOptionValue().getVariantOption().getId(),
-					productVariantOption.getVariantOptionValue().getVariantOption().getOptionName(),
+					productVariantOption.getVariantOptionValue().getVariantOption().getDescription(),
 					productVariantOption.getVariantOptionValue().getId(),
-					productVariantOption.getVariantOptionValue().getValue()
+					productVariantOption.getVariantOptionValue().getDescription()
 				);
 			}
 		}

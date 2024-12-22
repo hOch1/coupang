@@ -18,7 +18,7 @@ import ecommerce.coupang.domain.member.Store;
 import ecommerce.coupang.dto.request.store.CreateStoreRequest;
 import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
 import ecommerce.coupang.dto.response.Result;
-import ecommerce.coupang.dto.response.store.StoreResponse;
+import ecommerce.coupang.dto.response.store.StoreDetailResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.store.StoreService;
@@ -46,23 +46,23 @@ public class StoreController {
 
 	@GetMapping("/{storeId}")
 	@Operation(summary = "상점 상세 조회 API", description = "상점 상세 정보를 조회합니다")
-	public ResponseEntity<Result<StoreResponse>> getStoreDetail(
+	public ResponseEntity<Result<StoreDetailResponse>> getStoreDetail(
 		@PathVariable Long storeId) throws CustomException {
 
 		Store store = storeService.findStore(storeId);
-		StoreResponse response = StoreResponse.from(store, true);
+		StoreDetailResponse response = StoreDetailResponse.from(store);
 
 		return ResponseEntity.ok(new Result<>(response));
 	}
 
 	@GetMapping("/my")
 	@Operation(summary = "내 상점 모록 조회", description = "나의 상점 목록을 조회합니다")
-	public ResponseEntity<Result<List<StoreResponse>>> getMyStore(
+	public ResponseEntity<Result<List<StoreDetailResponse>>> getMyStore(
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		List<Store> stores = storeService.findMyStore(userDetails.getMember());
-		List<StoreResponse> responses = stores.stream()
-			.map(s -> StoreResponse.from(s, false))
+		List<StoreDetailResponse> responses = stores.stream()
+			.map(StoreDetailResponse::from)
 			.toList();
 
 		return ResponseEntity.ok(new Result<>(responses, responses.size()));

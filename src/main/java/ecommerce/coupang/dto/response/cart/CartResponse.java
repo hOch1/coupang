@@ -4,7 +4,7 @@ import ecommerce.coupang.domain.cart.Cart;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.dto.response.member.MemberResponse;
 import ecommerce.coupang.dto.response.product.OptionResponse;
-import ecommerce.coupang.dto.response.store.StoreResponse;
+import ecommerce.coupang.dto.response.store.StoreDetailResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -32,7 +32,7 @@ public class CartResponse {
 	private static class CartItemResponse {
 
 		private final Long cartItemId;
-		private final StoreResponse store;
+		private final StoreDetailResponse store;
 		private final String name;
 		private final int price;
 		private final int quantity;

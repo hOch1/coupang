@@ -6,6 +6,7 @@ import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.Product;
+import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.exception.CustomException;
@@ -39,7 +40,7 @@ public interface ProductService {
 	 * @return 상품 리스트
 	 */
 	@LogAction("상품 목록 조회 - 카테고리")
-	List<Product> findProductsByCategory(Long categoryId) throws CustomException;
+	List<ProductVariant> findProductsByCategory(Long categoryId) throws CustomException;
 
 	/**
 	 * 카테고리 + 옵션별 상품 조회 (하위 카테고리 포함)
@@ -58,7 +59,7 @@ public interface ProductService {
 	 * @return 상품 리스트
 	 */
 	@LogAction("상품 목록 조회 - 상점")
-	List<Product> findProductsByStore(Long storeId) throws CustomException;
+	List<ProductVariant> findProductsByStore(Long storeId) throws CustomException;
 
 	/**
 	 * 상점 + 옵션별 상품 조회
@@ -72,12 +73,13 @@ public interface ProductService {
 
 	/**
 	 * 상점 + 카테고리 별 상품 조회 (하위 카테고리 포함)
-	 * @param storeId 상점 ID
+	 *
+	 * @param storeId    상점 ID
 	 * @param categoryId 카테고리 ID
 	 * @return 상품 리스트
 	 */
 	@LogAction("상품 목록 조회 - 상점 + 카테고리")
-	List<Product> findProductsByStoreAndCategory(Long storeId, Long categoryId) throws CustomException;
+	List<ProductVariant> findProductsByStoreAndCategory(Long storeId, Long categoryId) throws CustomException;
 
 	/**
 	 * 상점 + 카테고리 + 옵션별 상품 조회 (하위 카테고리 포함)

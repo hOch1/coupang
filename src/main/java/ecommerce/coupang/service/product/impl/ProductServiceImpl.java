@@ -8,6 +8,7 @@ import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.domain.product.variant.VariantOptionValue;
 import ecommerce.coupang.repository.category.CategoryOptionValueRepository;
+import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.repository.product.VariantOptionValueRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ProductServiceImpl implements ProductService {
 
 	private final ProductRepository productRepository;
+	private final ProductVariantRepository productVariantRepository;
 	private final VariantOptionValueRepository variantOptionValueRepository;
 	private final CategoryService categoryService;
 	private final CategoryOptionValueRepository categoryOptionValueRepository;
@@ -83,8 +85,11 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> findProductsByCategory(Long categoryId) throws CustomException {
-		return List.of();
+	public List<ProductVariant> findProductsByCategory(Long categoryId) throws CustomException {
+		List<Category> categories = categoryService.findAllSubCategories(categoryId);
+		List<Product> products = productRepository.findByCategories(categories);
+
+		return productVariantRepository.findByProducts(products);
 	}
 
 	@Override
@@ -93,8 +98,12 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> findProductsByStore(Long storeId) throws CustomException {
-		return List.of();
+	public List<ProductVariant> findProductsByStore(Long storeId) throws CustomException {
+		Store store = storeRepository.findById(storeId)
+			.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+		List<Product> products = productRepository.findByStore(store.getId());
+
+		return productVariantRepository.findByProducts(products);
 	}
 
 	@Override
@@ -103,21 +112,25 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> findProductsByStoreAndCategory(Long storeId, Long categoryId) throws CustomException {
-		return List.of();
+	public List<ProductVariant> findProductsByStoreAndCategory(Long storeId, Long categoryId) throws CustomException {
+		Store store = storeRepository.findById(storeId)
+			.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+		List<Category> categories = categoryService.findAllSubCategories(categoryId);
+		List<Product> products = productRepository.findByCategoriesAndStore(store.getId(), categories);
+
+		return productVariantRepository.findByProducts(products);
 	}
 
 	@Override
 	public List<Product> findProductsByStoreAndCategoryAndOptions(Long storeId, Long categoryId, List<Long> options) throws CustomException {
+
 		return List.of();
 	}
 
 	@Override
 	public Product findProduct(Long productId) throws CustomException {
-		Product product = productRepository.findById(productId)
+		return productRepository.findById(productId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-
-		return product;
 	}
 }
 
