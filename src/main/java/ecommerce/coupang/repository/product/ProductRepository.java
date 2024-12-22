@@ -1,6 +1,7 @@
 package ecommerce.coupang.repository.product;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,6 +12,13 @@ import ecommerce.coupang.domain.product.Product;
 
 @LogLevel("ProductRepository")
 public interface ProductRepository extends JpaRepository<Product, Long> {
+
+	@Query("select p from Product p "
+		+ "join fetch p.store s "
+		+ "join fetch p.category c "
+		+ "where p.id = :productId "
+		+ "order by p.createdAt desc ")
+	Optional<Product> findById(Long productId);
 
 	/**
 	 * 상점으로 상품 조회

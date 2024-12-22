@@ -30,6 +30,7 @@ public class CreateProductRequest {
 		private final int price;
 		private final int stock;
 		private final ProductStatus status;
+		private final boolean isDefault;
 		private final List<VariantOption> variantOptions;
 
 		@Getter

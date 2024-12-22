@@ -36,22 +36,27 @@ public class ProductVariant {
 	@Column(name = "status", nullable = false)
 	private ProductStatus status;
 
+	@Column(name = "is_default", nullable = false)
+	private boolean isDefault = false;
+
 	@OneToMany(mappedBy = "productVariant", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductVariantOption> productVariantOption = new ArrayList<>();
 
-	public ProductVariant(Product product, int price, int stockQuantity, ProductStatus status) {
+	public ProductVariant(Product product, int price, int stockQuantity, ProductStatus status, boolean isDefault) {
 		this.product = product;
 		this.price = price;
 		this.stockQuantity = stockQuantity;
 		this.status = status;
+		this.isDefault = isDefault;
 	}
 
 	public static ProductVariant create(CreateProductRequest.VariantRequest v, Product product) {
 		return new ProductVariant(
-				product,
-				v.getPrice(),
-				v.getStock(),
-				v.getStatus()
+			product,
+			v.getPrice(),
+			v.getStock(),
+			v.getStatus(),
+			v.isDefault()
 		);
 	}
 

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
+import ecommerce.coupang.dto.response.product.ProductDetailResponse;
 import ecommerce.coupang.dto.response.product.ProductResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
@@ -116,11 +117,11 @@ public class ProductController {
 
 	@GetMapping("/{productId}")
 	@Operation(summary = "상품 상세 조회 API", description = "해당 상품을 상세 조회합니다.")
-	public ResponseEntity<ProductResponse> getProductById(
+	public ResponseEntity<ProductDetailResponse> getProductById(
 		@PathVariable Long productId) throws CustomException {
 
 		Product product = productService.findProduct(productId);
-		return ResponseEntity.ok(ProductResponse.from(product));
+		return ResponseEntity.ok(ProductDetailResponse.from(product));
 	}
 
 	@PatchMapping("/{productId}")
