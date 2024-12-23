@@ -52,7 +52,6 @@ public class ProductServiceImpl implements ProductService {
 			throw new CustomException(ErrorCode.FORBIDDEN);
 
 		Product product = Product.create(request, store, category);
-		productRepository.save(product);
 
 		for (CreateProductRequest.CategoryOptionsRequest c : request.getCategoryOptions()) {
 			CategoryOptionValue categoryOptionValue = categoryOptionValueRepository.findById(c.getOptionValueId())
@@ -76,11 +75,14 @@ public class ProductServiceImpl implements ProductService {
 			product.addProductVariant(productVariant);
 		}
 
+		productRepository.save(product);
+
 		return product;
 	}
 
 	@Override
 	public Product updateProduct(UpdateProductRequest request, Long productId, Member member) throws CustomException {
+		// TODO 상품 수정
 		return null;
 	}
 
