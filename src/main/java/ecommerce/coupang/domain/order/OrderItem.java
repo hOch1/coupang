@@ -6,6 +6,7 @@ import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
 import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
 import ecommerce.coupang.exception.CustomException;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -48,8 +49,7 @@ public class OrderItem {
 	@Column(name = "total_price", nullable = false)
 	private int totalPrice;
 
-	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "delivery_id")
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Delivery delivery;
 
 	public OrderItem(Order order, ProductVariant productVariant, int price, int quantity, int totalPrice) {

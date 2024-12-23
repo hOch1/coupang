@@ -6,9 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.domain.member.Member;
-import ecommerce.coupang.domain.member.Store;
 import ecommerce.coupang.domain.order.Delivery;
-import ecommerce.coupang.domain.order.OrderItem;
 import ecommerce.coupang.dto.request.delivery.UpdateDeliveryRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
@@ -21,14 +19,6 @@ import lombok.RequiredArgsConstructor;
 public class DeliveryServiceImpl implements DeliveryService{
 
 	private final DeliveryRepository deliveryRepository;
-
-	@Override
-	@Transactional
-	public Delivery createDelivery(OrderItem orderItem) {
-		Delivery delivery = Delivery.create(orderItem);
-		deliveryRepository.save(delivery);
-		return delivery;
-	}
 
 	@Override
 	@Transactional

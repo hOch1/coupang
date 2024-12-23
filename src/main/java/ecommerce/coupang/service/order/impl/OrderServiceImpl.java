@@ -20,6 +20,7 @@ import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.cart.CartItemRepository;
 import ecommerce.coupang.repository.order.OrderRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
+import ecommerce.coupang.service.delivery.DeliveryService;
 import ecommerce.coupang.service.member.AddressService;
 import ecommerce.coupang.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +32,9 @@ public class OrderServiceImpl implements OrderService {
 
 	private final OrderRepository orderRepository;
 	private final ProductVariantRepository productVariantRepository;
-	private final AddressService addressService;
 	private final CartItemRepository cartItemRepository;
+	private final AddressService addressService;
+	private final DeliveryService deliveryService;
 
 	@Override
 	@Transactional
@@ -46,7 +48,8 @@ public class OrderServiceImpl implements OrderService {
 		verifyStatusAndReduceStock(productVariant, request.getQuantity());
 
 		OrderItem orderItem = OrderItem.createByProduct(order, productVariant, request);
-		Delivery.create(orderItem, productVariant.getProduct().getStore());
+		Delivery delivery = Delivery.create(orderItem, productVariant.getProduct().getStore());
+		orderItem.setDelivery(delivery);
 
 		order.addOrderItem(orderItem);
 
@@ -67,7 +70,9 @@ public class OrderServiceImpl implements OrderService {
 			verifyStatusAndReduceStock(cartItem.getProductVariant(), cartItem.getQuantity());
 
 			OrderItem orderItem = OrderItem.createByCartItem(order, cartItem, request);
-			Delivery.create(orderItem, cartItem.getProductVariant().getProduct().getStore());
+			Delivery delivery = Delivery.create(orderItem, cartItem.getProductVariant().getProduct().getStore());
+			orderItem.setDelivery(delivery);
+
 			order.addOrderItem(orderItem);
 		}
 

@@ -56,9 +56,7 @@ public class Delivery extends BaseTimeEntity {
 	}
 
 	public static Delivery create(OrderItem orderItem, Store store) {
-		Delivery delivery = new Delivery(orderItem, store);
-		orderItem.setDelivery(delivery);
-		return delivery;
+		return new Delivery(orderItem, store);
 	}
 
 	public void setCompanyInfo(UpdateDeliveryRequest request) {

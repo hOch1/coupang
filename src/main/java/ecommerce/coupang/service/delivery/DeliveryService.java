@@ -13,8 +13,6 @@ import ecommerce.coupang.exception.CustomException;
 @LogLevel("DeliveryService")
 public interface DeliveryService {
 
-	Delivery createDelivery(OrderItem orderItem);
-
 	Delivery updateDelivery(UpdateDeliveryRequest request, Member member, Long deliveryId) throws CustomException;
 
 	Delivery findDelivery(Long deliveryId);
