@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,6 +30,7 @@ import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.category.CategoryOptionValueRepository;
 import ecommerce.coupang.repository.member.StoreRepository;
 import ecommerce.coupang.repository.product.ProductRepository;
+import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.repository.product.VariantOptionValueRepository;
 import ecommerce.coupang.service.product.CategoryService;
 
@@ -45,6 +47,9 @@ class ProductServiceImplTest {
 	private ProductRepository productRepository;
 
 	@Mock
+	private ProductVariantRepository productVariantRepository;
+
+	@Mock
 	private StoreRepository storeRepository;
 
 	@Mock
@@ -55,11 +60,13 @@ class ProductServiceImplTest {
 
 	private CreateProductRequest request;
 	private Member mockMember;
+	private Store mockStore;
 
 	@BeforeEach
 	public void beforeEach() {
 		request = createRequest();
 		mockMember = mock(Member.class);
+		mockStore = mock(Store.class);
 	}
 
 	@Test
@@ -67,7 +74,6 @@ class ProductServiceImplTest {
 	void createProduct() throws CustomException {
 		Category mockCategory = mock(Category.class);
 		when(categoryService.findBottomCategory(1L)).thenReturn(mockCategory);
-		Store mockStore = mock(Store.class);
 		when(storeRepository.findByIdWithMember(1L)).thenReturn(Optional.of(mockStore));
 		when(mockStore.getMember()).thenReturn(mockMember);
 		CategoryOptionValue mockCategoryOptionValue = mock(CategoryOptionValue.class);
@@ -116,7 +122,6 @@ class ProductServiceImplTest {
 	void createProductFailStoreMemberNotMatch() throws CustomException {
 		Category mockCategory = mock(Category.class);
 		when(categoryService.findBottomCategory(1L)).thenReturn(mockCategory);
-		Store mockStore = mock(Store.class);
 		when(storeRepository.findByIdWithMember(1L)).thenReturn(Optional.of(mockStore));
 		Member mockStoreMember = mock(Member.class);
 		when(mockStore.getMember()).thenReturn(mockStoreMember);
@@ -140,7 +145,6 @@ class ProductServiceImplTest {
 	void createProductFailCategoryOptionNotFound() throws CustomException {
 		Category mockCategory = mock(Category.class);
 		when(categoryService.findBottomCategory(1L)).thenReturn(mockCategory);
-		Store mockStore = mock(Store.class);
 		when(storeRepository.findByIdWithMember(1L)).thenReturn(Optional.of(mockStore));
 		when(mockStore.getMember()).thenReturn(mockMember);
 		when(categoryOptionValueRepository.findById(1L)).thenReturn(Optional.empty());
@@ -164,7 +168,6 @@ class ProductServiceImplTest {
 	void createProductFailVariantOptionNotFound() throws CustomException {
 		Category mockCategory = mock(Category.class);
 		when(categoryService.findBottomCategory(1L)).thenReturn(mockCategory);
-		Store mockStore = mock(Store.class);
 		when(storeRepository.findByIdWithMember(1L)).thenReturn(Optional.of(mockStore));
 		when(mockStore.getMember()).thenReturn(mockMember);
 		CategoryOptionValue mockCategoryOptionValue = mock(CategoryOptionValue.class);
@@ -187,8 +190,44 @@ class ProductServiceImplTest {
 
 	@Test
 	@DisplayName("카테고리로 상품 조회 테스트")
-	void findByCategory() {
+	void findByCategory() throws CustomException {
+		Long categoryId = 1L;
+		Category mockCategory = mock(Category.class);
 
+		Product mockProduct = mock(Product.class);
+		ProductVariant mockProductVariant = mock(ProductVariant.class);
+
+		when(categoryService.findAllSubCategories(categoryId)).thenReturn(List.of(mockCategory));
+		when(productRepository.findByCategories(List.of(mockCategory))).thenReturn(List.of(mockProduct));
+		when(productVariantRepository.findByProducts(List.of(mockProduct))).thenReturn(List.of(mockProductVariant));
+
+		List<ProductVariant> productVariants = productService.findProductsByCategory(categoryId);
+
+		verify(categoryService).findAllSubCategories(categoryId);
+		verify(productRepository).findByCategories(List.of(mockCategory));
+		verify(productVariantRepository).findByProducts(List.of(mockProduct));
+
+		assertThat(productVariants.size()).isEqualTo(1);
+	}
+
+	@Test
+	@DisplayName("상점으로 상품 조회 테스트")
+	void findByStore() throws CustomException {
+		Long storeId = 1L;
+		when(mockStore.getId()).thenReturn(storeId);
+		when(storeRepository.findById(storeId)).thenReturn(Optional.of(mockStore));
+		Product mockProduct = mock(Product.class);
+		ProductVariant mockProductVariant = mock(ProductVariant.class);
+		when(productRepository.findByStore(storeId)).thenReturn(List.of(mockProduct));
+		when(productVariantRepository.findByProducts(List.of(mockProduct))).thenReturn(List.of(mockProductVariant));
+
+		List<ProductVariant> productVariants = productService.findProductsByStore(storeId);
+
+		verify(storeRepository).findById(storeId);
+		verify(productRepository).findByStore(storeId);
+		verify(productVariantRepository).findByProducts(List.of(mockProduct));
+
+		assertThat(productVariants.size()).isEqualTo(1);
 	}
 
 
