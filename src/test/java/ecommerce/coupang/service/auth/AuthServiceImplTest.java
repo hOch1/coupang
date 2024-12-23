@@ -6,6 +6,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,12 +38,19 @@ class AuthServiceImplTest {
 
 	@Mock
 	private JwtProvider jwtProvider;
+	
+	private Member mockMember;
+	
+	@BeforeEach
+	public void beforeEach() {
+		mockMember = mock(Member.class);
+	}
 
 	@Test
 	@DisplayName("로그인 테스트 - 성공")
 	void loginSuccess() throws CustomException {
-		LoginRequest request = new LoginRequest("user@example.com", "userpw");
-		Member mockMember = mock(Member.class);
+		LoginRequest request = loginRequest();
+
 		when(mockMember.getPassword()).thenReturn("encodedPassword");
 		when(mockMember.getId()).thenReturn(1L);
 
@@ -61,7 +69,7 @@ class AuthServiceImplTest {
 	@Test
 	@DisplayName("로그인 테스트 - 실패 (회원 찾지 못함)")
 	void loginFailMemberNotFound() {
-		LoginRequest request = new LoginRequest("user@example.com", "userpw");
+		LoginRequest request = loginRequest();
 
 		when(memberRepository.findByEmail("user@example.com")).thenReturn(Optional.empty());
 
@@ -72,8 +80,8 @@ class AuthServiceImplTest {
 	@Test
 	@DisplayName("로그인 테스트 - 실패 (비밀번호 맞지않음)")
 	void loginFailPasswordNotMatch() {
-		LoginRequest request = new LoginRequest("user@example.com", "userpw");
-		Member mockMember = mock(Member.class);
+		LoginRequest request = loginRequest();
+
 		when(mockMember.getPassword()).thenReturn("encodedPassword");
 
 		when(memberRepository.findByEmail("user@example.com")).thenReturn(Optional.of(mockMember));
@@ -86,9 +94,9 @@ class AuthServiceImplTest {
 	@Test
 	@DisplayName("회원가입 테스트 - 성공")
 	void signupSuccess() throws CustomException {
-		SignupRequest request = new SignupRequest("user1","010-0000-0000", "user1@example.com", "password", MemberRole.USER);
+		SignupRequest request = signupRequest();
 		String encodedPassword = "encodedPassword";
-		Member mockMember = mock(Member.class);
+		
 
 		when(mockMember.getId()).thenReturn(1L);
 		when(passwordEncoder.encode(request.getPassword())).thenReturn(encodedPassword);
@@ -103,7 +111,7 @@ class AuthServiceImplTest {
 	@Test
 	@DisplayName("회원가입 테스트 - 실패 (이미 가입된 이메일)")
 	void signupFailExitsEmail() {
-		SignupRequest request = new SignupRequest("user1","010-0000-0000", "user1@example.com", "password", MemberRole.USER);
+		SignupRequest request = signupRequest();
 
 		when(memberRepository.existsByEmail(anyString())).thenReturn(true);
 
@@ -113,10 +121,27 @@ class AuthServiceImplTest {
 	@Test
 	@DisplayName("회원가입 테스트 - 실패 (이미 가입된 핸드폰 번호)")
 	void signupFailExitsPhoneNumber() {
-		SignupRequest request = new SignupRequest("user1","010-0000-0000", "user1@example.com", "password", MemberRole.USER);
+		SignupRequest request = signupRequest();
 
 		when(memberRepository.existsByPhoneNumber(anyString())).thenReturn(true);
 
 		assertThrows(CustomException.class, () -> authService.signup(request));
+	}
+
+	private static LoginRequest loginRequest() {
+		return new LoginRequest(
+			"user@example.com",
+			"userpw"
+		);
+	}
+
+	private static SignupRequest signupRequest() {
+		return new SignupRequest(
+			"user1",
+			"010-0000-0000",
+			"user1@example.com",
+			"password",
+			MemberRole.USER
+		);
 	}
 }
