@@ -1,4 +1,4 @@
-package ecommerce.coupang.controller.product;
+package ecommerce.coupang.controller.category;
 
 import java.util.List;
 
@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.domain.category.Category;
+import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.product.CategoryResponse;
 import ecommerce.coupang.service.product.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,10 +25,12 @@ public class CategoryController {
 
 	@GetMapping
 	@Operation(summary = "전체 카테고리 조회 API", description = "전체 카테고리를 조회합니다.")
-	public ResponseEntity<List<CategoryResponse>> findAllCategories() {
+	public ResponseEntity<Result<List<CategoryResponse>>> findAllCategories() {
 		List<Category> categories = categoryService.findAll();
-		return ResponseEntity.ok(categories.stream()
-			.map(c -> CategoryResponse.includeChildrenFrom(c))
-			.toList());
+		List<CategoryResponse> responses = categories.stream()
+			.map(CategoryResponse::includeChildrenFrom)
+			.toList();
+
+		return ResponseEntity.ok(new Result<>(responses));
 	}
 }

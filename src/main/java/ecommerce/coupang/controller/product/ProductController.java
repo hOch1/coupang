@@ -18,6 +18,7 @@ import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
+import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.product.ProductDetailResponse;
 import ecommerce.coupang.dto.response.product.ProductResponse;
 import ecommerce.coupang.exception.CustomException;
@@ -47,13 +48,15 @@ public class ProductController {
 
 	@GetMapping("/category/{categoryId}")
 	@Operation(summary = "카테고리별 상품 조회 API", description = "해당 카테고리 하위 상품들을 조회합니다.")
-	public ResponseEntity<List<ProductResponse>> getProductsByCategory(
+	public ResponseEntity<Result<List<ProductResponse>>> getProductsByCategory(
 		@PathVariable Long categoryId) throws CustomException {
 
 		List<ProductVariant> productVariants = productService.findProductsByCategory(categoryId);
-		return ResponseEntity.ok(productVariants.stream()
+		List<ProductResponse> responses = productVariants.stream()
 			.map(ProductResponse::from)
-			.toList());
+			.toList();
+
+		return ResponseEntity.ok(new Result<>(responses, responses.size()));
 	}
 
 	@GetMapping("/category/{categoryId}/options")
@@ -71,13 +74,15 @@ public class ProductController {
 
 	@GetMapping("/store/{storeId}")
 	@Operation(summary = "상점별 상품 조회 API", description = "해당 상점 상품들을 조회합니다.")
-	public ResponseEntity<List<ProductResponse>> getProductsByStore(
+	public ResponseEntity<Result<List<ProductResponse>>> getProductsByStore(
 		@PathVariable Long storeId) throws CustomException {
 
 		List<ProductVariant> productVariants = productService.findProductsByStore(storeId);
-		return ResponseEntity.ok(productVariants.stream()
+		List<ProductResponse> responses = productVariants.stream()
 			.map(ProductResponse::from)
-			.toList());
+			.toList();
+
+		return ResponseEntity.ok(new Result<>(responses, responses.size()));
 	}
 
 	@GetMapping("/store/{storeId}/options")
@@ -121,12 +126,12 @@ public class ProductController {
 
 	@GetMapping("/{productId}")
 	@Operation(summary = "상품 상세 조회 API", description = "해당 상품을 상세 조회합니다.")
-	public ResponseEntity<ProductDetailResponse> getProductById(
+	public ResponseEntity<Result<ProductDetailResponse>> getProductById(
 		@PathVariable Long productId) throws CustomException {
 
 		Product product = productService.findProduct(productId);
 
-		return ResponseEntity.ok(ProductDetailResponse.from(product));
+		return ResponseEntity.ok(new Result<>(ProductDetailResponse.from(product)));
 	}
 
 	@PatchMapping("/{productId}")

@@ -15,6 +15,7 @@ public class CategoryResponse {
 
 	private final Long id;
 	private final String name;
+	private final int childrenCount;
 	private final List<CategoryResponse> children;
 	private final CategoryResponse parent;
 
@@ -22,6 +23,7 @@ public class CategoryResponse {
 		return new CategoryResponse(
 			category.getId(),
 			category.getType(),
+			category.getChildren().size(),
 			category.getChildren().stream()
 				.map(CategoryResponse::includeChildrenFrom)
 				.toList(),
@@ -34,6 +36,7 @@ public class CategoryResponse {
 		return new CategoryResponse(
 			category.getId(),
 			category.getName(),
+			category.getChildren().size(),
 			null,
 			category.getParent() != null ?
 				CategoryResponse.includeParentFrom(category.getParent()) : null

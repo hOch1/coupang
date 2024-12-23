@@ -19,6 +19,7 @@ public class ProductDetailResponse {
 	private final String description;
 	private final CategoryResponse category; // 현재부터 최상위 까지
 	private final StoreResponse store;
+	private final int variantCount;
 	private final List<OptionResponse> categoryOptions;
 	private final List<VariantResponse> variants;
 
@@ -29,6 +30,7 @@ public class ProductDetailResponse {
 			product.getDescription(),
 			CategoryResponse.includeParentFrom(product.getCategory()),
 			StoreResponse.from(product.getStore()),
+			product.getProductVariants().size(),
 			product.getProductOptions().stream()
 				.map(OptionResponse::categoryOptionFrom)
 				.toList(),

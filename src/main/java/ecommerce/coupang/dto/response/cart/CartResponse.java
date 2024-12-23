@@ -15,11 +15,13 @@ import lombok.Getter;
 public class CartResponse {
 
 	private final Long cartId;
+	private final int itemCount;
 	private final List<CartItemResponse> items;
 
 	public static CartResponse from(Cart cart) {
 		return new CartResponse(
 			cart.getId(),
+			cart.getCartItems().size(),
 			cart.getCartItems().stream()
 				.map(CartItemResponse::from)
 				.toList()

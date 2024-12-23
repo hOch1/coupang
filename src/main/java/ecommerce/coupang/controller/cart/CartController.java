@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.domain.cart.Cart;
 import ecommerce.coupang.dto.request.cart.AddCartRequest;
+import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.cart.CartResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
@@ -44,10 +45,12 @@ public class CartController {
 
 	@GetMapping
 	@Operation(summary = "장바구니 조회", description = "내 장바구리 목록을 조회합니다.")
-	public ResponseEntity<CartResponse> findMyCart(
+	public ResponseEntity<Result<CartResponse>> findMyCart(
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
+
 		Cart cart = cartService.findMyCart(userDetails.getMember());
-		return ResponseEntity.ok(CartResponse.from(cart));
+
+		return ResponseEntity.ok(new Result<>(CartResponse.from(cart)));
 	}
 
 	@PatchMapping("/item/{cartItemId}")

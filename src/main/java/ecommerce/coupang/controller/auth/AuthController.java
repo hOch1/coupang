@@ -29,9 +29,7 @@ public class AuthController {
 	@Operation(summary = "로그인 API", description = "로그인 진행 후 JWT 발급")
 	public ResponseEntity<Result<LoginResponse>> login(@RequestBody LoginRequest request) throws CustomException {
 
-		return ResponseEntity.ok(
-			new Result<>(authService.login(request))
-		);
+		return ResponseEntity.ok(new Result<>(authService.login(request)));
 	}
 
 	@PostMapping("/signup")
