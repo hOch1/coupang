@@ -1,7 +1,10 @@
 package ecommerce.coupang.domain.order;
 
+import ecommerce.coupang.domain.cart.CartItem;
 import ecommerce.coupang.domain.product.Product;
-import ecommerce.coupang.dto.request.order.CreateOrderRequest;
+import ecommerce.coupang.domain.product.variant.ProductVariant;
+import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
+import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
 import ecommerce.coupang.exception.CustomException;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,8 +36,8 @@ public class OrderItem {
 	private Order order;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_id", nullable = false)
-	private Product product;
+	@JoinColumn(name = "product_variant_id", nullable = false)
+	private ProductVariant productVariant;
 
 	@Column(name = "price", nullable = false)
 	private int price;
@@ -49,25 +52,32 @@ public class OrderItem {
 	@JoinColumn(name = "delivery_id")
 	private Delivery delivery;
 
-	public OrderItem(Order order, Product product, int price, int quantity, int totalPrice) {
+	public OrderItem(Order order, ProductVariant productVariant, int price, int quantity, int totalPrice) {
 		this.order = order;
-		this.product = product;
+		this.productVariant = productVariant;
 		this.price = price;
 		this.quantity = quantity;
 		this.totalPrice = totalPrice;
 	}
 
-	public static OrderItem create(Order order, Product productDetail, CreateOrderRequest request) throws CustomException {
-		// p.order(request.getQuantity());
-		//
-		// return new OrderItem(
-		// 	order,
-		// 	productDetail.getProductVariant(),
-		// 	productDetail.getPrice(),
-		// 	request.getQuantity(),
-		// 	productDetail.getPrice() * request.getQuantity()
-		// );
-		return null;
+	public static OrderItem createByProduct(Order order, ProductVariant productVariant, CreateOrderByProductRequest request) throws CustomException {
+		return new OrderItem(
+			order,
+			productVariant,
+			productVariant.getPrice(),
+			request.getQuantity(),
+			productVariant.getPrice() * request.getQuantity()
+		);
+	}
+
+	public static OrderItem createByCartItem(Order order, CartItem cartItem, CreateOrderByCartRequest request) {
+		return new OrderItem(
+			order,
+			cartItem.getProductVariant(),
+			cartItem.getProductVariant().getPrice(),
+			cartItem.getQuantity(),
+			cartItem.getProductVariant().getPrice() * cartItem.getQuantity()
+		);
 	}
 
 	public void setDelivery(Delivery delivery) {

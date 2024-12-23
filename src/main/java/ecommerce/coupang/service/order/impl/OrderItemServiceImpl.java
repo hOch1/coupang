@@ -5,9 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.domain.order.OrderItem;
-import ecommerce.coupang.dto.request.order.CreateOrderRequest;
+import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
 import ecommerce.coupang.exception.CustomException;
-import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.order.OrderItemRepository;
 import ecommerce.coupang.service.order.OrderItemService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,7 @@ public class OrderItemServiceImpl implements OrderItemService {
 
 	@Override
 	@Transactional
-	public OrderItem save(Order order, CreateOrderRequest request) throws CustomException {
+	public OrderItem save(Order order, CreateOrderByProductRequest request) throws CustomException {
 		// OrderItem orderItem = OrderItem.create(order, , request);
 		//
 		// return orderItemRepository.save(orderItem);

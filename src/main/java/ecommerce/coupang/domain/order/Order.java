@@ -6,7 +6,8 @@ import java.util.List;
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Address;
 import ecommerce.coupang.domain.member.Member;
-import ecommerce.coupang.dto.request.order.CreateOrderRequest;
+import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
+import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import jakarta.persistence.CascadeType;
@@ -21,7 +22,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -65,24 +65,37 @@ public class Order extends BaseTimeEntity {
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<OrderItem> orderItems = new ArrayList<>();
 
-	public Order(Member member, Address address, Payment payment, OrderStatus status, int totalPrice, String orderMessage) {
+	public Order(Member member, Address address, Payment payment, OrderStatus status, String orderMessage) {
 		this.member = member;
 		this.address = address;
 		this.payment = payment;
 		this.status = status;
-		this.totalPrice = totalPrice;
 		this.orderMessage = orderMessage;
 	}
 
-	public static Order createByProduct(CreateOrderRequest request, Member member, Address address) {
+	public static Order createByProduct(CreateOrderByProductRequest request, Member member, Address address) {
 		return new Order(
 			member,
 			address,
 			request.getPayment(),
 			(request.getPayment().equals(Payment.TRANSFER) ? OrderStatus.PENDING : OrderStatus.PAID),
-			0,
 			request.getOrderMessage()
 		);
+	}
+
+	public static Order createByCart(CreateOrderByCartRequest request, Member member, Address address) {
+		return new Order(
+			member,
+			address,
+			request.getPayment(),
+			(request.getPayment().equals(Payment.TRANSFER) ? OrderStatus.PENDING : OrderStatus.PAID),
+			request.getOrderMessage()
+		);
+	}
+
+	public void addOrderItem(OrderItem orderItem) {
+		this.orderItems.add(orderItem);
+		this.totalPrice += orderItem.getTotalPrice();
 	}
 
 	public void cancel() throws CustomException {

@@ -8,15 +8,19 @@ import org.springframework.transaction.annotation.Transactional;
 import ecommerce.coupang.domain.cart.CartItem;
 import ecommerce.coupang.domain.member.Address;
 import ecommerce.coupang.domain.member.Member;
+import ecommerce.coupang.domain.order.Delivery;
 import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.domain.order.OrderItem;
-import ecommerce.coupang.dto.request.order.CreateOrderRequest;
+import ecommerce.coupang.domain.product.variant.ProductStatus;
+import ecommerce.coupang.domain.product.variant.ProductVariant;
+import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
+import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
+import ecommerce.coupang.repository.cart.CartItemRepository;
 import ecommerce.coupang.repository.order.OrderRepository;
-import ecommerce.coupang.service.delivery.DeliveryService;
+import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.service.member.AddressService;
-import ecommerce.coupang.service.order.OrderItemService;
 import ecommerce.coupang.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 
@@ -26,26 +30,49 @@ import lombok.RequiredArgsConstructor;
 public class OrderServiceImpl implements OrderService {
 
 	private final OrderRepository orderRepository;
-	private final OrderItemService orderItemService;
+	private final ProductVariantRepository productVariantRepository;
 	private final AddressService addressService;
-	private final DeliveryService deliveryService;
+	private final CartItemRepository cartItemRepository;
 
 	@Override
 	@Transactional
-	public Order createOrderByProduct(CreateOrderRequest request, Member member) throws CustomException {
+	public Order createOrderByProduct(CreateOrderByProductRequest request, Member member) throws CustomException {
 		Address address = addressService.getAddress(request.getAddressId());
 		Order order = Order.createByProduct(request, member, address);
-		Order saveOrder = orderRepository.save(order);
 
-		OrderItem orderItem = orderItemService.save(saveOrder, request);
-		deliveryService.createDelivery(orderItem);
-		return saveOrder;
+		ProductVariant productVariant = productVariantRepository.findByIdWithStore(request.getProductVariantId())
+			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+
+		verifyStatusAndReduceStock(productVariant, request.getQuantity());
+
+		OrderItem orderItem = OrderItem.createByProduct(order, productVariant, request);
+		Delivery.create(orderItem, productVariant.getProduct().getStore());
+
+		order.addOrderItem(orderItem);
+
+		orderRepository.save(order);
+		return order;
 	}
 
 	@Override
-	public Order createOrderByCart(Member member) {
+	@Transactional
+	public Order createOrderByCart(CreateOrderByCartRequest request, Member member) throws CustomException {
+		Address address = addressService.getAddress(request.getAddressId());
+		Order order = Order.createByCart(request, member, address);
 
-		return null;
+		for (Long cartItemId : request.getCartItemIds()) {
+			CartItem cartItem = cartItemRepository.findByIdWithStore(cartItemId)
+				.orElseThrow(() -> new CustomException(ErrorCode.CART_ITEM_NOT_FOUND));
+
+			verifyStatusAndReduceStock(cartItem.getProductVariant(), cartItem.getQuantity());
+
+			OrderItem orderItem = OrderItem.createByCartItem(order, cartItem, request);
+			Delivery.create(orderItem, cartItem.getProductVariant().getProduct().getStore());
+			order.addOrderItem(orderItem);
+		}
+
+		orderRepository.save(order);
+		return order;
 	}
 
 	@Override
@@ -74,5 +101,12 @@ public class OrderServiceImpl implements OrderService {
 
 		order.cancel();
 		return order;
+	}
+
+	private void verifyStatusAndReduceStock(ProductVariant productVariant, int quantity) throws CustomException {
+		if (!productVariant.getStatus().equals(ProductStatus.ACTIVE))
+			throw new CustomException(ErrorCode.PRODUCT_STATUS_NOT_ACTIVE);
+
+		productVariant.reduceStock(quantity);
 	}
 }

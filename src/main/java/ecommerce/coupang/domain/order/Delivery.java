@@ -53,11 +53,12 @@ public class Delivery extends BaseTimeEntity {
 		this.store = store;
 		this.orderItem = orderItem;
 		this.deliveryStatus = DeliveryStatus.PENDING;
-		orderItem.setDelivery(this);
 	}
 
-	public static Delivery create(OrderItem orderItem) {
-		return new Delivery(orderItem, orderItem.getProduct().getStore());
+	public static Delivery create(OrderItem orderItem, Store store) {
+		Delivery delivery = new Delivery(orderItem, store);
+		orderItem.setDelivery(delivery);
+		return delivery;
 	}
 
 	public void setCompanyInfo(UpdateDeliveryRequest request) {

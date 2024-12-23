@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.domain.order.Order;
-import ecommerce.coupang.dto.request.order.CreateOrderRequest;
+import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
+import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
 import ecommerce.coupang.dto.response.order.OrderResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
@@ -34,7 +35,7 @@ public class OrderController {
 	@PostMapping("/product")
 	@Operation(summary = "상품 주문 API", description = "상품을 직접 주문합니다 ")
 	public ResponseEntity<Void> createOrderByProduct(
-		@RequestBody CreateOrderRequest request,
+		@RequestBody CreateOrderByProductRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		orderService.createOrderByProduct(request, userDetails.getMember());
@@ -44,9 +45,10 @@ public class OrderController {
 	@PostMapping("/cart")
 	@Operation(summary = "장바구니 상품 주문 API", description = "장바구니에 담긴 상품을 주문합니다")
 	public ResponseEntity<Void> createOrderByCart(
-		@AuthenticationPrincipal CustomUserDetails userDetails) {
+		@RequestBody CreateOrderByCartRequest request,
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		orderService.createOrderByCart(userDetails.getMember());
+		orderService.createOrderByCart(request, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 

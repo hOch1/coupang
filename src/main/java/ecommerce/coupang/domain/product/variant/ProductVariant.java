@@ -2,6 +2,8 @@ package ecommerce.coupang.domain.product.variant;
 
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
+import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.exception.ErrorCode;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -62,5 +64,12 @@ public class ProductVariant {
 
 	public void addProductVariantOption(ProductVariantOption productVariantOption) {
 		this.productVariantOption.add(productVariantOption);
+	}
+
+	public void reduceStock(int quantity) throws CustomException {
+		if (this.stockQuantity - quantity < 0)
+			throw new CustomException(ErrorCode.NOT_ENOUGH_QUANTITY);
+
+		this.stockQuantity -= quantity;
 	}
 }
