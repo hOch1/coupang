@@ -2,6 +2,7 @@ package ecommerce.coupang.domain.cart;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.product.Product;
+import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import jakarta.persistence.Column;
@@ -29,8 +30,8 @@ public class CartItem extends BaseTimeEntity {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_id", nullable = false)
-	private Product product;
+	@JoinColumn(name = "product_variant_id", nullable = false)
+	private ProductVariant productVariant;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "cart_id", nullable = false)
@@ -39,34 +40,33 @@ public class CartItem extends BaseTimeEntity {
 	@Column(name = "quantity", nullable = false)
 	private int quantity;
 
-	public CartItem(Product product, Cart cart, int quantity) {
-		this.product = product;
+	public CartItem(ProductVariant productVariant, Cart cart, int quantity) {
+		this.productVariant = productVariant;
 		this.cart = cart;
 		this.quantity = quantity;
 	}
 
-	public static CartItem create(Cart cart, Product product, int quantity) {
+	public static CartItem create(Cart cart, ProductVariant productVariant, int quantity) {
 		return new CartItem(
-			product,
+			productVariant,
 			cart,
 			quantity
 		);
 	}
 
+	/**
+	 * 장바구니 상품 수량 변경
+	 * 차감시 0 보다 작은지 체크
+	 * @param quantity 변경 수량
+	 * @throws CustomException
+	 */
 	public void changeQuantity(int quantity) throws CustomException {
-		if (quantity <= 0)
+		if (this.quantity - quantity <= 0)
 			throw new CustomException(ErrorCode.QUANTITY_IS_WRONG);
 		this.quantity = quantity;
 	}
 
-	public void addQuantity() {
-		this.quantity++;
-	}
-
-	public void subQuantity() throws CustomException {
-		if (this.quantity <= 1)
-			throw new CustomException(ErrorCode.QUANTITY_IS_WRONG);
-
-		this.quantity--;
+	public void increaseQuantity(int quantity) {
+		this.quantity += quantity;
 	}
 }

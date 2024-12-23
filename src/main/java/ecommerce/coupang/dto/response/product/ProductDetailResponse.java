@@ -3,10 +3,9 @@ package ecommerce.coupang.dto.response.product;
 import java.util.List;
 
 import ecommerce.coupang.domain.product.Product;
-import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
-import ecommerce.coupang.domain.product.variant.ProductVariantOption;
+import ecommerce.coupang.dto.response.option.OptionResponse;
 import ecommerce.coupang.dto.response.store.StoreResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +19,7 @@ public class ProductDetailResponse {
 	private final String description;
 	private final CategoryResponse category; // 현재부터 최상위 까지
 	private final StoreResponse store;
-	private final List<CategoryOptionsResponse> categoryOptions;
+	private final List<OptionResponse> categoryOptions;
 	private final List<VariantResponse> variants;
 
 	public static ProductDetailResponse from(Product product) {
@@ -31,7 +30,7 @@ public class ProductDetailResponse {
 			CategoryResponse.includeParentFrom(product.getCategory()),
 			StoreResponse.from(product.getStore()),
 			product.getProductOptions().stream()
-				.map(CategoryOptionsResponse::from)
+				.map(OptionResponse::categoryOptionFrom)
 				.toList(),
 			product.getProductVariants().stream()
 				.map(VariantResponse::from)
@@ -41,30 +40,12 @@ public class ProductDetailResponse {
 
 	@Getter
 	@AllArgsConstructor
-	private static class CategoryOptionsResponse {
-		private final Long optionId;
-		private final String optionName;
-		private final Long optionValueId;
-		private final String optionValue;
-
-		public static CategoryOptionsResponse from(ProductCategoryOption productCategoryOption) {
-			return new CategoryOptionsResponse(
-				productCategoryOption.getCategoryOptionValue().getCategoryOption().getId(),
-				productCategoryOption.getCategoryOptionValue().getCategoryOption().getDescription(),
-				productCategoryOption.getCategoryOptionValue().getId(),
-				productCategoryOption.getCategoryOptionValue().getDescription()
-			);
-		}
-	}
-
-	@Getter
-	@AllArgsConstructor
 	private static class VariantResponse {
 		private final Long variantId;
 		private final int price;
 		private final int stockQuantity;
 		private final ProductStatus status;
-		private final List<VariantOptionResponse> variantOptions;
+		private final List<OptionResponse> variantOptions;
 
 		public static VariantResponse from(ProductVariant productVariant) {
 			return new VariantResponse(
@@ -73,27 +54,9 @@ public class ProductDetailResponse {
 				productVariant.getStockQuantity(),
 				productVariant.getStatus(),
 				productVariant.getProductVariantOption().stream()
-					.map(VariantOptionResponse::from)
+					.map(OptionResponse::productVariantFrom)
 					.toList()
 			);
-		}
-
-		@Getter
-		@AllArgsConstructor
-		public static class VariantOptionResponse {
-			private final Long optionId;
-			private final String optionName;
-			private final Long optionValueId;
-			private final String optionValue;
-
-			public static VariantOptionResponse from(ProductVariantOption productVariantOption) {
-				return new VariantOptionResponse(
-					productVariantOption.getVariantOptionValue().getVariantOption().getId(),
-					productVariantOption.getVariantOptionValue().getVariantOption().getDescription(),
-					productVariantOption.getVariantOptionValue().getId(),
-					productVariantOption.getVariantOptionValue().getDescription()
-				);
-			}
 		}
 	}
 }

@@ -7,7 +7,6 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AddCartRequest {
 
-	private final Long productDetailId;
+	private final Long productVariantId;
 	private final int quantity;
-
 }

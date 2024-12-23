@@ -61,27 +61,6 @@ public class CartController {
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
-	@PatchMapping("/item/{cartItemId}/add")
-	@Operation(summary = "장바구니 상품 수량 변경 (+1)", description = "장바구니 상품 수량을 하나 더합니다")
-	public ResponseEntity<Void> updateItemQuantityAdd(
-		@PathVariable Long cartItemId,
-		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
-
-		cartService.updateItemQuantity(cartItemId, userDetails.getMember(), true);
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-	}
-
-	@PatchMapping("/item/{cartItemId}/sub")
-	@Operation(summary = "장바구니 상품 수량 변경 (-1)", description = "장바구니 상품 수량을 하나 뺍니다")
-	public ResponseEntity<Void> updateItemQuantitySub(
-		@PathVariable Long cartItemId,
-		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
-
-		cartService.updateItemQuantity(cartItemId, userDetails.getMember(), false);
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-	}
-
-
 	@DeleteMapping("/item/{cartItemId}")
 	@Operation(summary = "장바구니 상품 제거", description = "장바구니 상품을 제거합니다.")
 	public ResponseEntity<Void> removeCartItem(

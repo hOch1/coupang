@@ -39,16 +39,6 @@ public interface CartService {
 	CartItem updateItemQuantity(Long cartItemId, int quantity, Member member) throws CustomException;
 
 	/**
-	 * 장바구니 상품 수량 변경 (+1)
-	 * @param cartItemId 장바구니 상품 상품 ID
-	 * @param member 요청한 회원
-	 * @param add true 더하기, false 빼기
-	 * @return 수정한 장바구니 상품 ID
-	 */
-	@LogAction("장바구니 상품 수량 변경 - (+-1)")
-	CartItem updateItemQuantity(Long cartItemId, Member member, boolean add) throws CustomException;
-
-	/**
 	 * 장바구니 상품 제거
 	 * @param cartItemId 장바구니 상품 ID
 	 * @param member 요청한 회원
@@ -57,10 +47,10 @@ public interface CartService {
 	@LogAction("장바구니 상품 제거")
 	CartItem removeItem(Long cartItemId, Member member) throws CustomException;
 
-	@LogAction("장바구니 전체 제거")
 	/**
 	 * 장바구니 전체 제거
 	 * @param member 요청한 회원
 	 */
+	@LogAction("장바구니 전체 제거")
 	void clearCart(Member member) throws CustomException;
 }

@@ -1,10 +1,12 @@
 package ecommerce.coupang.dto.response.cart;
 
+import java.util.List;
+
 import ecommerce.coupang.domain.cart.Cart;
+import ecommerce.coupang.domain.cart.CartItem;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
-import ecommerce.coupang.dto.response.member.MemberResponse;
-import ecommerce.coupang.dto.response.product.OptionResponse;
-import ecommerce.coupang.dto.response.store.StoreDetailResponse;
+import ecommerce.coupang.dto.response.option.OptionResponse;
+import ecommerce.coupang.dto.response.store.StoreResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,17 +15,14 @@ import lombok.Getter;
 public class CartResponse {
 
 	private final Long cartId;
-	private final MemberResponse member;
-	// private final List<CartItemResponse> items;
-
+	private final List<CartItemResponse> items;
 
 	public static CartResponse from(Cart cart) {
 		return new CartResponse(
 			cart.getId(),
-			MemberResponse.from(cart.getMember())
-			// cart.getCartItems().stream()
-			// 	.map(CartItemResponse::from)
-			// 	.toList()
+			cart.getCartItems().stream()
+				.map(CartItemResponse::from)
+				.toList()
 		);
 	}
 
@@ -32,22 +31,31 @@ public class CartResponse {
 	private static class CartItemResponse {
 
 		private final Long cartItemId;
-		private final StoreDetailResponse store;
+		private final StoreResponse store;
+		private final Long productVariantId;
 		private final String name;
 		private final int price;
 		private final int quantity;
-		private final OptionResponse option;
 		private final ProductStatus status;
+		private final List<OptionResponse> categoryOptions;
+		private final List<OptionResponse> variantOptions;
 
-		// public static CartItemResponse from(CartItem cartItem) {
-		// 	return new CartItemResponse(
-		// 		cartItem.getId(),
-		// 		StoreResponse.from(cartItem.getProduct().getStore()),
-		// 		cartItem.getProduct().getName(),
-		// 		cartItem.getProduct().getP(),
-		// 		cartItem.getQuantity(),
-		// 		cartItem.getProduct().getStatus()
-		// 	);
-		// }
+		public static CartItemResponse from(CartItem cartItem) {
+			return new CartItemResponse(
+				cartItem.getId(),
+				StoreResponse.from(cartItem.getProductVariant().getProduct().getStore()),
+				cartItem.getProductVariant().getId(),
+				cartItem.getProductVariant().getProduct().getName(),
+				cartItem.getProductVariant().getPrice(),
+				cartItem.getQuantity(),
+				cartItem.getProductVariant().getStatus(),
+				cartItem.getProductVariant().getProduct().getProductOptions().stream()
+					.map(OptionResponse::categoryOptionFrom)
+					.toList(),
+				cartItem.getProductVariant().getProductVariantOption().stream()
+					.map(OptionResponse::productVariantFrom)
+					.toList()
+			);
+		}
 	}
 }

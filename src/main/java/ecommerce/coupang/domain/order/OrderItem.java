@@ -62,7 +62,7 @@ public class OrderItem {
 		//
 		// return new OrderItem(
 		// 	order,
-		// 	productDetail.getProduct(),
+		// 	productDetail.getProductVariant(),
 		// 	productDetail.getPrice(),
 		// 	request.getQuantity(),
 		// 	productDetail.getPrice() * request.getQuantity()
