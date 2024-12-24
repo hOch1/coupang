@@ -72,4 +72,8 @@ public class ProductVariant {
 
 		this.stockQuantity -= quantity;
 	}
+
+	public void addStock(int quantity) {
+		this.stockQuantity += quantity;
+	}
 }

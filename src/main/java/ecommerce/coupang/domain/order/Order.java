@@ -102,6 +102,8 @@ public class Order extends BaseTimeEntity {
 		for (OrderItem orderItem : this.orderItems) {
 			if (!orderItem.getDelivery().getDeliveryStatus().equals(DeliveryStatus.PENDING))
 				throw new CustomException(ErrorCode.ALREADY_DELIVERY_START);
+
+			orderItem.cancel();
 		}
 
 		this.status = OrderStatus.CANCELLED;

@@ -95,6 +95,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
+	@Transactional
 	public Order cancelOrder(Long orderId, Member member) throws CustomException {
 		Order order = orderRepository.findById(orderId).orElseThrow(() ->
 			new CustomException(ErrorCode.ORDER_NOT_FOUND));

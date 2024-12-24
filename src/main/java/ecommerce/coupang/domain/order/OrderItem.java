@@ -80,4 +80,8 @@ public class OrderItem {
 	public void setDelivery(Delivery delivery) {
 		this.delivery = delivery;
 	}
+
+	public void cancel() {
+		productVariant.addStock(quantity);
+	}
 }
