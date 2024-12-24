@@ -63,9 +63,10 @@ public class ProductController {
 	@Operation(summary = "카테고리 + 옵션별 상품 조회 API", description = "카테고리별 상품 조회 API + 옵션 추가")
 	public ResponseEntity<List<ProductResponse>> getProductsByCategoryAndOptions(
 		@PathVariable Long categoryId,
-		@RequestParam List<Long> options) throws CustomException {
+		@RequestParam List<Long> categoryOptions,
+		@RequestParam List<Long> variantOptions) throws CustomException {
 
-		List<Product> products = productService.findProductsByCategoryAndOptions(categoryId, options);
+		List<Product> products = productService.findProductsByCategoryAndOptions(categoryId, categoryOptions, variantOptions);
 		// return ResponseEntity.ok(products.stream()
 		// 	.map(ProductResponse::from)
 		// 	.toList());
@@ -89,9 +90,10 @@ public class ProductController {
 	@Operation(summary = "상점 + 옵션별 상품 조회 API", description = "상점별 상품 조회 API + 옵션")
 	public ResponseEntity<List<ProductResponse>> getProductsByStoreAndOptions(
 		@PathVariable Long storeId,
-		@RequestParam List<Long> options) throws CustomException {
+		@RequestParam List<Long> categoryOptions,
+		@RequestParam List<Long> variantOptions) throws CustomException {
 
-		List<Product> products = productService.findProductsByStoreAndOptions(storeId, options);
+		List<Product> products = productService.findProductsByStoreAndOptions(storeId, categoryOptions, variantOptions);
 		// return ResponseEntity.ok(products.stream()
 		// 	.map(ProductResponse::from)
 		// 	.toList());
@@ -115,9 +117,10 @@ public class ProductController {
 	public ResponseEntity<List<ProductResponse>> getProductsByStoreAndCategoryAndOptions(
 		@PathVariable("storeId") Long storeId,
 		@PathVariable("categoryId") Long categoryId,
-		@RequestParam List<Long> options) throws CustomException {
+		@RequestParam List<Long> categoryOptions,
+		@RequestParam List<Long> variantOptions) throws CustomException {
 
-		List<Product> products = productService.findProductsByStoreAndCategoryAndOptions(storeId, categoryId, options);
+		List<Product> products = productService.findProductsByStoreAndCategoryAndOptions(storeId, categoryId, categoryOptions, variantOptions);
 		// return ResponseEntity.ok(products.stream()
 		// 	.map(ProductResponse::from)
 		// 	.toList());

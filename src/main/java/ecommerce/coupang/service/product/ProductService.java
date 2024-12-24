@@ -45,12 +45,13 @@ public interface ProductService {
 	/**
 	 * 카테고리 + 옵션별 상품 조회 (하위 카테고리 포함)
 	 *
-	 * @param categoryId 카테고리 ID
-	 * @param options    옵션 파라미터
+	 * @param categoryId     카테고리 ID
+	 * @param categoryOptions 카테고리 옵션 파라미터
+	 * @param variantOptions 상품 옵션 파라미터
 	 * @return 상품 리스트
 	 */
 	@LogAction("상품 목록 조회 카테고리 + 옵션")
-	List<Product> findProductsByCategoryAndOptions(Long categoryId, List<Long> options) throws CustomException;
+	List<Product> findProductsByCategoryAndOptions(Long categoryId, List<Long> categoryOptions, List<Long> variantOptions) throws CustomException;
 
 	/**
 	 * 상점 별 상품 조회
@@ -65,11 +66,12 @@ public interface ProductService {
 	 * 상점 + 옵션별 상품 조회
 	 *
 	 * @param storeId 상점 ID
-	 * @param options 옵션 파라미터
+	 * @param categoryOptions 카테고리 옵션 파라미터
+	 * @param variantOptions 상품 옵션 파라미터
 	 * @return 상품 리스트
 	 */
 	@LogAction("상품 목록 조회 - 상점 + 옵션")
-	List<Product> findProductsByStoreAndOptions(Long storeId, List<Long> options) throws CustomException;
+	List<Product> findProductsByStoreAndOptions(Long storeId, List<Long> categoryOptions, List<Long> variantOptions) throws CustomException;
 
 	/**
 	 * 상점 + 카테고리 별 상품 조회 (하위 카테고리 포함)
@@ -83,13 +85,15 @@ public interface ProductService {
 
 	/**
 	 * 상점 + 카테고리 + 옵션별 상품 조회 (하위 카테고리 포함)
-	 * @param storeId 상점 ID
-	 * @param categoryId 카테고리 ID
-	 * @param options 옵션 파라미터
+	 *
+	 * @param storeId         상점 ID
+	 * @param categoryId      카테고리 ID
+	 * @param categoryOptions 카테고리 옵션 파라미터
+	 * @param variantOptions 상품 옵션 파라미터
 	 * @return 상품 리스트
 	 */
 	@LogAction("상품 목록 조회 - 상점 + 카테고리 + 옵션")
-	List<Product> findProductsByStoreAndCategoryAndOptions(Long storeId, Long categoryId, List<Long> options) throws CustomException;
+	List<Product> findProductsByStoreAndCategoryAndOptions(Long storeId, Long categoryId, List<Long> categoryOptions, List<Long> variantOptions) throws CustomException;
 
 	/**
 	 * 상품 상세 조회

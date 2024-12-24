@@ -95,7 +95,8 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> findProductsByCategoryAndOptions(Long categoryId, List<Long> options) throws CustomException {
+	public List<Product> findProductsByCategoryAndOptions(Long categoryId, List<Long> categoryOptions, List<Long> variantOptions) throws CustomException {
+
 		return List.of();
 	}
 
@@ -109,7 +110,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> findProductsByStoreAndOptions(Long storeId, List<Long> options) throws CustomException {
+	public List<Product> findProductsByStoreAndOptions(Long storeId, List<Long> categoryOptions, List<Long> variantOptions) throws CustomException {
 		return List.of();
 	}
 
@@ -124,7 +125,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> findProductsByStoreAndCategoryAndOptions(Long storeId, Long categoryId, List<Long> options) throws CustomException {
+	public List<Product> findProductsByStoreAndCategoryAndOptions(Long storeId, Long categoryId, List<Long> categoryOptions, List<Long> variantOptions) throws CustomException {
 
 		return List.of();
 	}
