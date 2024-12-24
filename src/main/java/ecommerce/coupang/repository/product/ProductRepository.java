@@ -13,6 +13,12 @@ import ecommerce.coupang.domain.product.Product;
 @LogLevel("ProductRepository")
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
+	/**
+	 * ID로 상품 조회
+	 * 기본 정렬 - 최신 등록순
+	 * @param productId must not be {@literal null}.
+	 * @return 상품
+	 */
 	@Query("select p from Product p "
 		+ "join fetch p.store s "
 		+ "join fetch p.category c "

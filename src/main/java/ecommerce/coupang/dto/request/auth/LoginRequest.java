@@ -1,6 +1,5 @@
 package ecommerce.coupang.dto.request.auth;
 
-import ecommerce.coupang.domain.member.MemberRole;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

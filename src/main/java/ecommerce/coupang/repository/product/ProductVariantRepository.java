@@ -25,12 +25,4 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
 		+ "and pv.isDefault = true "
 		+ "order by p.createdAt desc ")
 	List<ProductVariant> findByProducts(List<Product> products);
-
-	@Query("select pv from ProductVariant pv "
-		+ "join fetch pv.product p "
-		+ "join fetch p.category c "
-		+ "join fetch p.store s "
-		+ "where pv.product = :product "
-		+ "order by p.createdAt desc ")
-	List<ProductVariant> findByProduct(Product product);
 }

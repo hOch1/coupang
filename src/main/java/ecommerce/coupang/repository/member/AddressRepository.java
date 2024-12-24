@@ -11,7 +11,17 @@ import ecommerce.coupang.domain.member.Address;
 @LogLevel("AddressRepository")
 public interface AddressRepository extends JpaRepository<Address, Long> {
 
+	/**
+	 * 회원 ID로 주소록 조회
+	 * @param memberId 회원 ID
+	 * @return 주소 목록
+	 */
 	List<Address> findByMemberId(Long memberId);
 
-	Optional<Address> findByMemberIdAndIsDefaultTrue(Long id);
+	/**
+	 * 회원 ID로 기본 주소 조회
+	 * @param memberId 회원 ID
+	 * @return 기본 주소
+	 */
+	Optional<Address> findByMemberIdAndIsDefaultTrue(Long memberId);
 }

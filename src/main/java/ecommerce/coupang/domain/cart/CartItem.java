@@ -1,7 +1,6 @@
 package ecommerce.coupang.domain.cart;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
-import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
@@ -64,9 +63,5 @@ public class CartItem extends BaseTimeEntity {
 		if (this.quantity - quantity <= 0)
 			throw new CustomException(ErrorCode.QUANTITY_IS_WRONG);
 		this.quantity = quantity;
-	}
-
-	public void increaseQuantity(int quantity) {
-		this.quantity += quantity;
 	}
 }

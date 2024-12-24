@@ -28,13 +28,14 @@ public class CartServiceImpl implements CartService {
 	@Override
 	@Transactional
 	public Cart addCart(AddCartRequest request, Member member) throws CustomException {
-		Cart cart = cartRepository.findByMember(member)
+		Cart cart = cartRepository.findByMemberId(member.getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
 
 		ProductVariant productVariant = productVariantRepository.findById(request.getProductVariantId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
-		CartItem cartItem = cartItemRepository.findByCartAndProductVariant(cart, productVariant).orElse(null);
+		CartItem cartItem = cartItemRepository.findByCartIdAndProductVariantId(cart.getId(), productVariant.getId())
+			.orElse(null);
 
 		if (cartItem != null)
 			cartItem.changeQuantity(request.getQuantity());
@@ -48,7 +49,7 @@ public class CartServiceImpl implements CartService {
 
 	@Override
 	public Cart findMyCart(Member member) throws CustomException {
-		return cartRepository.findByMember(member)
+		return cartRepository.findByMemberId(member.getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
 	}
 
@@ -69,7 +70,7 @@ public class CartServiceImpl implements CartService {
 	@Override
 	@Transactional
 	public CartItem removeItem(Long cartItemId, Member member) throws CustomException {
-		Cart cart = cartRepository.findByMember(member)
+		Cart cart = cartRepository.findByMemberId(member.getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
 
 		CartItem cartItem = cartItemRepository.findById(cartItemId)
@@ -84,7 +85,7 @@ public class CartServiceImpl implements CartService {
 	@Override
 	@Transactional
 	public void clearCart(Member member) throws CustomException {
-		Cart cart = cartRepository.findByMember(member)
+		Cart cart = cartRepository.findByMemberId(member.getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
 
 		cartItemRepository.deleteAll(cart.getCartItems());

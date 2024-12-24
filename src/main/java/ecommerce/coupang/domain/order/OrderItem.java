@@ -1,11 +1,8 @@
 package ecommerce.coupang.domain.order;
 
 import ecommerce.coupang.domain.cart.CartItem;
-import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
-import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
 import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
-import ecommerce.coupang.exception.CustomException;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -60,7 +57,7 @@ public class OrderItem {
 		this.totalPrice = totalPrice;
 	}
 
-	public static OrderItem createByProduct(Order order, ProductVariant productVariant, CreateOrderByProductRequest request) throws CustomException {
+	public static OrderItem createByProduct(Order order, ProductVariant productVariant, CreateOrderByProductRequest request) {
 		return new OrderItem(
 			order,
 			productVariant,
@@ -70,7 +67,7 @@ public class OrderItem {
 		);
 	}
 
-	public static OrderItem createByCartItem(Order order, CartItem cartItem, CreateOrderByCartRequest request) {
+	public static OrderItem createByCartItem(Order order, CartItem cartItem) {
 		return new OrderItem(
 			order,
 			cartItem.getProductVariant(),
