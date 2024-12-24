@@ -6,6 +6,8 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
+import ecommerce.coupang.domain.cart.Cart;
+import ecommerce.coupang.repository.cart.CartRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,6 +37,9 @@ class AuthServiceImplTest {
 
 	@Mock
 	private MemberRepository memberRepository;
+
+	@Mock
+	private CartRepository cartRepository;
 
 	@Mock
 	private JwtProvider jwtProvider;
@@ -96,16 +101,15 @@ class AuthServiceImplTest {
 	void signupSuccess() throws CustomException {
 		SignupRequest request = signupRequest();
 		String encodedPassword = "encodedPassword";
-		
 
-		when(mockMember.getId()).thenReturn(1L);
 		when(passwordEncoder.encode(request.getPassword())).thenReturn(encodedPassword);
 		when(memberRepository.save(any(Member.class))).thenReturn(mockMember);
 
 		Member saveMember = authService.signup(request);
 
-		assertThat(saveMember.getId()).isEqualTo(mockMember.getId());
+		assertThat(saveMember).isEqualTo(mockMember);
 		verify(memberRepository).save(any(Member.class));
+		verify(cartRepository).save(any(Cart.class));
 	}
 
 	@Test
