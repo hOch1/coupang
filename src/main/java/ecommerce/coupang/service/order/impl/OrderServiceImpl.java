@@ -82,7 +82,7 @@ public class OrderServiceImpl implements OrderService {
 
 	@Override
 	public List<Order> findOrders(Member member) {
-		return orderRepository.findByMember(member);
+		return orderRepository.findByMemberWithAddress(member);
 	}
 
 	@Override

@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
 import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
+import ecommerce.coupang.dto.response.Result;
+import ecommerce.coupang.dto.response.order.OrderDetailResponse;
 import ecommerce.coupang.dto.response.order.OrderResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
@@ -54,21 +56,25 @@ public class OrderController {
 
 	@GetMapping
 	@Operation(summary = "주문 목록 조회 API", description = "주문 내역 목록을 조회합니다")
-	public ResponseEntity<List<OrderResponse>> findOrders(
+	public ResponseEntity<Result<List<OrderResponse>>> findOrders(
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		List<Order> orders = orderService.findOrders(userDetails.getMember());
-		return ResponseEntity.ok(null);
+		List<OrderResponse> responses = orders.stream()
+			.map(OrderResponse::from)
+			.toList();
+
+		return ResponseEntity.ok(new Result<>(responses));
 	}
 
 	@GetMapping("/{orderId}")
 	@Operation(summary = "주문 상세 조회 API", description = "주문 상세 내역을 조회합니다.")
-	public ResponseEntity<OrderResponse> findOrder(
+	public ResponseEntity<Result<OrderDetailResponse>> findOrder(
 		@PathVariable Long orderId,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		Order order = orderService.findOrder(orderId, userDetails.getMember());
-		return ResponseEntity.ok(null);
+		return ResponseEntity.ok(new Result<>(OrderDetailResponse.from(order)));
 	}
 
 	@DeleteMapping("/{orderId}")
