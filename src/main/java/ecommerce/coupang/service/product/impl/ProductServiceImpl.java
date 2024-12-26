@@ -9,6 +9,7 @@ import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.domain.product.variant.VariantOptionValue;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
+import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
 import ecommerce.coupang.repository.category.CategoryOptionValueRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.repository.product.VariantOptionValueRepository;
@@ -82,9 +83,55 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Product updateProduct(UpdateProductRequest request, Long productId, Member member) throws CustomException {
-		// TODO 상품 수정
-		return null;
+	@Transactional
+	public Product updateProduct(UpdateProductRequest request, Member member) throws CustomException {
+		Product product = productRepository.findByIdWithStoreAndCategory(request.getId())
+			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+
+		validateMember(product.getStore(), member);
+
+		product.update(request);
+
+		if (!request.getCategoryOptions().isEmpty()) {
+			// TODO 옵션 전체 삭제 후 추가 -> 변경된 옵션만 수정하도록
+			product.getProductOptions().clear();
+
+			for (UpdateProductRequest.UpdateCategoryOptionsRequest c : request.getCategoryOptions()) {
+				CategoryOptionValue categoryOptionValue = categoryOptionValueRepository.findById(c.getOptionValueId())
+					.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
+
+				ProductCategoryOption productCategoryOption = ProductCategoryOption.create(product, categoryOptionValue);
+				product.addProductOptions(productCategoryOption);
+			}
+		}
+
+		return product;
+	}
+
+	@Override
+	@Transactional
+	public ProductVariant updateProductVariant(UpdateProductVariantRequest request, Member member) throws CustomException {
+		ProductVariant productVariant = productVariantRepository.findByIdWithMember(request.getId())
+			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+
+		validateMember(productVariant.getProduct().getStore(), member);
+
+		productVariant.update(request);
+
+		if (!request.getVariantOptions().isEmpty()) {
+			// TODO 옵션 전체 삭제 후 추가 -> 변경된 옵션만 수정하도록
+			productVariant.getProductVariantOption().clear();
+
+			for (UpdateProductVariantRequest.UpdateVariantOption o : request.getVariantOptions()) {
+				VariantOptionValue variantOptionValue = variantOptionValueRepository.findById(o.getOptionValueId())
+					.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
+
+				ProductVariantOption productVariantOption = ProductVariantOption.create(productVariant, variantOptionValue);
+				productVariant.addProductVariantOption(productVariantOption);
+			}
+		}
+
+		return productVariant;
 	}
 
 	@Override

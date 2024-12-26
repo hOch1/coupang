@@ -77,7 +77,8 @@ public class Product extends BaseTimeEntity {
 	}
 
 	public void update(UpdateProductRequest request) {
-		// TODO
+		this.name = request.getName() != null ? request.getName() : this.name;
+		this.description = request.getDescription() != null ? request.getDescription() : this.description;
 	}
 
 	public void addProductOptions(ProductCategoryOption productCategoryOption) {

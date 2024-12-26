@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,12 +21,17 @@ import ecommerce.coupang.domain.category.CategoryOptionValue;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.member.Store;
 import ecommerce.coupang.domain.product.Product;
+import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
+import ecommerce.coupang.domain.product.variant.ProductVariantOption;
+import ecommerce.coupang.domain.product.variant.VariantOption;
 import ecommerce.coupang.domain.product.variant.VariantOptionValue;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
+import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
+import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.category.CategoryOptionValueRepository;
@@ -101,6 +107,7 @@ class ProductServiceImplTest {
 		assertThat(product.getProductOptions().size()).isEqualTo(1);
 		assertThat(product.getProductVariants().size()).isEqualTo(1);
 	}
+
 
 	@Test
 	@DisplayName("상품 등록 테스트 - 실패 (상점을 찾을 수 없음)")
@@ -188,6 +195,130 @@ class ProductServiceImplTest {
 
 		assertThat(customException).isNotNull();
 		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.OPTION_VALUE_NOT_FOUND);
+	}
+
+	@Test
+	@DisplayName("상품 수정 테스트")
+	void updateProduct() throws CustomException {
+		UpdateProductRequest request = updateProductRequest();
+		CategoryOptionValue mockCategoryOptionValue = mock(CategoryOptionValue.class);
+		List<ProductCategoryOption> mockProductOptions = mock(List.class);
+		when(mockProduct.getStore()).thenReturn(mockStore);
+		when(mockStore.getMember()).thenReturn(mockMember);
+		when(mockProduct.getProductOptions()).thenReturn(mockProductOptions);
+
+		when(productRepository.findByIdWithStoreAndCategory(request.getId())).thenReturn(Optional.of(mockProduct));
+		when(categoryOptionValueRepository.findById(anyLong())).thenReturn(Optional.of(mockCategoryOptionValue));
+
+		Product product = productService.updateProduct(request, mockMember);
+
+		verify(productRepository).findByIdWithStoreAndCategory(request.getId());
+		verify(categoryOptionValueRepository).findById(anyLong());
+		verify(mockProduct).update(request);
+		verify(mockProduct.getProductOptions()).clear();
+
+		assertThat(product).isNotNull();
+		assertThat(product).isEqualTo(mockProduct);
+	}
+
+	@Test
+	@DisplayName("상품 수정 테스트 - 실패 (해당 상품 찾을 수 없음)")
+	void updateProductFailProductNotFound() {
+		UpdateProductRequest request = updateProductRequest();
+
+		when(productRepository.findByIdWithStoreAndCategory(request.getId())).thenReturn(Optional.empty());
+
+		CustomException customException = assertThrows(CustomException.class,
+			() -> productService.updateProduct(request, mockMember));
+
+		verify(productRepository).findByIdWithStoreAndCategory(request.getId());
+		verify(categoryOptionValueRepository, never()).findById(anyLong());
+
+		assertThat(customException).isNotNull();
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.PRODUCT_NOT_FOUND);
+	}
+
+	@Test
+	@DisplayName("상품 수정 테스트 - 실패 (상품 등록한 회원과 요청한 회원이 다름)")
+	void updateProductFailMemberNotMatch() {
+		UpdateProductRequest request = updateProductRequest();
+		Member otherMember = mock(Member.class);
+		when(mockProduct.getStore()).thenReturn(mockStore);
+		when(mockStore.getMember()).thenReturn(mockMember);
+
+		when(productRepository.findByIdWithStoreAndCategory(request.getId())).thenReturn(Optional.of(mockProduct));
+
+		CustomException customException = assertThrows(CustomException.class,
+			() -> productService.updateProduct(request, otherMember));
+
+		verify(productRepository).findByIdWithStoreAndCategory(request.getId());
+		verify(categoryOptionValueRepository, never()).findById(anyLong());
+
+		assertThat(customException).isNotNull();
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.FORBIDDEN);
+	}
+
+	@Test
+	@DisplayName("변형 상품 수정 테스트")
+	void updateProductVariant() throws CustomException {
+		UpdateProductVariantRequest request = updateProductVariantRequest();
+		VariantOptionValue mockVariantOptionValue = mock(VariantOptionValue.class);
+		List<ProductVariantOption> mockProductVariantOption = mock(List.class);
+		when(mockProductVariant.getProduct()).thenReturn(mockProduct);
+		when(mockProduct.getStore()).thenReturn(mockStore);
+		when(mockStore.getMember()).thenReturn(mockMember);
+		when(mockProductVariant.getProductVariantOption()).thenReturn(mockProductVariantOption);
+
+		when(productVariantRepository.findByIdWithMember(request.getId())).thenReturn(Optional.of(mockProductVariant));
+		when(variantOptionValueRepository.findById(anyLong())).thenReturn(Optional.of(mockVariantOptionValue));
+
+		ProductVariant productVariant = productService.updateProductVariant(request, mockMember);
+
+		verify(productVariantRepository).findByIdWithMember(request.getId());
+		verify(variantOptionValueRepository).findById(anyLong());
+		verify(mockProductVariant).update(request);
+		verify(mockProductVariant.getProductVariantOption()).clear();
+
+		assertThat(productVariant).isNotNull();
+		assertThat(productVariant).isEqualTo(mockProductVariant);
+	}
+
+	@Test
+	@DisplayName("변형 상품 수정 테스트 - 실패 (해당 상품 찾을 수 없음)")
+	void updateProductVariantFailProductNotFound() {
+		UpdateProductVariantRequest request = updateProductVariantRequest();
+
+		when(productVariantRepository.findByIdWithMember(request.getId())).thenReturn(Optional.empty());
+
+		CustomException customException = assertThrows(CustomException.class,
+			() -> productService.updateProductVariant(request, mockMember));
+
+		verify(productVariantRepository).findByIdWithMember(request.getId());
+		verify(variantOptionValueRepository, never()).findById(anyLong());
+
+		assertThat(customException).isNotNull();
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.PRODUCT_NOT_FOUND);
+	}
+
+	@Test
+	@DisplayName("변형 상품 수정 테스트 - 실패 (상품 등록한 회원과 요청한 회원이 다름)")
+	void updateProductVariantFailMemberNotMatch() {
+		UpdateProductVariantRequest request = updateProductVariantRequest();
+		Member otherMember = mock(Member.class);
+		when(mockProductVariant.getProduct()).thenReturn(mockProduct);
+		when(mockProduct.getStore()).thenReturn(mockStore);
+		when(mockStore.getMember()).thenReturn(mockMember);
+
+		when(productVariantRepository.findByIdWithMember(request.getId())).thenReturn(Optional.of(mockProductVariant));
+
+		CustomException customException = assertThrows(CustomException.class,
+			() -> productService.updateProductVariant(request, otherMember));
+
+		verify(productVariantRepository).findByIdWithMember(request.getId());
+		verify(variantOptionValueRepository, never()).findById(anyLong());
+
+		assertThat(customException).isNotNull();
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.FORBIDDEN);
 	}
 
 	@Test
@@ -362,6 +493,32 @@ class ProductServiceImplTest {
 		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.FORBIDDEN);
 	}
 
+	private UpdateProductRequest updateProductRequest() {
+		UpdateProductRequest.UpdateCategoryOptionsRequest categoryOptionsRequest = new UpdateProductRequest.UpdateCategoryOptionsRequest(
+			1L,
+			1L
+		);
+
+		return new UpdateProductRequest(
+			1L,
+			"updateName",
+			"update description",
+			List.of(categoryOptionsRequest)
+		);
+	}
+
+	private UpdateProductVariantRequest updateProductVariantRequest() {
+		UpdateProductVariantRequest.UpdateVariantOption variantOption = new UpdateProductVariantRequest.UpdateVariantOption(
+			1L,
+			1L
+		);
+
+		return new UpdateProductVariantRequest(
+			1L,
+			10000L,
+			List.of(variantOption)
+		);
+	}
 
 	private CreateProductRequest createRequest() {
 		CreateProductRequest.CategoryOptionsRequest categoryOptionsRequest = new CreateProductRequest.CategoryOptionsRequest(

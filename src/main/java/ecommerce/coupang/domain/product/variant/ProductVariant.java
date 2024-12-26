@@ -2,6 +2,7 @@ package ecommerce.coupang.domain.product.variant;
 
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
+import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import jakarta.persistence.*;
@@ -98,5 +99,9 @@ public class ProductVariant {
 			this.status = ProductStatus.NO_STOCK;
 		} else
 			this.status = status;
+	}
+
+	public void update(UpdateProductVariantRequest request) {
+		this.price = request.getPrice() != null ? request.getPrice().intValue() : this.price;
 	}
 }

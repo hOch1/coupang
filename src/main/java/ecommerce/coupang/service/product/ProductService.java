@@ -11,6 +11,7 @@ import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
+import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
 import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("ProductService")
@@ -27,13 +28,22 @@ public interface ProductService {
 	Product createProduct(CreateProductRequest request, Member member) throws CustomException;
 
 	/**
-	 * 상품 정보 변경
-	 * @param request 상품 변경 요청 정보
-	 * @param productId 수정할 상품 ID
+	 * 상품 수정
+	 * @param request 상품 수정 요청 정보
 	 * @param member 요청한 회원
+	 * @return 수정한 상품
 	 */
 	@LogAction("상품 수정")
-	Product updateProduct(UpdateProductRequest request, Long productId, Member member) throws CustomException;
+	Product updateProduct(UpdateProductRequest request, Member member) throws CustomException;
+
+	/**
+	 * 상품 변형 수정
+	 * @param request 변형 상품 수정 요청 정보
+	 * @param member 요청한 회원
+	 * @return 수정한 변형 상품
+	 */
+	@LogAction("상품 변형 수정")
+	ProductVariant updateProductVariant(UpdateProductVariantRequest request, Member member) throws CustomException;
 
 	/**
 	 * 카테고리별 상품 조회 (하위 카테고리 포함)

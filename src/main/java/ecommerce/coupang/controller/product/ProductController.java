@@ -20,6 +20,7 @@ import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
+import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
 import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.product.ProductDetailResponse;
 import ecommerce.coupang.dto.response.product.ProductResponse;
@@ -171,14 +172,23 @@ public class ProductController {
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
-	@PatchMapping("/{productId}")
+	@PatchMapping
 	@Operation(summary = "상품 수정 API", description = "해당 상품을 수정합니다.")
 	public ResponseEntity<Void> updateProduct(
 		@RequestBody UpdateProductRequest request,
-		@PathVariable Long productId,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		productService.updateProduct(request, productId, userDetails.getMember());
+		productService.updateProduct(request, userDetails.getMember());
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+
+	@PatchMapping("/variant")
+	@Operation(summary = "상품 변형 수정 API", description = "해당 변형 상품을 수정합니다")
+	public ResponseEntity<Void> updateProductVariant(
+		@RequestBody UpdateProductVariantRequest request,
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
+
+		productService.updateProductVariant(request, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 }
