@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +24,8 @@ import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.VariantOptionValue;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
+import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
+import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.category.CategoryOptionValueRepository;
@@ -260,6 +261,7 @@ class ProductServiceImplTest {
 
 		verify(productVariantRepository).findByIdWithMember(anyLong());
 		verify(productVariantRepository, never()).findByProductIdAndDefault(anyLong());
+		verify(mockProductVariant, never()).changeDefault(true);
 
 		assertThat(customException).isNotNull();
 		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.FORBIDDEN);
@@ -280,9 +282,84 @@ class ProductServiceImplTest {
 
 		verify(productVariantRepository).findByIdWithMember(anyLong());
 		verify(productVariantRepository).findByProductIdAndDefault(anyLong());
+		verify(mockProductVariant, never()).changeDefault(true);
 
 		assertThat(customException).isNotNull();
 		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.ALREADY_DEFAULT_PRODUCT);
+	}
+
+	@Test
+	@DisplayName("상품 재고 변경 테스트")
+	void changeProductStockQuantity() throws CustomException {
+		UpdateProductStockRequest request = new UpdateProductStockRequest(10);
+		when(mockProductVariant.getProduct()).thenReturn(mockProduct);
+		when(mockProduct.getStore()).thenReturn(mockStore);
+		when(mockStore.getMember()).thenReturn(mockMember);
+
+		when(productVariantRepository.findByIdWithMember(anyLong())).thenReturn(Optional.of(mockProductVariant));
+
+		ProductVariant productVariant = productService.updateProductStock(anyLong(), request, mockMember);
+
+		verify(productVariantRepository).findByIdWithMember(anyLong());
+		verify(productVariant).changeStock(request.getStockQuantity());
+	}
+
+	@Test
+	@DisplayName("상품 재고 변경 테스트 - 실패 (상품 등록한 회원과 요청한 회원이 다름)")
+	void changeProductStockQuantityFailMemberNotMatch() throws CustomException {
+		UpdateProductStockRequest request = new UpdateProductStockRequest(10);
+		when(mockProductVariant.getProduct()).thenReturn(mockProduct);
+		when(mockProduct.getStore()).thenReturn(mockStore);
+		when(mockStore.getMember()).thenReturn(mockMember);
+		Member otherMember = mock(Member.class);
+
+		when(productVariantRepository.findByIdWithMember(anyLong())).thenReturn(Optional.of(mockProductVariant));
+
+		CustomException customException = assertThrows(CustomException.class,
+			() -> productService.updateProductStock(anyLong(), request, otherMember));
+
+		verify(productVariantRepository).findByIdWithMember(anyLong());
+		verify(mockProductVariant, never()).changeStock(request.getStockQuantity());
+
+		assertThat(customException).isNotNull();
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.FORBIDDEN);
+	}
+
+	@Test
+	@DisplayName("상품 상태 변경 테스트")
+	void changeProductStatus() throws CustomException {
+		UpdateProductStatusRequest request = new UpdateProductStatusRequest(ProductStatus.INACTIVE);
+		when(mockProductVariant.getProduct()).thenReturn(mockProduct);
+		when(mockProduct.getStore()).thenReturn(mockStore);
+		when(mockStore.getMember()).thenReturn(mockMember);
+
+		when(productVariantRepository.findByIdWithMember(anyLong())).thenReturn(Optional.of(mockProductVariant));
+
+		ProductVariant productVariant = productService.updateProductStatus(anyLong(), request, mockMember);
+
+		verify(productVariantRepository).findByIdWithMember(anyLong());
+		verify(productVariant).changeStatus(request.getStatus());
+	}
+
+	@Test
+	@DisplayName("상품 상태 변경 테스트 - 실패 (상품 등록한 회원과 요청한 회원이 다름)")
+	void changeProductStatusFailMemberNotMatch() {
+		UpdateProductStatusRequest request = new UpdateProductStatusRequest(ProductStatus.INACTIVE);
+		when(mockProductVariant.getProduct()).thenReturn(mockProduct);
+		when(mockProduct.getStore()).thenReturn(mockStore);
+		when(mockStore.getMember()).thenReturn(mockMember);
+		Member otherMember = mock(Member.class);
+
+		when(productVariantRepository.findByIdWithMember(anyLong())).thenReturn(Optional.of(mockProductVariant));
+
+		CustomException customException = assertThrows(CustomException.class,
+			() -> productService.updateProductStatus(anyLong(), request, otherMember));
+
+		verify(productVariantRepository).findByIdWithMember(anyLong());
+		verify(mockProductVariant, never()).changeStatus(request.getStatus());
+
+		assertThat(customException).isNotNull();
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.FORBIDDEN);
 	}
 
 

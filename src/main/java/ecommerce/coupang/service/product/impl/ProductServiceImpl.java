@@ -7,6 +7,8 @@ import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.domain.product.variant.VariantOptionValue;
+import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
+import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
 import ecommerce.coupang.repository.category.CategoryOptionValueRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.repository.product.VariantOptionValueRepository;
@@ -48,8 +50,7 @@ public class ProductServiceImpl implements ProductService {
 		Store store = storeRepository.findByIdWithMember(request.getStoreId())
 				.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
-		if (!store.getMember().equals(member))
-			throw new CustomException(ErrorCode.FORBIDDEN);
+		validateMember(store, member);
 
 		Product product = Product.create(request, store, category);
 
@@ -142,8 +143,7 @@ public class ProductServiceImpl implements ProductService {
 		ProductVariant productVariant = productVariantRepository.findByIdWithMember(productVariantId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
-		if (!productVariant.getProduct().getStore().getMember().equals(member))
-			throw new CustomException(ErrorCode.FORBIDDEN);
+		validateMember(productVariant.getProduct().getStore(), member);
 
 		ProductVariant defaultProductVariant = productVariantRepository.findByProductIdAndDefault(productVariant.getProduct().getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -155,6 +155,37 @@ public class ProductServiceImpl implements ProductService {
 		defaultProductVariant.changeDefault(false);
 
 		return productVariant;
+	}
+
+	@Override
+	@Transactional
+	public ProductVariant updateProductStock(Long productVariantId, UpdateProductStockRequest request, Member member) throws CustomException {
+		ProductVariant productVariant = productVariantRepository.findByIdWithMember(productVariantId)
+			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+
+		validateMember(productVariant.getProduct().getStore(), member);
+
+		productVariant.changeStock(request.getStockQuantity());
+
+		return productVariant;
+	}
+
+	@Override
+	@Transactional
+	public ProductVariant updateProductStatus(Long productVariantId, UpdateProductStatusRequest request, Member member) throws CustomException {
+		ProductVariant productVariant = productVariantRepository.findByIdWithMember(productVariantId)
+			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+
+		validateMember(productVariant.getProduct().getStore(), member);
+
+		productVariant.changeStatus(request.getStatus());
+
+		return productVariant;
+	}
+
+	private void validateMember(Store store, Member member) throws CustomException {
+		if (!store.getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
 	}
 }
 

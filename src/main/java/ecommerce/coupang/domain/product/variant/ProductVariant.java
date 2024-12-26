@@ -52,13 +52,13 @@ public class ProductVariant {
 		this.isDefault = isDefault;
 	}
 
-	public static ProductVariant create(CreateProductRequest.VariantRequest v, Product product) {
+	public static ProductVariant create(CreateProductRequest.VariantRequest request, Product product) {
 		return new ProductVariant(
 			product,
-			v.getPrice(),
-			v.getStock(),
-			v.getStatus(),
-			v.isDefault()
+			request.getPrice(),
+			request.getStock(),
+			request.getStatus(),
+			request.isDefault()
 		);
 	}
 
@@ -79,5 +79,24 @@ public class ProductVariant {
 
 	public void changeDefault(boolean change) {
 		this.isDefault = change;
+	}
+
+	public void changeStock(int stockQuantity) throws CustomException {
+		if (stockQuantity < 0)
+			throw new CustomException(ErrorCode.INVALID_STOCK_QUANTITY);
+
+		if (stockQuantity == 0) {
+			this.status = ProductStatus.NO_STOCK;
+			this.stockQuantity = 0;
+		} else
+			this.stockQuantity = stockQuantity;
+	}
+
+	public void changeStatus(ProductStatus status) {
+		if (status.equals(ProductStatus.NO_STOCK)) {
+			this.stockQuantity = 0;
+			this.status = ProductStatus.NO_STOCK;
+		} else
+			this.status = status;
 	}
 }

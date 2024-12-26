@@ -25,6 +25,7 @@ public enum ErrorCode {
 	ALREADY_DEFAULT_PRODUCT(400, "해당 상품은 이미 대표 상품 입니다"),
 	IS_NOT_BOTTOM_CATEGORY(400, "최하위 카테고리가 아닙니다."),
 	QUANTITY_IS_WRONG(400, "수량은 1보다 작을 수 없습니다."),
+	INVALID_STOCK_QUANTITY(400, "재고는 0보다 작을 수 없습니다."),
 
 	FORBIDDEN(401, "권한이 없습니다."),
 

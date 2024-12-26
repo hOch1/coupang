@@ -9,6 +9,8 @@ import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
+import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
+import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
 import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("ProductService")
@@ -112,4 +114,26 @@ public interface ProductService {
 	 */
 	@LogAction("대표 상품 변경")
 	ProductVariant updateDefaultProduct(Long productVariantId, Member member) throws CustomException;
+
+	/**
+	 * 상품 재고 변경
+	 * 재고가 0이면 상품 상태가 자동으로 NO_STOCK(재고없음)으로 변경
+	 * @param productVariantId 변경할 상품 변형 ID
+	 * @param request 재고 변경 요청 정보
+	 * @param member 요청한 회원
+	 * @return 변경된 상품 변형
+	 */
+	@LogAction("상품 재고 변경")
+	ProductVariant updateProductStock(Long productVariantId, UpdateProductStockRequest request, Member member) throws CustomException;
+
+	/**
+	 * 상품 상태 변경
+	 * 상품 상태가 NO_STOCK(재고없음)이면 자동으로 상품 재고 0으로 변경
+	 * @param productVariantId 변경할 상품 변형 ID
+	 * @param request 상태 변경 요청 정보
+	 * @param member 요청한 회원
+	 * @return 변경된 상품 변형
+	 */
+	@LogAction("상품 상태 변경")
+	ProductVariant updateProductStatus(Long productVariantId, UpdateProductStatusRequest request, Member member) throws CustomException;
 }
