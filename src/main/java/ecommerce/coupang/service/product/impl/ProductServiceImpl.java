@@ -132,8 +132,29 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public Product findProduct(Long productId) throws CustomException {
-		return productRepository.findById(productId)
+		return productRepository.findByIdWithStoreAndCategory(productId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+	}
+
+	@Override
+	@Transactional
+	public ProductVariant updateDefaultProduct(Long productVariantId, Member member) throws CustomException {
+		ProductVariant productVariant = productVariantRepository.findByIdWithMember(productVariantId)
+			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+
+		if (!productVariant.getProduct().getStore().getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
+
+		ProductVariant defaultProductVariant = productVariantRepository.findByProductIdAndDefault(productVariant.getProduct().getId())
+			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+
+		if (defaultProductVariant.equals(productVariant))
+			throw new CustomException(ErrorCode.ALREADY_DEFAULT_PRODUCT);
+
+		productVariant.changeDefault(true);
+		defaultProductVariant.changeDefault(false);
+
+		return productVariant;
 	}
 }
 

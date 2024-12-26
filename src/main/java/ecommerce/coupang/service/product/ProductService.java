@@ -103,4 +103,13 @@ public interface ProductService {
 	 */
 	@LogAction("상품 상세 조회")
 	Product findProduct(Long productId) throws CustomException;
+
+	/**
+	 * 대표 상품 변경
+	 * @param productVariantId 대표상품으로 지정할 상품 변형 ID
+	 * @param member 요청한 회원
+	 * @return 변경된 대표 상품
+	 */
+	@LogAction("대표 상품 변경")
+	ProductVariant updateDefaultProduct(Long productVariantId, Member member) throws CustomException;
 }

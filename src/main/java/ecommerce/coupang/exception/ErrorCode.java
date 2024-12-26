@@ -22,6 +22,7 @@ public enum ErrorCode {
 	ALREADY_EXITS_PHONE(400, "중복된 핸드폰 번호 입니다."),
 	ALREADY_EXITS_STORE_NUMBER(400, "이미 등록된 사업자 번호 입니다."),
 	ALREADY_ROLE_SELLER(400, "이미 판매자 권한 입니다."),
+	ALREADY_DEFAULT_PRODUCT(400, "해당 상품은 이미 대표 상품 입니다"),
 	IS_NOT_BOTTOM_CATEGORY(400, "최하위 카테고리가 아닙니다."),
 	QUANTITY_IS_WRONG(400, "수량은 1보다 작을 수 없습니다."),
 

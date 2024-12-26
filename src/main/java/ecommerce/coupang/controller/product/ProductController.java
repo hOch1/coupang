@@ -137,6 +137,16 @@ public class ProductController {
 		return ResponseEntity.ok(new Result<>(ProductDetailResponse.from(product)));
 	}
 
+	@PatchMapping("/{productVariantId}/default")
+	@Operation(summary = "대표상품 변경 API", description = "대표 상품을 변경합니다")
+	public ResponseEntity<Void> updateDefaultProduct(
+		@PathVariable Long productVariantId,
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
+
+		productService.updateDefaultProduct(productVariantId, userDetails.getMember());
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+
 	@PatchMapping("/{productId}")
 	@Operation(summary = "상품 수정 API", description = "해당 상품을 수정합니다.")
 	public ResponseEntity<Void> updateProduct(

@@ -226,6 +226,65 @@ class ProductServiceImplTest {
 		assertThat(productVariants.size()).isEqualTo(1);
 	}
 
+	@Test
+	@DisplayName("대표 상품 변경 테스트")
+	void changeDefaultProduct() throws CustomException {
+		when(mockStore.getMember()).thenReturn(mockMember);
+		when(mockProduct.getStore()).thenReturn(mockStore);
+		when(mockProductVariant.getProduct()).thenReturn(mockProduct);
+		ProductVariant defaultProduct = mock(ProductVariant.class);
+
+		when(productVariantRepository.findByIdWithMember(anyLong())).thenReturn(Optional.of(mockProductVariant));
+		when(productVariantRepository.findByProductIdAndDefault(anyLong())).thenReturn(Optional.of(defaultProduct));
+
+		ProductVariant productVariant = productService.updateDefaultProduct(anyLong(), mockMember);
+
+		verify(productVariantRepository).findByIdWithMember(anyLong());
+		verify(productVariantRepository).findByProductIdAndDefault(anyLong());
+		verify(productVariant).changeDefault(true);
+		verify(defaultProduct).changeDefault(false);
+	}
+
+	@Test
+	@DisplayName("대표 상품 변경 테스트 - 실패 (해당 상품 등록한 회원과 요청한 회원이 다름)")
+	void changeDefaultProductFailMemberNotMatch() {
+		when(mockStore.getMember()).thenReturn(mockMember);
+		when(mockProduct.getStore()).thenReturn(mockStore);
+		when(mockProductVariant.getProduct()).thenReturn(mockProduct);
+		Member otherMember = mock(Member.class);
+
+		when(productVariantRepository.findByIdWithMember(anyLong())).thenReturn(Optional.of(mockProductVariant));
+
+		CustomException customException = assertThrows(CustomException.class,
+			() -> productService.updateDefaultProduct(anyLong(), otherMember));
+
+		verify(productVariantRepository).findByIdWithMember(anyLong());
+		verify(productVariantRepository, never()).findByProductIdAndDefault(anyLong());
+
+		assertThat(customException).isNotNull();
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.FORBIDDEN);
+	}
+
+	@Test
+	@DisplayName("대표 상품 변경 테스트 - 실패 (요청한 상품이 이미 대표 상품)")
+	void changeDefaultProductFailAlreadyDefault() {
+		when(mockStore.getMember()).thenReturn(mockMember);
+		when(mockProduct.getStore()).thenReturn(mockStore);
+		when(mockProductVariant.getProduct()).thenReturn(mockProduct);
+
+		when(productVariantRepository.findByIdWithMember(anyLong())).thenReturn(Optional.of(mockProductVariant));
+		when(productVariantRepository.findByProductIdAndDefault(anyLong())).thenReturn(Optional.of(mockProductVariant));
+
+		CustomException customException = assertThrows(CustomException.class,
+			() -> productService.updateDefaultProduct(anyLong(), mockMember));
+
+		verify(productVariantRepository).findByIdWithMember(anyLong());
+		verify(productVariantRepository).findByProductIdAndDefault(anyLong());
+
+		assertThat(customException).isNotNull();
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.ALREADY_DEFAULT_PRODUCT);
+	}
+
 
 	private CreateProductRequest createRequest() {
 		CreateProductRequest.CategoryOptionsRequest categoryOptionsRequest = new CreateProductRequest.CategoryOptionsRequest(

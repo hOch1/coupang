@@ -76,4 +76,8 @@ public class ProductVariant {
 	public void addStock(int quantity) {
 		this.stockQuantity += quantity;
 	}
+
+	public void changeDefault(boolean change) {
+		this.isDefault = change;
+	}
 }

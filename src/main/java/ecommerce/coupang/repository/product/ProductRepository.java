@@ -24,7 +24,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 		+ "join fetch p.category c "
 		+ "where p.id = :productId "
 		+ "order by p.createdAt desc ")
-	Optional<Product> findById(Long productId);
+	Optional<Product> findByIdWithStoreAndCategory(Long productId);
 
 	/**
 	 * 상점으로 상품 조회
