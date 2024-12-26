@@ -8,6 +8,7 @@ import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
 import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
+import ecommerce.coupang.dto.response.order.OrderDetailResponse;
 import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("OrderService")
@@ -45,7 +46,7 @@ public interface OrderService {
 	 * @return 주문 내역
 	 */
 	@LogAction("주문 상세 조회")
-	Order findOrder(Long orderId, Member member) throws CustomException;
+	OrderDetailResponse findOrder(Long orderId, Member member) throws CustomException;
 
 	/**
 	 * 주문 취소

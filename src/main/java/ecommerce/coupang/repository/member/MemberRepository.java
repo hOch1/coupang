@@ -3,6 +3,7 @@ package ecommerce.coupang.repository.member;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
@@ -15,6 +16,9 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 	 * @param email 이메일
 	 * @return 회원
 	 */
+	@Query("select m from Member m "
+		+ "join fetch m.cart c "
+		+ "where m.email = :email")
 	Optional<Member> findByEmail(String email);
 
 	/**

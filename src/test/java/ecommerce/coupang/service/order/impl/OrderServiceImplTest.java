@@ -10,6 +10,7 @@ import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
 import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
+import ecommerce.coupang.dto.response.order.OrderDetailResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.cart.CartItemRepository;
@@ -208,12 +209,11 @@ class OrderServiceImplTest {
         when(orderRepository.findById(orderId)).thenReturn(Optional.of(mockOrder));
         when(mockOrder.getMember()).thenReturn(mockMember);
 
-        Order order = orderService.findOrder(orderId, mockMember);
+        OrderDetailResponse order = orderService.findOrder(orderId, mockMember);
 
         verify(orderRepository).findById(orderId);
 
         assertThat(order).isNotNull();
-        assertThat(order).isEqualTo(mockOrder);
     }
 
     @Test

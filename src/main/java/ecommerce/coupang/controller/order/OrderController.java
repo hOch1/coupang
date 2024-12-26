@@ -73,8 +73,8 @@ public class OrderController {
 		@PathVariable Long orderId,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		Order order = orderService.findOrder(orderId, userDetails.getMember());
-		return ResponseEntity.ok(new Result<>(OrderDetailResponse.from(order)));
+		OrderDetailResponse response = orderService.findOrder(orderId, userDetails.getMember());
+		return ResponseEntity.ok(new Result<>(response));
 	}
 
 	@DeleteMapping("/{orderId}")

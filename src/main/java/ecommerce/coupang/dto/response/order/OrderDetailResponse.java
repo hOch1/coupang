@@ -1,12 +1,15 @@
 package ecommerce.coupang.dto.response.order;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.domain.order.OrderItem;
 import ecommerce.coupang.domain.order.OrderStatus;
 import ecommerce.coupang.domain.order.Payment;
+import ecommerce.coupang.domain.product.ProductCategoryOption;
+import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.dto.response.option.OptionResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,9 +36,7 @@ public class OrderDetailResponse {
 			order.getTotalPrice(),
 			order.getOrderMessage(),
 			order.getCreatedAt(),
-			order.getOrderItems().stream()
-				.map(OrderItemResponse::from)
-				.toList()
+			new ArrayList<>()
 		);
 	}
 
@@ -52,7 +53,7 @@ public class OrderDetailResponse {
 		private final List<OptionResponse> variantOptions;
 		private final List<OptionResponse> categoryOptions;
 
-		public static OrderItemResponse from(OrderItem orderItem) {
+		public static OrderItemResponse from(OrderItem orderItem, List<ProductVariantOption> productVariantOptions, List<ProductCategoryOption> productCategoryOptions) {
 			return new OrderItemResponse(
 				orderItem.getId(),
 				orderItem.getProductVariant().getId(),
@@ -60,10 +61,10 @@ public class OrderDetailResponse {
 				orderItem.getPrice(),
 				orderItem.getQuantity(),
 				orderItem.getTotalPrice(),
-				orderItem.getProductVariant().getProductVariantOption().stream()
+				productVariantOptions.stream()
 					.map(OptionResponse::productVariantFrom)
 					.toList(),
-				orderItem.getProductVariant().getProduct().getProductOptions().stream()
+				productCategoryOptions.stream()
 					.map(OptionResponse::productCategoryFrom)
 					.toList()
 			);

@@ -125,7 +125,7 @@ public class ProductServiceImpl implements ProductService {
 
 		if (!request.getVariantOptions().isEmpty()) {
 			// TODO 옵션 전체 삭제 후 추가 -> 변경된 옵션만 수정하도록
-			productVariant.getProductVariantOption().clear();
+			productVariant.getProductVariantOptions().clear();
 
 			for (UpdateProductVariantRequest.UpdateVariantOption o : request.getVariantOptions()) {
 				VariantOptionValue variantOptionValue = variantOptionValueRepository.findById(o.getOptionValueId())

@@ -54,7 +54,7 @@ public class CartResponse {
 				cartItem.getProductVariant().getProduct().getProductOptions().stream()
 					.map(OptionResponse::productCategoryFrom)
 					.toList(),
-				cartItem.getProductVariant().getProductVariantOption().stream()
+				cartItem.getProductVariant().getProductVariantOptions().stream()
 					.map(OptionResponse::productVariantFrom)
 					.toList()
 			);

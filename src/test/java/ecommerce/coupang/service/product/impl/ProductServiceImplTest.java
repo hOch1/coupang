@@ -265,7 +265,7 @@ class ProductServiceImplTest {
 		when(mockProductVariant.getProduct()).thenReturn(mockProduct);
 		when(mockProduct.getStore()).thenReturn(mockStore);
 		when(mockStore.getMember()).thenReturn(mockMember);
-		when(mockProductVariant.getProductVariantOption()).thenReturn(mockProductVariantOption);
+		when(mockProductVariant.getProductVariantOptions()).thenReturn(mockProductVariantOption);
 
 		when(productVariantRepository.findByIdWithMember(request.getId())).thenReturn(Optional.of(mockProductVariant));
 		when(variantOptionValueRepository.findById(anyLong())).thenReturn(Optional.of(mockVariantOptionValue));
@@ -275,7 +275,7 @@ class ProductServiceImplTest {
 		verify(productVariantRepository).findByIdWithMember(request.getId());
 		verify(variantOptionValueRepository).findById(anyLong());
 		verify(mockProductVariant).update(request);
-		verify(mockProductVariant.getProductVariantOption()).clear();
+		verify(mockProductVariant.getProductVariantOptions()).clear();
 
 		assertThat(productVariant).isNotNull();
 		assertThat(productVariant).isEqualTo(mockProductVariant);

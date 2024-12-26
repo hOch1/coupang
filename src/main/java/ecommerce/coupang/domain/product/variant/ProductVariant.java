@@ -43,7 +43,7 @@ public class ProductVariant {
 	private boolean isDefault = false;
 
 	@OneToMany(mappedBy = "productVariant", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<ProductVariantOption> productVariantOption = new ArrayList<>();
+	private List<ProductVariantOption> productVariantOptions = new ArrayList<>();
 
 	public ProductVariant(Product product, int price, int stockQuantity, ProductStatus status, boolean isDefault) {
 		this.product = product;
@@ -64,7 +64,7 @@ public class ProductVariant {
 	}
 
 	public void addProductVariantOption(ProductVariantOption productVariantOption) {
-		this.productVariantOption.add(productVariantOption);
+		this.productVariantOptions.add(productVariantOption);
 	}
 
 	public void reduceStock(int quantity) throws CustomException {
