@@ -10,7 +10,10 @@ import ecommerce.coupang.domain.product.variant.VariantOptionValue;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
+import ecommerce.coupang.dto.response.product.ProductDetailResponse;
 import ecommerce.coupang.repository.category.CategoryOptionValueRepository;
+import ecommerce.coupang.repository.product.ProductCategoryOptionRepository;
+import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.repository.product.VariantOptionValueRepository;
 import org.springframework.stereotype.Service;
@@ -43,6 +46,8 @@ public class ProductServiceImpl implements ProductService {
 	private final CategoryService categoryService;
 	private final CategoryOptionValueRepository categoryOptionValueRepository;
 	private final StoreRepository storeRepository;
+	private final ProductVariantOptionRepository productVariantOptionRepository;
+	private final ProductCategoryOptionRepository productCategoryOptionRepository;
 
 	@Override
 	@Transactional
@@ -179,9 +184,14 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public ProductVariant findProduct(Long productVariantId) throws CustomException {
-		return productVariantRepository.findByIdWithStoreAndCategory(productVariantId)
+	public ProductDetailResponse findProduct(Long productVariantId) throws CustomException {
+		ProductVariant productVariant = productVariantRepository.findByIdWithStoreAndCategory(productVariantId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+
+		List<ProductCategoryOption> productCategoryOptions = productCategoryOptionRepository.findByProductId(productVariant.getProduct().getId());
+		List<ProductVariantOption> productVariantOptions = productVariantOptionRepository.findByProductVariantId(productVariantId);
+
+		return ProductDetailResponse.from(productVariant, productCategoryOptions, productVariantOptions);
 	}
 
 	@Override

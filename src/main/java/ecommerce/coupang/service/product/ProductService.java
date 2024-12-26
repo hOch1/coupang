@@ -12,6 +12,7 @@ import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
+import ecommerce.coupang.dto.response.product.ProductDetailResponse;
 import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("ProductService")
@@ -114,7 +115,7 @@ public interface ProductService {
 	 * @return 상품 상세 조회정보
 	 */
 	@LogAction("상품 상세 조회")
-	ProductVariant findProduct(Long productVariantId) throws CustomException;
+	ProductDetailResponse findProduct(Long productVariantId) throws CustomException;
 
 	/**
 	 * 대표 상품 변경
