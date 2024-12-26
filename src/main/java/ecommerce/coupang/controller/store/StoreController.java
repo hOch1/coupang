@@ -29,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1/stores")
 @RequiredArgsConstructor
-@Tag(name = "가게 API V1", description = "가게 관련 API")
+@Tag(name = "상점 API V1", description = "상점 관련 API")
 public class StoreController {
 
 	private final StoreService storeService;
@@ -56,7 +56,7 @@ public class StoreController {
 	}
 
 	@GetMapping("/my")
-	@Operation(summary = "내 상점 모록 조회", description = "나의 상점 목록을 조회합니다")
+	@Operation(summary = "내 상점 목록 조회", description = "나의 상점 목록을 조회합니다")
 	public ResponseEntity<Result<List<StoreDetailResponse>>> getMyStore(
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
