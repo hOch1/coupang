@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +24,6 @@ import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
-import ecommerce.coupang.domain.product.variant.VariantOption;
 import ecommerce.coupang.domain.product.variant.VariantOptionValue;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
@@ -526,7 +524,7 @@ class ProductServiceImplTest {
 			1L
 		);
 
-		CreateProductRequest.VariantRequest.VariantOption variantOption = new CreateProductRequest.VariantRequest.VariantOption(
+		CreateProductRequest.VariantRequest.VariantOptionRequest variantOption = new CreateProductRequest.VariantRequest.VariantOptionRequest(
 			1L,
 			1L
 		);

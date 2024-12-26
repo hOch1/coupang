@@ -3,6 +3,7 @@ package ecommerce.coupang.domain.category;
 import java.util.ArrayList;
 import java.util.List;
 
+import ecommerce.coupang.domain.product.variant.VariantOption;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,6 +45,12 @@ public class Category {
 
 	@OneToMany(mappedBy = "parent", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Category> children = new ArrayList<>();
+
+	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CategoryOption> categoryOptions = new ArrayList<>();
+
+	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<VariantOption> variantOptions = new ArrayList<>();
 
 	/**
 	 * 최하위 카테고리 확인

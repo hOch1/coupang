@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.domain.category.Category;
+import ecommerce.coupang.dto.response.option.AllOptionResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.category.CategoryRepository;
@@ -33,7 +34,7 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public Category findBottomCategory(Long categoryId) throws CustomException {
-		Category category = categoryRepository.findById(categoryId).orElseThrow(() ->
+		Category category = categoryRepository.findByIdWithParent(categoryId).orElseThrow(() ->
 			new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
 
 		if (!category.isBottom())
@@ -45,6 +46,41 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public List<Category> findAll() {
 		return categoryRepository.findByLevel(1);
+	}
+
+	@Override
+	public AllOptionResponse findOptions(Long categoryId) throws CustomException {
+		Category category = findBottomCategory(categoryId);
+		AllOptionResponse response = new AllOptionResponse();
+
+		List<AllOptionResponse.CategoryOptionResponse> categoryOptions = new ArrayList<>();
+		List<AllOptionResponse.VariantOptionResponse> variantOptions = new ArrayList<>();
+
+		addCategoryOptions(category, categoryOptions);
+		addVariantOptions(category, variantOptions);
+
+		while (category.getParent() != null) {
+			addCategoryOptions(category.getParent(), categoryOptions);
+			addVariantOptions(category.getParent(), variantOptions);
+			category = category.getParent();
+		}
+
+		response.setCategoryOptions(categoryOptions);
+		response.setVariantOptions(variantOptions);
+
+		return response;
+	}
+
+	private void addCategoryOptions(Category category, List<AllOptionResponse.CategoryOptionResponse> categoryOptions) {
+		category.getCategoryOptions().forEach(co ->
+			categoryOptions.add(AllOptionResponse.CategoryOptionResponse.from(co))
+		);
+	}
+
+	private void addVariantOptions(Category category, List<AllOptionResponse.VariantOptionResponse> variantOptions) {
+		category.getVariantOptions().forEach(vo ->
+			variantOptions.add(AllOptionResponse.VariantOptionResponse.from(vo))
+		);
 	}
 
 	private void addAllSubCategory(Category category, List<Category> categories) {

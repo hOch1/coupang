@@ -52,7 +52,7 @@ public class CartResponse {
 				cartItem.getQuantity(),
 				cartItem.getProductVariant().getStatus(),
 				cartItem.getProductVariant().getProduct().getProductOptions().stream()
-					.map(OptionResponse::categoryOptionFrom)
+					.map(OptionResponse::productCategoryFrom)
 					.toList(),
 				cartItem.getProductVariant().getProductVariantOption().stream()
 					.map(OptionResponse::productVariantFrom)

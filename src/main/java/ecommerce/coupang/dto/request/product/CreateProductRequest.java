@@ -31,11 +31,11 @@ public class CreateProductRequest {
 		private final int stock;
 		private final ProductStatus status;
 		private final boolean isDefault;
-		private final List<VariantOption> variantOptions;
+		private final List<VariantOptionRequest> variantOptions;
 
 		@Getter
 		@AllArgsConstructor
-		public static class VariantOption {
+		public static class VariantOptionRequest {
 			private Long optionId;
 			private Long optionValueId;
 		}

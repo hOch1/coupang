@@ -64,7 +64,7 @@ public class OrderDetailResponse {
 					.map(OptionResponse::productVariantFrom)
 					.toList(),
 				orderItem.getProductVariant().getProduct().getProductOptions().stream()
-					.map(OptionResponse::categoryOptionFrom)
+					.map(OptionResponse::productCategoryFrom)
 					.toList()
 			);
 		}

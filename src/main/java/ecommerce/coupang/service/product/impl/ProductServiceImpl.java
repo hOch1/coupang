@@ -66,7 +66,7 @@ public class ProductServiceImpl implements ProductService {
 		for (CreateProductRequest.VariantRequest v : request.getVariants()) {
 			ProductVariant productVariant = ProductVariant.create(v, product);
 
-			for (CreateProductRequest.VariantRequest.VariantOption o : v.getVariantOptions()) {
+			for (CreateProductRequest.VariantRequest.VariantOptionRequest o : v.getVariantOptions()) {
 				VariantOptionValue variantOptionValue = variantOptionValueRepository.findById(o.getOptionValueId())
 						.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
 

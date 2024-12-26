@@ -5,6 +5,7 @@ import java.util.List;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
+import ecommerce.coupang.dto.response.category.ParentCategoryResponse;
 import ecommerce.coupang.dto.response.option.OptionResponse;
 import ecommerce.coupang.dto.response.store.StoreResponse;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ public class ProductDetailResponse {
 	private final Long id;
 	private final String name;
 	private final String description;
-	private final CategoryResponse category; // 현재부터 최상위 까지
+	private final ParentCategoryResponse category; // 현재부터 최상위 까지
 	private final StoreResponse store;
 	private final int variantCount;
 	private final List<OptionResponse> categoryOptions;
@@ -28,11 +29,11 @@ public class ProductDetailResponse {
 			product.getId(),
 			product.getName(),
 			product.getDescription(),
-			CategoryResponse.includeParentFrom(product.getCategory()),
+			ParentCategoryResponse.from(product.getCategory()),
 			StoreResponse.from(product.getStore()),
 			product.getProductVariants().size(),
 			product.getProductOptions().stream()
-				.map(OptionResponse::categoryOptionFrom)
+				.map(OptionResponse::productCategoryFrom)
 				.toList(),
 			product.getProductVariants().stream()
 				.map(VariantResponse::from)

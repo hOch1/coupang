@@ -5,6 +5,8 @@ import java.util.List;
 import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.category.Category;
+import ecommerce.coupang.dto.response.option.AllOptionResponse;
+import ecommerce.coupang.dto.response.option.OptionResponse;
 import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("CategoryService")
@@ -15,7 +17,7 @@ public interface CategoryService {
 	 * @param categoryId 카테고리 ID
 	 * @return 조회한 카테고리
 	 */
-	@LogAction("카테고리 조회")
+	@LogAction("하위 카테고리 조회")
 	List<Category> findAllSubCategories(Long categoryId) throws CustomException;
 
 	/**
@@ -33,4 +35,12 @@ public interface CategoryService {
 	 */
 	@LogAction("전체 카테고리 조회")
 	List<Category> findAll();
+
+	/**
+	 * 카테고리 옵션 조회
+	 * @param categoryId 해당 카테고리 (최하위)
+	 * @return 옵션 응답
+	 */
+	@LogAction("카테고리 옵션 조회")
+	AllOptionResponse findOptions(Long categoryId) throws CustomException;
 }

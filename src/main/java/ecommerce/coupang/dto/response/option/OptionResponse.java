@@ -1,5 +1,6 @@
 package ecommerce.coupang.dto.response.option;
 
+import ecommerce.coupang.domain.category.CategoryOption;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ public class OptionResponse {
 		);
 	}
 
-	public static OptionResponse categoryOptionFrom(ProductCategoryOption productCategoryOption) {
+	public static OptionResponse productCategoryFrom(ProductCategoryOption productCategoryOption) {
 		return new OptionResponse(
 			productCategoryOption.getCategoryOptionValue().getCategoryOption().getId(),
 			productCategoryOption.getCategoryOptionValue().getCategoryOption().getDescription(),

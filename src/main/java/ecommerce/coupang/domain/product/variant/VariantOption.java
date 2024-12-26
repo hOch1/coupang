@@ -1,5 +1,8 @@
 package ecommerce.coupang.domain.product.variant;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import ecommerce.coupang.domain.category.Category;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -27,4 +30,7 @@ public class VariantOption {
 
 	@Column(name = "description", nullable = false)
 	private String description;
+
+	@OneToMany(mappedBy = "variantOption", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<VariantOptionValue> variantOptionValues = new ArrayList<>();
 }
