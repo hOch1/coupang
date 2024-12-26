@@ -41,7 +41,7 @@ public class MemberController {
 	public ResponseEntity<Void> changeRoleSeller(
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		userDetails.getMember().changeRoleSeller();
+		userDetails.getMember().changeRoleToSeller();
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 }

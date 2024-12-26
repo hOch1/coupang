@@ -13,7 +13,7 @@ import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.option.AllOptionResponse;
 import ecommerce.coupang.dto.response.category.SubCategoryResponse;
 import ecommerce.coupang.exception.CustomException;
-import ecommerce.coupang.service.product.CategoryService;
+import ecommerce.coupang.service.category.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

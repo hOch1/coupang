@@ -1,4 +1,4 @@
-package ecommerce.coupang.service.product.impl;
+package ecommerce.coupang.service.category;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,6 @@ import ecommerce.coupang.dto.response.option.AllOptionResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.category.CategoryRepository;
-import ecommerce.coupang.service.product.CategoryService;
 import lombok.RequiredArgsConstructor;
 
 @Service

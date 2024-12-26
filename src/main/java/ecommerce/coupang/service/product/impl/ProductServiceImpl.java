@@ -29,7 +29,7 @@ import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.member.StoreRepository;
 import ecommerce.coupang.repository.product.ProductRepository;
-import ecommerce.coupang.service.product.CategoryService;
+import ecommerce.coupang.service.category.CategoryService;
 import ecommerce.coupang.service.product.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

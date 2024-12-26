@@ -1,4 +1,4 @@
-package ecommerce.coupang.service.product;
+package ecommerce.coupang.service.category;
 
 import java.util.List;
 

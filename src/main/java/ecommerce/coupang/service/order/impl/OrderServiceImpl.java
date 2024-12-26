@@ -106,13 +106,13 @@ public class OrderServiceImpl implements OrderService {
 
 		for (OrderItem orderItem : orderItems) {
 			List<ProductVariantOption> productVariantOptions = productVariantOptionRepository.findByProductVariantId(
-				orderItem.getProductVariant().getId());
+					orderItem.getProductVariant().getId());
 
 			List<ProductCategoryOption> productCategoryOptions = productCategoryOptionRepository.findByProductId(
-				orderItem.getProductVariant().getProduct().getId());
+					orderItem.getProductVariant().getProduct().getId());
 
-			OrderDetailResponse.OrderItemResponse orderItemResponse = OrderDetailResponse.OrderItemResponse.from(orderItem,
-				productVariantOptions, productCategoryOptions);
+			OrderDetailResponse.OrderItemResponse orderItemResponse = OrderDetailResponse.OrderItemResponse.from(
+					orderItem, productVariantOptions, productCategoryOptions);
 
 			response.getOrderItems().add(orderItemResponse);
 		}

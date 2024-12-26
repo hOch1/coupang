@@ -53,6 +53,10 @@ public class Member extends BaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private MemberRole role;
 
+	@Column(name = "grade", nullable = false)
+	@Enumerated(EnumType.STRING)
+	private MemberGrade grade;
+
 	@Column(name = "is_active", nullable = false)
 	private boolean isActive;
 
@@ -62,7 +66,7 @@ public class Member extends BaseTimeEntity {
 	@OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Cart cart;
 
-	public Member(String name, String phoneNumber, String email, String password, MemberRole role, boolean isActive, List<Address> addresses) {
+	public Member(String name, String phoneNumber, String email, String password, MemberRole role, boolean isActive, List<Address> addresses, MemberGrade grade) {
 		this.name = name;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
@@ -70,6 +74,7 @@ public class Member extends BaseTimeEntity {
 		this.role = role;
 		this.isActive = isActive;
 		this.addresses = addresses;
+		this.grade = grade;
 	}
 
 	public static Member createFromSignupRequest(SignupRequest request, PasswordEncoder passwordEncoder) {
@@ -80,11 +85,12 @@ public class Member extends BaseTimeEntity {
 			passwordEncoder.encode(request.getPassword()),
 			request.getRole(),
 			true,
-			new ArrayList<>()
+			new ArrayList<>(),
+			MemberGrade.NORMAL
 		);
 	}
 
-	public void changeRoleSeller() throws CustomException {
+	public void changeRoleToSeller() throws CustomException {
 		if (this.role.equals(MemberRole.SELLER))
 			throw new CustomException(ErrorCode.ALREADY_ROLE_SELLER);
 

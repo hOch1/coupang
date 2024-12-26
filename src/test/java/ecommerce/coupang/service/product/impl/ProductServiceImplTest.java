@@ -37,7 +37,7 @@ import ecommerce.coupang.repository.member.StoreRepository;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.repository.product.VariantOptionValueRepository;
-import ecommerce.coupang.service.product.CategoryService;
+import ecommerce.coupang.service.category.CategoryService;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplTest {
