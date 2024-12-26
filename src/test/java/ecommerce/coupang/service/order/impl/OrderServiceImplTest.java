@@ -245,7 +245,7 @@ class OrderServiceImplTest {
         OrderDetailResponse response = orderService.findOrder(orderId, mockMember);
 
         verify(orderRepository).findByIdWithMemberAndAddress(orderId);
-        verify(orderItemRepository).findByOrderId(orderId);
+        verify(orderItemRepository).findByOrderId(anyLong());
         verify(productVariantOptionRepository).findByProductVariantId(anyLong());
         verify(productCategoryOptionRepository).findByProductId(anyLong());
 
@@ -286,12 +286,12 @@ class OrderServiceImplTest {
     @DisplayName("주문 취소 테스트")
     void cancelOrder() throws CustomException {
         Long orderId = 1L;
-        when(orderRepository.findById(orderId)).thenReturn(Optional.of(mockOrder));
+        when(orderRepository.findByIdWithMemberAndAddress(orderId)).thenReturn(Optional.of(mockOrder));
         when(mockOrder.getMember()).thenReturn(mockMember);
 
         Order order = orderService.cancelOrder(orderId, mockMember);
 
-        verify(orderRepository).findById(orderId);
+        verify(orderRepository).findByIdWithMemberAndAddress(orderId);
         verify(order).cancel();
 
         assertThat(order).isEqualTo(mockOrder);
@@ -316,12 +316,12 @@ class OrderServiceImplTest {
     void cancelOrderFailMemberNotMatch() {
         Long orderId = 1L;
         Member otherMember = mock(Member.class);
-        when(orderRepository.findById(orderId)).thenReturn(Optional.of(mockOrder));
+        when(orderRepository.findByIdWithMemberAndAddress(orderId)).thenReturn(Optional.of(mockOrder));
         when(mockOrder.getMember()).thenReturn(mockMember);
 
         CustomException customException = assertThrows(CustomException.class, () -> orderService.cancelOrder(orderId, otherMember));
 
-        verify(orderRepository).findById(orderId);
+        verify(orderRepository).findByIdWithMemberAndAddress(orderId);
 
         assertThat(customException).isNotNull();
         assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.FORBIDDEN);
