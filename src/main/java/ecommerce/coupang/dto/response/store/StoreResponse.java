@@ -1,6 +1,6 @@
 package ecommerce.coupang.dto.response.store;
 
-import ecommerce.coupang.domain.member.Store;
+import ecommerce.coupang.domain.store.Store;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

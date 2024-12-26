@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import ecommerce.coupang.aop.log.LogLevel;
-import ecommerce.coupang.domain.member.Store;
+import ecommerce.coupang.domain.store.Store;
 
 @LogLevel("StoreRepository")
 public interface StoreRepository extends JpaRepository<Store, Long> {

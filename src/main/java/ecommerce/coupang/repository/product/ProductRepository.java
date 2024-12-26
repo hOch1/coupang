@@ -3,6 +3,7 @@ package ecommerce.coupang.repository.product;
 import java.util.List;
 import java.util.Optional;
 
+import ecommerce.coupang.repository.product.custom.ProductCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -11,7 +12,7 @@ import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.domain.product.Product;
 
 @LogLevel("ProductRepository")
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, ProductCustomRepository {
 
 	/**
 	 * ID로 상품 조회

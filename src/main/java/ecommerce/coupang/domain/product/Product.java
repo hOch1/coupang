@@ -8,7 +8,7 @@ import org.hibernate.annotations.BatchSize;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.category.Category;
-import ecommerce.coupang.domain.member.Store;
+import ecommerce.coupang.domain.store.Store;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;

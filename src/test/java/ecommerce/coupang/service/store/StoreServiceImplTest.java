@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.member.MemberRole;
-import ecommerce.coupang.domain.member.Store;
+import ecommerce.coupang.domain.store.Store;
 import ecommerce.coupang.dto.request.store.CreateStoreRequest;
 import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
 import ecommerce.coupang.exception.CustomException;

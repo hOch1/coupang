@@ -1,6 +1,7 @@
-package ecommerce.coupang.domain.member;
+package ecommerce.coupang.domain.store;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
+import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.dto.request.store.CreateStoreRequest;
 import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
 import jakarta.persistence.Column;

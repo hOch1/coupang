@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.domain.member.Member;
-import ecommerce.coupang.domain.member.Store;
+import ecommerce.coupang.domain.store.Store;
 import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
@@ -149,7 +149,8 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public List<Product> findProductsByCategoryAndOptions(Long categoryId, List<Long> categoryOptions, List<Long> variantOptions) throws CustomException {
-
+		List<Category> categories = categoryService.findAllSubCategories(categoryId);
+		productRepository.findProducts(categories, categoryOptions, categoryOptions);
 		return List.of();
 	}
 

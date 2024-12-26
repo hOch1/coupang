@@ -4,9 +4,7 @@ import java.util.List;
 
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
-import ecommerce.coupang.domain.member.Store;
 import ecommerce.coupang.domain.order.Delivery;
-import ecommerce.coupang.domain.order.OrderItem;
 import ecommerce.coupang.dto.request.delivery.UpdateDeliveryRequest;
 import ecommerce.coupang.exception.CustomException;
 

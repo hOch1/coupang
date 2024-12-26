@@ -5,7 +5,7 @@ import ecommerce.coupang.domain.category.CategoryOption;
 import ecommerce.coupang.domain.category.CategoryOptionValue;
 import ecommerce.coupang.domain.member.Address;
 import ecommerce.coupang.domain.member.Member;
-import ecommerce.coupang.domain.member.Store;
+import ecommerce.coupang.domain.store.Store;
 import ecommerce.coupang.domain.order.*;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.ProductCategoryOption;

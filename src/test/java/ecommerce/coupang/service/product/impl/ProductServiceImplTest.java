@@ -18,7 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.domain.category.CategoryOptionValue;
 import ecommerce.coupang.domain.member.Member;
-import ecommerce.coupang.domain.member.Store;
+import ecommerce.coupang.domain.store.Store;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
