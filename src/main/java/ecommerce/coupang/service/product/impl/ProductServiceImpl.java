@@ -149,8 +149,6 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public List<Product> findProductsByCategoryAndOptions(Long categoryId, List<Long> categoryOptions, List<Long> variantOptions) throws CustomException {
-		List<Category> categories = categoryService.findAllSubCategories(categoryId);
-		productRepository.findProducts(categories, categoryOptions, categoryOptions);
 		return List.of();
 	}
 
