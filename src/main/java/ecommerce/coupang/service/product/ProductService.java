@@ -114,7 +114,7 @@ public interface ProductService {
 	 * @return 상품 상세 조회정보
 	 */
 	@LogAction("상품 상세 조회")
-	Product findProduct(Long productId) throws CustomException;
+	ProductVariant findProduct(Long productVariantId) throws CustomException;
 
 	/**
 	 * 대표 상품 변경

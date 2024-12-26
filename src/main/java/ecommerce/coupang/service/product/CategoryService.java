@@ -6,7 +6,6 @@ import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.dto.response.option.AllOptionResponse;
-import ecommerce.coupang.dto.response.option.OptionResponse;
 import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("CategoryService")

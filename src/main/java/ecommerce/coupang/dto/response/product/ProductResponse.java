@@ -14,7 +14,8 @@ import lombok.Getter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProductResponse {
 
-	private final Long id;
+	private final Long productId;
+	private final Long productVariantId;
 	private final String name;
 	private final int price;
 	private final ProductStatus status;
@@ -24,6 +25,7 @@ public class ProductResponse {
 	public static ProductResponse from(ProductVariant productVariant) {
 		return new ProductResponse(
 			productVariant.getProduct().getId(),
+			productVariant.getId(),
 			productVariant.getProduct().getName(),
 			productVariant.getPrice(),
 			productVariant.getStatus(),

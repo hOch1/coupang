@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.domain.product.Product;
+import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
+import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
@@ -25,7 +27,10 @@ import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.product.ProductDetailResponse;
 import ecommerce.coupang.dto.response.product.ProductResponse;
 import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.repository.product.ProductCategoryOptionRepository;
+import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
 import ecommerce.coupang.security.CustomUserDetails;
+import ecommerce.coupang.service.product.CategoryService;
 import ecommerce.coupang.service.product.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -38,6 +43,8 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 
 	private final ProductService productService;
+	private final ProductVariantOptionRepository productVariantOptionRepository;
+	private final ProductCategoryOptionRepository productCategoryOptionRepository;
 
 	@PostMapping
 	@Operation(summary = "상품 등록 API", description = "상품을 등록합니다.")
@@ -130,14 +137,16 @@ public class ProductController {
 		return null;
 	}
 
-	@GetMapping("/{productId}")
+	@GetMapping("/{productVariantId}")
 	@Operation(summary = "상품 상세 조회 API", description = "해당 상품을 상세 조회합니다.")
 	public ResponseEntity<Result<ProductDetailResponse>> getProductById(
-		@PathVariable Long productId) throws CustomException {
+		@PathVariable Long productVariantId) throws CustomException {
 
-		Product product = productService.findProduct(productId);
+		ProductVariant productVariant = productService.findProduct(productVariantId);
+		List<ProductCategoryOption> productCategoryOptions = productCategoryOptionRepository.findByProductId(productVariant.getProduct().getId());
+		List<ProductVariantOption> productVariantOptions = productVariantOptionRepository.findByProductVariantId(productVariantId);
 
-		return ResponseEntity.ok(new Result<>(ProductDetailResponse.from(product)));
+		return ResponseEntity.ok(new Result<>(ProductDetailResponse.from(productVariant, productCategoryOptions, productVariantOptions)));
 	}
 
 	@PatchMapping("/{productVariantId}/default")

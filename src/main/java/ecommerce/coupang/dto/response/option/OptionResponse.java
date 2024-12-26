@@ -1,6 +1,5 @@
 package ecommerce.coupang.dto.response.option;
 
-import ecommerce.coupang.domain.category.CategoryOption;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import lombok.AllArgsConstructor;

@@ -14,6 +14,13 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
 	@Query("select pv from ProductVariant pv "
 		+ "join fetch pv.product p "
 		+ "join fetch p.store s "
+		+ "join fetch p.category c "
+		+ "where pv.id = :productVariantId")
+	Optional<ProductVariant> findByIdWithStoreAndCategory(Long productVariantId);
+
+	@Query("select pv from ProductVariant pv "
+		+ "join fetch pv.product p "
+		+ "join fetch p.store s "
 		+ "where pv.id = :productVariantId ")
 	Optional<ProductVariant> findByIdWithStore(Long productVariantId);
 

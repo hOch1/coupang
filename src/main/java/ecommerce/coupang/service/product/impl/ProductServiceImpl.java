@@ -179,8 +179,8 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Product findProduct(Long productId) throws CustomException {
-		return productRepository.findByIdWithStoreAndCategory(productId)
+	public ProductVariant findProduct(Long productVariantId) throws CustomException {
+		return productVariantRepository.findByIdWithStoreAndCategory(productVariantId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 	}
 
