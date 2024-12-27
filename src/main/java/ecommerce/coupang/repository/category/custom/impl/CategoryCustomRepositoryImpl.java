@@ -12,4 +12,5 @@ import lombok.RequiredArgsConstructor;
 public class CategoryCustomRepositoryImpl implements CategoryCustomRepository {
 
 	private final JPAQueryFactory queryFactory;
+
 }

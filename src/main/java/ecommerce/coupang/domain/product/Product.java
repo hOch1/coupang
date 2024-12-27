@@ -58,6 +58,9 @@ public class Product extends BaseTimeEntity {
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductVariant> productVariants = new ArrayList<>();
 
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<ProductReview> productReviews = new ArrayList<>();
+
 	public Product(String name, String description, Store store, Category category) {
 		this.name = name;
 		this.description = description;
@@ -83,8 +86,12 @@ public class Product extends BaseTimeEntity {
 		this.productOptions.add(productCategoryOption);
 	}
 
-	public void addProductVariant(ProductVariant productVariant) {
+	public void addProductVariants(ProductVariant productVariant) {
 		this.productVariants.add(productVariant);
+	}
+
+	public void addProductReviews(ProductReview productReview) {
+		this.productReviews.add(productReview);
 	}
 
 	public void delete() {

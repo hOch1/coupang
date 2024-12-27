@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.cart.Cart;
+import ecommerce.coupang.domain.product.ProductReview;
 import ecommerce.coupang.dto.request.auth.SignupRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
@@ -60,20 +61,16 @@ public class Member extends BaseTimeEntity {
 	@Column(name = "is_active", nullable = false)
 	private boolean isActive = true;
 
-	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<Address> addresses = new ArrayList<>();
-
 	@OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Cart cart;
 
-	public Member(String name, String phoneNumber, String email, String password, MemberRole role, List<Address> addresses, MemberGrade grade) {
+	public Member(String name, String phoneNumber, String email, String password) {
 		this.name = name;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.password = password;
-		this.role = role;
-		this.addresses = addresses;
-		this.grade = grade;
+		this.role = MemberRole.SELLER;
+		this.grade = MemberGrade.NORMAL;
 	}
 
 	public static Member createFromSignupRequest(SignupRequest request, PasswordEncoder passwordEncoder) {
@@ -81,10 +78,7 @@ public class Member extends BaseTimeEntity {
 			request.getName(),
 			request.getPhoneNumber(),
 			request.getEmail(),
-			passwordEncoder.encode(request.getPassword()),
-			request.getRole(),
-			new ArrayList<>(),
-			MemberGrade.NORMAL
+			passwordEncoder.encode(request.getPassword())
 		);
 	}
 

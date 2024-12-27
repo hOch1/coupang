@@ -4,6 +4,7 @@ import java.util.List;
 
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
+import ecommerce.coupang.domain.product.ProductReview;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
@@ -28,8 +29,14 @@ public class ProductDetailResponse {
 	private final StoreResponse store;
 	private final List<OptionResponse> categoryOptions;
 	private final List<OptionResponse> variantOptions;
+	private final List<ReviewResponse> reviews;
 
-	public static ProductDetailResponse from(ProductVariant productVariant, List<ProductCategoryOption> productCategoryOptions, List<ProductVariantOption> productVariantOptions) {
+	public static ProductDetailResponse from(
+		ProductVariant productVariant,
+		List<ProductCategoryOption> productCategoryOptions,
+		List<ProductVariantOption> productVariantOptions,
+		List<ProductReview> reviews) {
+
 		Product product = productVariant.getProduct();
 		return new ProductDetailResponse(
 			product.getId(),
@@ -46,6 +53,9 @@ public class ProductDetailResponse {
 				.toList(),
 			productVariantOptions.stream()
 				.map(OptionResponse::productVariantFrom)
+				.toList(),
+			reviews.stream()
+				.map(ReviewResponse::from)
 				.toList()
 		);
 	}

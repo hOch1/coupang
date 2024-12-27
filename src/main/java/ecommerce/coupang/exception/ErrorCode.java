@@ -16,6 +16,7 @@ public enum ErrorCode {
 	CART_ITEM_NOT_FOUND(404, "장바구니에 상품을 찾을 수 없습니다,"),
 	ORDER_NOT_FOUND(404, "주문을 찾을 수 없습니다."),
 	DELIVERY_NOT_FOUND(404, "배송 정보를 찾을 수 없습니다."),
+	REVIEW_NOT_FOUND(404, "리뷰를 찾을 수 없습니다."),
 
 	PASSWORD_NOT_MATCHED(400, "비밀번호가 맞지 앉습니다."),
 	ALREADY_EXITS_EMAIL(400, "중복된 이메일 입니다."),
@@ -26,6 +27,8 @@ public enum ErrorCode {
 	IS_NOT_BOTTOM_CATEGORY(400, "최하위 카테고리가 아닙니다."),
 	QUANTITY_IS_WRONG(400, "수량은 1보다 작을 수 없습니다."),
 	INVALID_STOCK_QUANTITY(400, "재고는 0보다 작을 수 없습니다."),
+	ALREADY_WRITE_REVIEW_PRODUCT(400, "이미 리뷰를 등록한 상품 입니다."),
+	CAN_NOT_LIKE_MY_REVIEW(400, "자신이 등록한 리뷰엔 좋아요할 수 없습니다."),
 
 	FORBIDDEN(401, "권한이 없습니다."),
 
