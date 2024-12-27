@@ -12,6 +12,6 @@ public interface ProductVariantOptionRepository extends JpaRepository<ProductVar
 	@Query("select pvo from ProductVariantOption pvo "
 		+ "join fetch pvo.variantOptionValue vov "
 		+ "join fetch vov.variantOption vo "
-		+ "where pvo.productVariant.id = :productVariantId")
+		+ "where pvo.productVariant.id = :productVariantId ")
 	List<ProductVariantOption> findByProductVariantId(Long productVariantId);
 }

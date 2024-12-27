@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
@@ -58,6 +59,7 @@ public class Member extends BaseTimeEntity {
 	private MemberGrade grade;
 
 	@Column(name = "is_active", nullable = false)
+	@ColumnDefault("true")
 	private boolean isActive;
 
 	@OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -66,13 +68,12 @@ public class Member extends BaseTimeEntity {
 	@OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Cart cart;
 
-	public Member(String name, String phoneNumber, String email, String password, MemberRole role, boolean isActive, List<Address> addresses, MemberGrade grade) {
+	public Member(String name, String phoneNumber, String email, String password, MemberRole role, List<Address> addresses, MemberGrade grade) {
 		this.name = name;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.password = password;
 		this.role = role;
-		this.isActive = isActive;
 		this.addresses = addresses;
 		this.grade = grade;
 	}
@@ -84,7 +85,6 @@ public class Member extends BaseTimeEntity {
 			request.getEmail(),
 			passwordEncoder.encode(request.getPassword()),
 			request.getRole(),
-			true,
 			new ArrayList<>(),
 			MemberGrade.NORMAL
 		);

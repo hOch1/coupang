@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.ColumnDefault;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.category.Category;
@@ -38,6 +39,10 @@ public class Product extends BaseTimeEntity {
 	@Column(name = "product_id")
 	private Long id;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "store_id", nullable = false)
+	private Store store;
+
 	@Column(name = "name", nullable = false)
 	private String name;
 
@@ -45,12 +50,12 @@ public class Product extends BaseTimeEntity {
 	private String description;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "store_id", nullable = false)
-	private Store store;
-
-	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "category_id", nullable = false)
 	private Category category;
+
+	@Column(name = "is_active", nullable = false)
+	@ColumnDefault("true")
+	private boolean isActive;
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
 	@BatchSize(size = 100)
@@ -89,19 +94,8 @@ public class Product extends BaseTimeEntity {
 		this.productVariants.add(productVariant);
 	}
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o)
-			return true;
-		if (o == null || getClass() != o.getClass())
-			return false;
-
-		Product product = (Product)o;
-		return Objects.equals(id, product.id);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(id);
+	public void delete() {
+		productVariants.forEach(ProductVariant::delete);
+		this.isActive = false;
 	}
 }

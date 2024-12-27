@@ -14,51 +14,51 @@ import ecommerce.coupang.exception.CustomException;
 public interface StoreService {
 
 	/**
-	 * 가게 등록
-	 * @param request 가게 생성 요청 정보
+	 * 상점 등록
+	 * @param request 상점 생성 요청 정보
 	 * @param member 요청한 회원
-	 * @return 생성한 가게 ID
+	 * @return 생성한 상점
 	 * @throws CustomException
 	 */
-	@LogAction("가게 등록")
+	@LogAction("상점 등록")
 	Store createStore(CreateStoreRequest request, Member member) throws CustomException;
 
 	/**
-	 * 내 가게 목록 조회
+	 * 내 상점 목록 조회
 	 * @param member 요청한 회원
-	 * @return 가게 목록 리스트
+	 * @return 상점 목록 리스트
 	 */
-	@LogAction("내 가게 목록 조회")
+	@LogAction("내 상점 목록 조회")
 	List<Store> findMyStore(Member member);
 
 	/**
-	 * 가게 상세 정보 조회
-	 * @param storeId 가게 식별자
-	 * @return 가게 정보
+	 * 상점 상세 정보 조회
+	 * @param storeId 상점 ID
+	 * @return 상점 정보
 	 * @throws CustomException
 	 */
-	@LogAction("가게 상제 조회")
+	@LogAction("상점 상세 조회")
 	Store findStore(Long storeId) throws CustomException;
 
 	/**
-	 * 가게 수정
-	 * @param storeId 가게 식별자
-	 * @param request 가게 수정 요청 정보
+	 * 상점 수정
+	 * @param storeId 상점 식별자
+	 * @param request 상점 수정 요청 정보
 	 * @param member 요청한 회원
-	 * @return 수정한 가게 식별자
+	 * @return 수정한 상점
 	 * @throws CustomException
 	 */
-	@LogAction("가게 수정")
+	@LogAction("상점 수정")
 	Store updateStore(Long storeId, UpdateStoreRequest request, Member member) throws CustomException;
 
 	/**
-	 * 가게 삭제
-	 * @param storeId 가게 식별자
+	 * 상점 삭제 (Soft)
+	 * @param storeId 상점 ID
 	 * @param member 요청한 회원
-	 * @return 삭제한 가게 식별자
+	 * @return 삭제한 가게
 	 * @throws CustomException
 	 */
-	@LogAction("가게 삭제")
-	Long deleteStore(Long storeId, Member member) throws CustomException;
+	@LogAction("상점 삭제")
+	Store deleteStore(Long storeId, Member member) throws CustomException;
 
 }

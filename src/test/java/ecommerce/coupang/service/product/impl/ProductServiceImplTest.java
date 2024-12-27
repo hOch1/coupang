@@ -33,7 +33,7 @@ import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.category.CategoryOptionValueRepository;
-import ecommerce.coupang.repository.member.StoreRepository;
+import ecommerce.coupang.repository.store.StoreRepository;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.repository.product.VariantOptionValueRepository;
@@ -205,12 +205,12 @@ class ProductServiceImplTest {
 		when(mockStore.getMember()).thenReturn(mockMember);
 		when(mockProduct.getProductOptions()).thenReturn(mockProductOptions);
 
-		when(productRepository.findByIdWithStoreAndCategory(request.getId())).thenReturn(Optional.of(mockProduct));
+		when(productRepository.findByIdWithMemberAndCategory(request.getId())).thenReturn(Optional.of(mockProduct));
 		when(categoryOptionValueRepository.findById(anyLong())).thenReturn(Optional.of(mockCategoryOptionValue));
 
 		Product product = productService.updateProduct(request, mockMember);
 
-		verify(productRepository).findByIdWithStoreAndCategory(request.getId());
+		verify(productRepository).findByIdWithMemberAndCategory(request.getId());
 		verify(categoryOptionValueRepository).findById(anyLong());
 		verify(mockProduct).update(request);
 		verify(mockProduct.getProductOptions()).clear();
@@ -224,12 +224,12 @@ class ProductServiceImplTest {
 	void updateProductFailProductNotFound() {
 		UpdateProductRequest request = updateProductRequest();
 
-		when(productRepository.findByIdWithStoreAndCategory(request.getId())).thenReturn(Optional.empty());
+		when(productRepository.findByIdWithMemberAndCategory(request.getId())).thenReturn(Optional.empty());
 
 		CustomException customException = assertThrows(CustomException.class,
 			() -> productService.updateProduct(request, mockMember));
 
-		verify(productRepository).findByIdWithStoreAndCategory(request.getId());
+		verify(productRepository).findByIdWithMemberAndCategory(request.getId());
 		verify(categoryOptionValueRepository, never()).findById(anyLong());
 
 		assertThat(customException).isNotNull();
@@ -244,12 +244,12 @@ class ProductServiceImplTest {
 		when(mockProduct.getStore()).thenReturn(mockStore);
 		when(mockStore.getMember()).thenReturn(mockMember);
 
-		when(productRepository.findByIdWithStoreAndCategory(request.getId())).thenReturn(Optional.of(mockProduct));
+		when(productRepository.findByIdWithMemberAndCategory(request.getId())).thenReturn(Optional.of(mockProduct));
 
 		CustomException customException = assertThrows(CustomException.class,
 			() -> productService.updateProduct(request, otherMember));
 
-		verify(productRepository).findByIdWithStoreAndCategory(request.getId());
+		verify(productRepository).findByIdWithMemberAndCategory(request.getId());
 		verify(categoryOptionValueRepository, never()).findById(anyLong());
 
 		assertThat(customException).isNotNull();

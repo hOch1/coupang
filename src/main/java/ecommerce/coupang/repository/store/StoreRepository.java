@@ -1,4 +1,4 @@
-package ecommerce.coupang.repository.member;
+package ecommerce.coupang.repository.store;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +36,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 	 */
 	@Query("select s from Store s "
 		+ "join fetch s.member m "
-		+ "where m.id = :memberId")
+		+ "where m.id = :memberId "
+		+ "and s.isActive = true")
 	List<Store> findByMemberId(Long memberId);
 }

@@ -1,9 +1,16 @@
 package ecommerce.coupang.domain.store;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.annotations.ColumnDefault;
+
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Member;
+import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.dto.request.store.CreateStoreRequest;
 import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,6 +19,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,6 +36,10 @@ public class Store extends BaseTimeEntity {
 	@Column(name = "store_id")
 	private Long id;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id")
+	private Member member;
+
 	@Column(name = "name", nullable = false)
 	private String name;
 
@@ -37,9 +49,12 @@ public class Store extends BaseTimeEntity {
 	@Column(name = "store_number", nullable = false, unique = true)
 	private String storeNumber;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id")
-	private Member member;
+	@Column(name = "is_active", nullable = false)
+	@ColumnDefault("true")
+	private boolean isActive;
+
+	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Product> products = new ArrayList<>();
 
 	public Store(String name, String description, String storeNumber, Member member) {
 		this.name = name;
@@ -62,5 +77,11 @@ public class Store extends BaseTimeEntity {
 			this.name = request.getName();
 		if (request.getDescription() != null)
 			this.description = request.getDescription();
+	}
+
+	public void delete() {
+		products.forEach(Product::delete);
+
+		this.isActive = false;
 	}
 }

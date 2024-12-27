@@ -22,7 +22,7 @@ import ecommerce.coupang.dto.request.store.CreateStoreRequest;
 import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
-import ecommerce.coupang.repository.member.StoreRepository;
+import ecommerce.coupang.repository.store.StoreRepository;
 
 @ExtendWith(MockitoExtension.class)
 class StoreServiceImplTest {
@@ -162,10 +162,10 @@ class StoreServiceImplTest {
 
 		when(storeRepository.findByIdWithMember(1L)).thenReturn(Optional.of(mockStore));
 
-		Long deleteStore = storeService.deleteStore(1L, mockMember);
+		Store store = storeService.deleteStore(1L, mockMember);
 
-		assertThat(deleteStore).isEqualTo(1L);
-		verify(storeRepository).delete(any(Store.class));
+		verify(store).delete();
+		assertThat(store).isNotNull();
 	}
 
 	@Test

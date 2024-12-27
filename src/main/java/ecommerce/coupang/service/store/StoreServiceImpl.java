@@ -13,7 +13,7 @@ import ecommerce.coupang.dto.request.store.CreateStoreRequest;
 import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
-import ecommerce.coupang.repository.member.StoreRepository;
+import ecommerce.coupang.repository.store.StoreRepository;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -63,15 +63,15 @@ public class StoreServiceImpl implements StoreService{
 
 	@Override
 	@Transactional
-	public Long deleteStore(Long storeId, Member member) throws CustomException {
+	public Store deleteStore(Long storeId, Member member) throws CustomException {
 		Store store = storeRepository.findByIdWithMember(storeId).orElseThrow(() ->
 			new CustomException(ErrorCode.STORE_NOT_FOUND));
 
 		if (!Objects.equals(store.getMember().getId(), member.getId()))
 			throw new CustomException(ErrorCode.FORBIDDEN);
 
-		storeRepository.delete(store);
+		store.delete();
 
-		return storeId;
+		return store;
 	}
 }

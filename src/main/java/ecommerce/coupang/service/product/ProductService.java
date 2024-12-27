@@ -110,8 +110,7 @@ public interface ProductService {
 
 	/**
 	 * 상품 상세 조회
-	 *
-	 * @param productId 조회할 상품 식별자
+	 * @param productVariantId 조회할 상품 ID
 	 * @return 상품 상세 조회정보
 	 */
 	@LogAction("상품 상세 조회")
@@ -147,4 +146,20 @@ public interface ProductService {
 	 */
 	@LogAction("상품 상태 변경")
 	ProductVariant updateProductStatus(Long productVariantId, UpdateProductStatusRequest request, Member member) throws CustomException;
+
+	/**
+	 * 상품 삭제 (Soft)
+	 * @param productId 상품 ID
+	 * @return 삭제한 상품
+	 */
+	@LogAction("상품 삭제")
+	Product deleteProduct(Long productId, Member member) throws CustomException;
+
+	/**
+	 * 변형 상품 삭제 (Soft)
+	 * @param productVariantId 변형 상품 ID
+	 * @return 삭제한 변형 상품
+	 */
+	@LogAction("변형 상품 삭제")
+	ProductVariant deleteProductVariant(Long productVariantId, Member member) throws CustomException;
 }

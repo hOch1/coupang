@@ -15,13 +15,17 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
 		+ "join fetch pv.product p "
 		+ "join fetch p.store s "
 		+ "join fetch p.category c "
-		+ "where pv.id = :productVariantId")
+		+ "where pv.id = :productVariantId "
+		+ "and s.isActive = true "
+		+ "and p.isActive = true ")
 	Optional<ProductVariant> findByIdWithStoreAndCategory(Long productVariantId);
 
 	@Query("select pv from ProductVariant pv "
 		+ "join fetch pv.product p "
 		+ "join fetch p.store s "
-		+ "where pv.id = :productVariantId ")
+		+ "where pv.id = :productVariantId "
+		+ "and s.isActive = true "
+		+ "and p.isActive = true ")
 	Optional<ProductVariant> findByIdWithStore(Long productVariantId);
 
 	@Query("select pv from ProductVariant pv "
@@ -43,6 +47,8 @@ public interface ProductVariantRepository extends JpaRepository<ProductVariant, 
 		+ "join fetch pv.product p "
 		+ "join fetch p.store s "
 		+ "join fetch s.member m "
-		+ "where pv.id = :productVariantId ")
+		+ "where pv.id = :productVariantId "
+		+ "and s.isActive = true "
+		+ "and p.isActive = true ")
 	Optional<ProductVariant> findByIdWithMember(Long productVariantId);
 }

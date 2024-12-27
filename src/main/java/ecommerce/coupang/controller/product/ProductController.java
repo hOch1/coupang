@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -188,6 +189,26 @@ public class ProductController {
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		productService.updateProductVariant(request, userDetails.getMember());
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+
+	@DeleteMapping("/{productId}")
+	@Operation(summary = "상품 삭제 API", description = "해당 상품을 Soft하게 삭제 합니다")
+	public ResponseEntity<Void> deleteProduct(
+		@PathVariable Long productId,
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
+
+		productService.deleteProduct(productId, userDetails.getMember());
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+
+	@DeleteMapping("/variant/{productVariantId}")
+	@Operation(summary = "변형 상품 삭제 API", description = "해당 변형 상품을 Soft하게 삭제 합니다")
+	public ResponseEntity<Void> deleteProductVariant(
+		@PathVariable Long productVariantId,
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
+
+		productService.deleteProductVariant(productVariantId, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 }

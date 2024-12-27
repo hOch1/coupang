@@ -27,7 +27,7 @@ import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
-import ecommerce.coupang.repository.member.StoreRepository;
+import ecommerce.coupang.repository.store.StoreRepository;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.service.category.CategoryService;
 import ecommerce.coupang.service.product.ProductService;
@@ -90,7 +90,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@Transactional
 	public Product updateProduct(UpdateProductRequest request, Member member) throws CustomException {
-		Product product = productRepository.findByIdWithStoreAndCategory(request.getId())
+		Product product = productRepository.findByIdWithMemberAndCategory(request.getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
 		validateMember(product.getStore(), member);
@@ -236,6 +236,30 @@ public class ProductServiceImpl implements ProductService {
 
 		productVariant.changeStatus(request.getStatus());
 
+		return productVariant;
+	}
+
+	@Override
+	@Transactional
+	public Product deleteProduct(Long productId, Member member) throws CustomException {
+		Product product = productRepository.findByIdWithMemberAndCategory(productId)
+			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+
+		validateMember(product.getStore(), member);
+
+		product.delete();
+		return product;
+	}
+
+	@Override
+	@Transactional
+	public ProductVariant deleteProductVariant(Long productVariantId, Member member) throws CustomException {
+		ProductVariant productVariant = productVariantRepository.findByIdWithMember(productVariantId)
+			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+
+		validateMember(productVariant.getProduct().getStore(), member);
+
+		productVariant.delete();
 		return productVariant;
 	}
 

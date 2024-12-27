@@ -22,10 +22,13 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
 	 */
 	@Query("select p from Product p "
 		+ "join fetch p.store s "
+		+ "join fetch s.member m "
 		+ "join fetch p.category c "
 		+ "where p.id = :productId "
+		+ "and s.isActive = true "
+		+ "and p.isActive = true "
 		+ "order by p.createdAt desc ")
-	Optional<Product> findByIdWithStoreAndCategory(Long productId);
+	Optional<Product> findByIdWithMemberAndCategory(Long productId);
 
 	/**
 	 * 상점으로 상품 조회
@@ -36,7 +39,9 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
 	@Query("select p from Product p "
 		+ "join fetch p.store s "
 		+ "join fetch p.category c "
-		+ "where p.store.id = :storeId "
+		+ "where s.id = :storeId "
+		+ "and s.isActive = true "
+		+ "and p.isActive = true "
 		+ "order by p.createdAt desc ")
 	List<Product> findByStore(Long storeId);
 
@@ -49,7 +54,9 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
 	@Query("select p from Product p "
 		+ "join fetch p.store s "
 		+ "join fetch p.category c "
-		+ "where p.category in :categories "
+		+ "where c in :categories "
+		+ "and s.isActive = true "
+		+ "and p.isActive = true "
 		+ "order by p.createdAt desc ")
 	List<Product> findByCategories(List<Category> categories);
 
@@ -62,8 +69,10 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
 	@Query("select p from Product p "
 		+ "join fetch p.store s "
 		+ "join fetch p.category c "
-		+ "where p.category in :categories "
-		+ "and p.store.id = :storeId "
+		+ "where c in :categories "
+		+ "and s.id = :storeId "
+		+ "and s.isActive = true "
+		+ "and p.isActive = true "
 		+ "order by p.createdAt desc ")
 	List<Product> findByCategoriesAndStore(Long storeId, List<Category> categories);
 
@@ -76,7 +85,9 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
 	@Query("select p from Product p "
 		+ "join fetch p.store s "
 		+ "join fetch p.category c "
-		+ "where p.category in :categories "
+		+ "where c in :categories "
+		+ "and s.isActive = true "
+		+ "and p.isActive = true "
 		+ "order by p.createdAt desc ")
 	List<Product> findByCategoriesAndOptions(List<Category> categories, List<Long> options);
 
@@ -89,7 +100,9 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
 	@Query("select p from Product p "
 		+ "join fetch p.store s "
 		+ "join fetch p.category c "
-		+ "where p.store.id = :storeId "
+		+ "where s.id = :storeId "
+		+ "and s.isActive = true "
+		+ "and p.isActive = true "
 		+ "order by p.createdAt desc ")
 	List<Product> findByStoreAndOptions(Long storeId, List<Long> options);
 
@@ -103,8 +116,10 @@ public interface ProductRepository extends JpaRepository<Product, Long>, Product
 	@Query("select p from Product p "
 		+ "join fetch p.store s "
 		+ "join fetch p.category c "
-		+ "where p.category in :categories "
-		+ "and p.store.id = :storeId "
+		+ "where c in :categories "
+		+ "and s.id = :storeId "
+		+ "and s.isActive = true "
+		+ "and p.isActive = true "
 		+ "order by p.createdAt desc ")
 	List<Product> findByStoreAndCategoryAndOptions(Long storeId, List<Category> categories, List<Long> options);
 }
