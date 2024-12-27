@@ -13,6 +13,7 @@ import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
 import ecommerce.coupang.dto.response.product.ProductDetailResponse;
+import ecommerce.coupang.dto.response.product.ProductResponse;
 import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("ProductService")
@@ -45,68 +46,6 @@ public interface ProductService {
 	 */
 	@LogAction("상품 변형 수정")
 	ProductVariant updateProductVariant(UpdateProductVariantRequest request, Member member) throws CustomException;
-
-	/**
-	 * 카테고리별 상품 조회 (하위 카테고리 포함)
-	 *
-	 * @param categoryId 카테고리 ID
-	 * @return 상품 리스트
-	 */
-	@LogAction("상품 목록 조회 - 카테고리")
-	List<ProductVariant> findProductsByCategory(Long categoryId) throws CustomException;
-
-	/**
-	 * 카테고리 + 옵션별 상품 조회 (하위 카테고리 포함)
-	 *
-	 * @param categoryId     카테고리 ID
-	 * @param categoryOptions 카테고리 옵션 파라미터
-	 * @param variantOptions 상품 옵션 파라미터
-	 * @return 상품 리스트
-	 */
-	@LogAction("상품 목록 조회 카테고리 + 옵션")
-	List<Product> findProductsByCategoryAndOptions(Long categoryId, List<Long> categoryOptions, List<Long> variantOptions) throws CustomException;
-
-	/**
-	 * 상점 별 상품 조회
-	 *
-	 * @param storeId 상점 ID
-	 * @return 상품 리스트
-	 */
-	@LogAction("상품 목록 조회 - 상점")
-	List<ProductVariant> findProductsByStore(Long storeId) throws CustomException;
-
-	/**
-	 * 상점 + 옵션별 상품 조회
-	 *
-	 * @param storeId 상점 ID
-	 * @param categoryOptions 카테고리 옵션 파라미터
-	 * @param variantOptions 상품 옵션 파라미터
-	 * @return 상품 리스트
-	 */
-	@LogAction("상품 목록 조회 - 상점 + 옵션")
-	List<Product> findProductsByStoreAndOptions(Long storeId, List<Long> categoryOptions, List<Long> variantOptions) throws CustomException;
-
-	/**
-	 * 상점 + 카테고리 별 상품 조회 (하위 카테고리 포함)
-	 *
-	 * @param storeId    상점 ID
-	 * @param categoryId 카테고리 ID
-	 * @return 상품 리스트
-	 */
-	@LogAction("상품 목록 조회 - 상점 + 카테고리")
-	List<ProductVariant> findProductsByStoreAndCategory(Long storeId, Long categoryId) throws CustomException;
-
-	/**
-	 * 상점 + 카테고리 + 옵션별 상품 조회 (하위 카테고리 포함)
-	 *
-	 * @param storeId         상점 ID
-	 * @param categoryId      카테고리 ID
-	 * @param categoryOptions 카테고리 옵션 파라미터
-	 * @param variantOptions 상품 옵션 파라미터
-	 * @return 상품 리스트
-	 */
-	@LogAction("상품 목록 조회 - 상점 + 카테고리 + 옵션")
-	List<Product> findProductsByStoreAndCategoryAndOptions(Long storeId, Long categoryId, List<Long> categoryOptions, List<Long> variantOptions) throws CustomException;
 
 	/**
 	 * 상품 상세 조회
@@ -162,4 +101,16 @@ public interface ProductService {
 	 */
 	@LogAction("변형 상품 삭제")
 	ProductVariant deleteProductVariant(Long productVariantId, Member member) throws CustomException;
+
+	/**
+	 * 옵션별 상품 조회
+	 * @param categoryId 카테고리 ID
+	 * @param storeId 상점 ID
+	 * @param categoryOptions 카테고리 옵션 값 ID
+	 * @param variantOptions 변형 옵션 값 ID
+	 * @return 조회 상품 리스트
+	 * @throws CustomException
+	 */
+	@LogAction("상품 목록 조회")
+	List<ProductResponse> search(Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions) throws CustomException;
 }

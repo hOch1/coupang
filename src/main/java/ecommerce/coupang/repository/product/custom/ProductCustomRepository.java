@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ProductCustomRepository {
 
+	List<ProductVariant> searchProducts(List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions);
 }

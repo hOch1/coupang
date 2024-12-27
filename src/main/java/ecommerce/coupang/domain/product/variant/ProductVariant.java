@@ -14,8 +14,6 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.annotations.ColumnDefault;
-
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -42,12 +40,10 @@ public class ProductVariant {
 	private ProductStatus status;
 
 	@Column(name = "is_default", nullable = false)
-	@ColumnDefault("false")
-	private boolean isDefault;
+	private boolean isDefault = false;
 
 	@Column(name = "is_active", nullable = false)
-	@ColumnDefault("true")
-	private boolean isActive;
+	private boolean isActive = true;
 
 	@OneToMany(mappedBy = "productVariant", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductVariantOption> productVariantOptions = new ArrayList<>();

@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ecommerce.coupang.domain.product.Product;
-import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
@@ -50,85 +48,16 @@ public class ProductController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@GetMapping("/category/{categoryId}")
-	@Operation(summary = "카테고리별 상품 조회 API", description = "해당 카테고리 하위 상품들을 조회합니다.")
-	public ResponseEntity<Result<List<ProductResponse>>> getProductsByCategory(
-		@PathVariable Long categoryId) throws CustomException {
+	@GetMapping("/search")
+	@Operation(summary = "상품 조회 API", description = "상점, 카테고리, 옵션별로 상품을 조회합니다.")
+	public ResponseEntity<Result<List<ProductResponse>>> searchProducts(
+		@RequestParam(required = false) Long categoryId,
+		@RequestParam(required = false) Long storeId,
+		@RequestParam(required = false) List<Long> categoryOptions,
+		@RequestParam(required = false) List<Long> variantOptions) throws CustomException {
 
-		List<ProductVariant> productVariants = productService.findProductsByCategory(categoryId);
-		List<ProductResponse> responses = productVariants.stream()
-			.map(ProductResponse::from)
-			.toList();
-
+		List<ProductResponse> responses = productService.search(categoryId, storeId, categoryOptions, variantOptions);
 		return ResponseEntity.ok(new Result<>(responses, responses.size()));
-	}
-
-	@GetMapping("/category/{categoryId}/options")
-	@Operation(summary = "카테고리 + 옵션별 상품 조회 API", description = "카테고리별 상품 조회 API + 옵션 추가")
-	public ResponseEntity<List<ProductResponse>> getProductsByCategoryAndOptions(
-		@PathVariable Long categoryId,
-		@RequestParam List<Long> categoryOptions,
-		@RequestParam List<Long> variantOptions) throws CustomException {
-
-		List<Product> products = productService.findProductsByCategoryAndOptions(categoryId, categoryOptions, variantOptions);
-		// return ResponseEntity.ok(products.stream()
-		// 	.map(ProductResponse::from)
-		// 	.toList());
-		return null;
-	}
-
-	@GetMapping("/store/{storeId}")
-	@Operation(summary = "상점별 상품 조회 API", description = "해당 상점 상품들을 조회합니다.")
-	public ResponseEntity<Result<List<ProductResponse>>> getProductsByStore(
-		@PathVariable Long storeId) throws CustomException {
-
-		List<ProductVariant> productVariants = productService.findProductsByStore(storeId);
-		List<ProductResponse> responses = productVariants.stream()
-			.map(ProductResponse::from)
-			.toList();
-
-		return ResponseEntity.ok(new Result<>(responses, responses.size()));
-	}
-
-	@GetMapping("/store/{storeId}/options")
-	@Operation(summary = "상점 + 옵션별 상품 조회 API", description = "상점별 상품 조회 API + 옵션")
-	public ResponseEntity<List<ProductResponse>> getProductsByStoreAndOptions(
-		@PathVariable Long storeId,
-		@RequestParam List<Long> categoryOptions,
-		@RequestParam List<Long> variantOptions) throws CustomException {
-
-		List<Product> products = productService.findProductsByStoreAndOptions(storeId, categoryOptions, variantOptions);
-		// return ResponseEntity.ok(products.stream()
-		// 	.map(ProductResponse::from)
-		// 	.toList());
-		return null;
-	}
-
-	@GetMapping("/store/{storeId}/category/{categoryId}")
-	@Operation(summary = "상점 + 카테고리별 상품 조회 API", description = "해당 상점과 하위 카테고리별 상품을 조회합니다.")
-	public ResponseEntity<List<ProductResponse>> getProductsByStoreAndCategory(
-		@PathVariable("storeId") Long storeId,
-		@PathVariable("categoryId") Long categoryId) throws CustomException {
-
-		List<ProductVariant> productVariants = productService.findProductsByStoreAndCategory(storeId, categoryId);
-		return ResponseEntity.ok(productVariants.stream()
-			.map(ProductResponse::from)
-			.toList());
-	}
-
-	@GetMapping("/store/{storeId}/category/{categoryId}/options")
-	@Operation(summary = "상점 + 카테고리 + 옵션별 상품 조회 API", description = "상점 + 카테고리별 상품 조회 API + 옵션")
-	public ResponseEntity<List<ProductResponse>> getProductsByStoreAndCategoryAndOptions(
-		@PathVariable("storeId") Long storeId,
-		@PathVariable("categoryId") Long categoryId,
-		@RequestParam List<Long> categoryOptions,
-		@RequestParam List<Long> variantOptions) throws CustomException {
-
-		List<Product> products = productService.findProductsByStoreAndCategoryAndOptions(storeId, categoryId, categoryOptions, variantOptions);
-		// return ResponseEntity.ok(products.stream()
-		// 	.map(ProductResponse::from)
-		// 	.toList());
-		return null;
 	}
 
 	@GetMapping("/{productVariantId}")

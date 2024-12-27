@@ -3,8 +3,6 @@ package ecommerce.coupang.domain.store;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.annotations.ColumnDefault;
-
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.Product;
@@ -50,8 +48,7 @@ public class Store extends BaseTimeEntity {
 	private String storeNumber;
 
 	@Column(name = "is_active", nullable = false)
-	@ColumnDefault("true")
-	private boolean isActive;
+	private boolean isActive = true;
 
 	@OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Product> products = new ArrayList<>();

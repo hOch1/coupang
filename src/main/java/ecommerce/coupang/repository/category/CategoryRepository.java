@@ -8,9 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.category.Category;
+import ecommerce.coupang.repository.category.custom.CategoryCustomRepository;
 
 @LogLevel("CategoryRepository")
-public interface CategoryRepository extends JpaRepository<Category, Long> {
+public interface CategoryRepository extends JpaRepository<Category, Long>, CategoryCustomRepository {
 
 	/**
 	 * 카테고리 레벨로 조회

@@ -106,7 +106,6 @@ class ProductServiceImplTest {
 		assertThat(product.getProductVariants().size()).isEqualTo(1);
 	}
 
-
 	@Test
 	@DisplayName("상품 등록 테스트 - 실패 (상점을 찾을 수 없음)")
 	void createProductFailStoreNotFound() throws CustomException {
@@ -317,43 +316,6 @@ class ProductServiceImplTest {
 
 		assertThat(customException).isNotNull();
 		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.FORBIDDEN);
-	}
-
-	@Test
-	@DisplayName("카테고리로 상품 조회 테스트")
-	void findByCategory() throws CustomException {
-		Long categoryId = 1L;
-
-		when(categoryService.findAllSubCategories(categoryId)).thenReturn(List.of(mockCategory));
-		when(productRepository.findByCategories(List.of(mockCategory))).thenReturn(List.of(mockProduct));
-		when(productVariantRepository.findByProducts(List.of(mockProduct))).thenReturn(List.of(mockProductVariant));
-
-		List<ProductVariant> productVariants = productService.findProductsByCategory(categoryId);
-
-		verify(categoryService).findAllSubCategories(categoryId);
-		verify(productRepository).findByCategories(List.of(mockCategory));
-		verify(productVariantRepository).findByProducts(List.of(mockProduct));
-
-		assertThat(productVariants.size()).isEqualTo(1);
-	}
-
-	@Test
-	@DisplayName("상점으로 상품 조회 테스트")
-	void findByStore() throws CustomException {
-		Long storeId = 1L;
-		when(mockStore.getId()).thenReturn(storeId);
-
-		when(storeRepository.findById(storeId)).thenReturn(Optional.of(mockStore));
-		when(productRepository.findByStore(storeId)).thenReturn(List.of(mockProduct));
-		when(productVariantRepository.findByProducts(List.of(mockProduct))).thenReturn(List.of(mockProductVariant));
-
-		List<ProductVariant> productVariants = productService.findProductsByStore(storeId);
-
-		verify(storeRepository).findById(storeId);
-		verify(productRepository).findByStore(storeId);
-		verify(productVariantRepository).findByProducts(List.of(mockProduct));
-
-		assertThat(productVariants.size()).isEqualTo(1);
 	}
 
 	@Test

@@ -2,10 +2,6 @@ package ecommerce.coupang.domain.product;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-
-import org.hibernate.annotations.BatchSize;
-import org.hibernate.annotations.ColumnDefault;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.category.Category;
@@ -54,15 +50,12 @@ public class Product extends BaseTimeEntity {
 	private Category category;
 
 	@Column(name = "is_active", nullable = false)
-	@ColumnDefault("true")
-	private boolean isActive;
+	private boolean isActive = true;
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-	@BatchSize(size = 100)
 	private List<ProductCategoryOption> productOptions = new ArrayList<>();
 
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-	@BatchSize(size = 100)
 	private List<ProductVariant> productVariants = new ArrayList<>();
 
 	public Product(String name, String description, Store store, Category category) {
