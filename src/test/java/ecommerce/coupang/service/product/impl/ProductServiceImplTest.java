@@ -491,6 +491,108 @@ class ProductServiceImplTest {
 		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.FORBIDDEN);
 	}
 
+	@Test
+	@DisplayName("상품 삭제 테스트")
+	void deleteProduct() throws CustomException {
+		Long productId = 1L;
+		when(mockProduct.getStore()).thenReturn(mockStore);
+		when(mockStore.getMember()).thenReturn(mockMember);
+		when(productRepository.findByIdWithMemberAndCategory(productId)).thenReturn(Optional.of(mockProduct));
+
+		Product product = productService.deleteProduct(productId, mockMember);
+
+		verify(productRepository).findByIdWithMemberAndCategory(productId);
+		verify(product).delete();
+
+		assertThat(product).isNotNull();
+		assertThat(product).isEqualTo(mockProduct);
+	}
+
+	@Test
+	@DisplayName("상품 삭제 테스트 - 실패 (등록한 회원과 요청한 회원이 다름)")
+	void deleteProductMemberNotMatch() {
+		Long productId = 1L;
+		Member otherMember = mock(Member.class);
+		when(mockProduct.getStore()).thenReturn(mockStore);
+		when(mockStore.getMember()).thenReturn(mockMember);
+		when(productRepository.findByIdWithMemberAndCategory(productId)).thenReturn(Optional.of(mockProduct));
+
+		CustomException customException = assertThrows(CustomException.class,
+			() -> productService.deleteProduct(productId, otherMember));
+
+		verify(productRepository).findByIdWithMemberAndCategory(productId);
+
+		assertThat(customException).isNotNull();
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.FORBIDDEN);
+	}
+
+	@Test
+	@DisplayName("상품 삭제 테스트 - 실패 (상품 찾을 수 없음)")
+	void deleteProductFailProductNotFound() {
+		Long productId = 1L;
+		when(productRepository.findByIdWithMemberAndCategory(productId)).thenReturn(Optional.empty());
+
+		CustomException customException = assertThrows(CustomException.class,
+			() -> productService.deleteProduct(productId, mockMember));
+
+		verify(productRepository).findByIdWithMemberAndCategory(productId);
+
+		assertThat(customException).isNotNull();
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.PRODUCT_NOT_FOUND);
+	}
+
+	@Test
+	@DisplayName("변형 상품 삭제 테스트")
+	void deleteProductVariant() throws CustomException {
+		Long productVariantId = 1L;
+		when(mockProductVariant.getProduct()).thenReturn(mockProduct);
+		when(mockProduct.getStore()).thenReturn(mockStore);
+		when(mockStore.getMember()).thenReturn(mockMember);
+		when(productVariantRepository.findByIdWithMember(productVariantId)).thenReturn(Optional.of(mockProductVariant));
+
+		ProductVariant productVariant = productService.deleteProductVariant(productVariantId, mockMember);
+
+		verify(productVariantRepository).findByIdWithMember(productVariantId);
+		verify(productVariant).delete();
+
+		assertThat(productVariant).isNotNull();
+		assertThat(productVariant).isEqualTo(mockProductVariant);
+	}
+
+	@Test
+	@DisplayName("변형 상품 삭제 테스트 - 실패 (등록한 회원과 요청한 회원이 다름)")
+	void deleteProductVariantMemberNotMatch() {
+		Long productVariantId = 1L;
+		Member otherMember = mock(Member.class);
+		when(mockProductVariant.getProduct()).thenReturn(mockProduct);
+		when(mockProduct.getStore()).thenReturn(mockStore);
+		when(mockStore.getMember()).thenReturn(mockMember);
+		when(productVariantRepository.findByIdWithMember(productVariantId)).thenReturn(Optional.of(mockProductVariant));
+
+		CustomException customException = assertThrows(CustomException.class,
+			() -> productService.deleteProductVariant(productVariantId, otherMember));
+
+		verify(productVariantRepository).findByIdWithMember(productVariantId);
+
+		assertThat(customException).isNotNull();
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.FORBIDDEN);
+	}
+
+	@Test
+	@DisplayName("상품 삭제 테스트 - 실패 (상품 찾을 수 없음)")
+	void deleteProductVariantFailProductNotFound() {
+		Long productVariantId = 1L;
+		when(productVariantRepository.findByIdWithMember(productVariantId)).thenReturn(Optional.empty());
+
+		CustomException customException = assertThrows(CustomException.class,
+			() -> productService.deleteProductVariant(productVariantId, mockMember));
+
+		verify(productVariantRepository).findByIdWithMember(productVariantId);
+
+		assertThat(customException).isNotNull();
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.PRODUCT_NOT_FOUND);
+	}
+
 	private UpdateProductRequest updateProductRequest() {
 		UpdateProductRequest.UpdateCategoryOptionsRequest categoryOptionsRequest = new UpdateProductRequest.UpdateCategoryOptionsRequest(
 			1L,
