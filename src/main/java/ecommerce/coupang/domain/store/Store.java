@@ -38,7 +38,7 @@ public class Store extends BaseTimeEntity {
 	@JoinColumn(name = "member_id")
 	private Member member;
 
-	@Column(name = "name", nullable = false)
+	@Column(name = "name", nullable = false, unique = true)
 	private String name;
 
 	@Column(name = "description", nullable = false)
