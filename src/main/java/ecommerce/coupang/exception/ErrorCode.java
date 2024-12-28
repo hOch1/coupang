@@ -30,6 +30,7 @@ public enum ErrorCode {
 	ALREADY_WRITE_REVIEW_PRODUCT(400, "이미 리뷰를 등록한 상품 입니다."),
 	CAN_NOT_LIKE_MY_REVIEW(400, "자신이 등록한 리뷰엔 좋아요할 수 없습니다."),
 	CAN_NOT_WRITE_MY_PRODUCT(400, "자신의 상품엔 리뷰를 작성할 수 없습니다."),
+	CAN_NOT_INQUIRY_MY_PRODUCT(400, "자신의 상품엔 문의를 등록할 수 없습니다."),
 
 	FORBIDDEN(401, "권한이 없습니다."),
 

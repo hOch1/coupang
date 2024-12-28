@@ -3,6 +3,7 @@ package ecommerce.coupang.domain.product.inquiry;
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.Product;
+import ecommerce.coupang.dto.request.product.inquiry.CreateInquiryRequest;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -52,4 +53,19 @@ public class ProductInquiry extends BaseTimeEntity {
 	@Column(name = "is_answered", nullable = false)
 	private boolean isAnswered = false;
 
+	public ProductInquiry(Product product, Member member, InquiryType type, String content) {
+		this.product = product;
+		this.member = member;
+		this.type = type;
+		this.content = content;
+	}
+
+	public static ProductInquiry create(CreateInquiryRequest request, Product product, Member member) {
+		return new ProductInquiry(
+			product,
+			member,
+			request.getType(),
+			request.getContent()
+		);
+	}
 }

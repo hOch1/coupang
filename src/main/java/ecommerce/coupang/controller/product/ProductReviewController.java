@@ -23,11 +23,13 @@ import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.product.ProductReviewService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/v1/reviews")
+@RequestMapping("/api/v1/product/reviews")
 @RequiredArgsConstructor
+@Tag(name = "상품 리뷰 API", description = "상품 리뷰 관련 API")
 public class ProductReviewController {
 
 	private final ProductReviewService productReviewService;

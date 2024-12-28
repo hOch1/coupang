@@ -28,7 +28,7 @@ public class Answer extends BaseTimeEntity {
 	private Long id;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_inquiry_id", nullable = false, unique = true)
+	@JoinColumn(name = "product_inquiry_id", unique = true)
 	private ProductInquiry productInquiry;
 
 	@ManyToOne(fetch = FetchType.LAZY)
