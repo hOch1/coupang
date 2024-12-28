@@ -8,6 +8,7 @@ import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.dto.request.product.review.CreateReviewRequest;
+import ecommerce.coupang.dto.request.product.review.UpdateReviewRequest;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -69,6 +70,11 @@ public class ProductReview extends BaseTimeEntity {
 
 	public void addLikes(ReviewLike newLike) {
 		this.likes.add(newLike);
+	}
+
+	public void update(UpdateReviewRequest request) {
+		this.content = request.getContent() != null ? request.getContent() : this.content;
+		this.star = request.getStar() != null ? request.getStar().intValue() : this.star;
 	}
 
 	@Override

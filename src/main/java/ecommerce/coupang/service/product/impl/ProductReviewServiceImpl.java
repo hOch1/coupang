@@ -1,5 +1,6 @@
 package ecommerce.coupang.service.product.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.domain.product.review.ReviewLike;
 import ecommerce.coupang.dto.request.product.review.CreateReviewRequest;
+import ecommerce.coupang.dto.request.product.review.UpdateReviewRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.product.ProductRepository;
@@ -30,12 +32,18 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 	@Override
 	@Transactional
 	public ProductReview createReview(Long productId, CreateReviewRequest request, Member member) throws CustomException {
-		Product product = productRepository.findById(productId)
+		Product product = productRepository.findByIdWithMemberAndCategory(productId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
-		// TODO 자기 상품에 리뷰 등록 불가 (테스트시 해제)
-		// if (productReviewRepository.existsByProductIdAndMemberId(product.getId(), member.getId()))
-		// 	throw new CustomException(ErrorCode.ALREADY_WRITE_REVIEW_PRODUCT);
+		/*
+		 TODO 상품에 리뷰 중복 등록 불가 (테스트시 해제)
+		 if (productReviewRepository.existsByProductIdAndMemberId(productId, member.getId()))
+		 	throw new CustomException(ErrorCode.ALREADY_WRITE_REVIEW_PRODUCT);
+
+		 TODO 자기 상품에 리뷰 등록 불가 (테스트시 해제)
+		 if (product.getStore().getMember().equals(member))
+		 	throw new CustomException(ErrorCode.CAN_NOT_WRITE_MY_PRODUCT);
+		*/
 
 		ProductReview productReview = ProductReview.create(request, product, member);
 
@@ -50,9 +58,11 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 		ProductReview productReview = productReviewRepository.findByIdWithMember(reviewId)
 			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 
-		// TODO 자기 상품엔 리뷰 등록 제한 (테스트시 해제)
-		// if (productReview.getMember().equals(member))
-		// 	throw new CustomException(ErrorCode.CAN_NOT_LIKE_MY_REVIEW);
+		/*
+		 TODO 자기 리뷰엔 좋아요 제한 (테스트시 해제)
+		 if (productReview.getMember().equals(member))
+		 	throw new CustomException(ErrorCode.CAN_NOT_LIKE_MY_REVIEW);
+		*/
 
 		Optional<ReviewLike> findLike = reviewLikeRepository.findByProductReviewIdAndMemberId(productReview.getId(), member.getId());
 
@@ -66,6 +76,45 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 			productReview.getLikes().remove(reviewLike);
 		}
 
+		return productReview;
+	}
+
+	@Override
+	public List<ProductReview> findMyReviews(Member member) {
+		return productReviewRepository.findByMemberId(member.getId());
+	}
+
+	@Override
+	@Transactional
+	public ProductReview updateReview(Long reviewId, UpdateReviewRequest request, Member member) throws CustomException {
+		ProductReview productReview = productReviewRepository.findByIdWithMember(reviewId)
+			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
+		if (!productReview.getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
+
+		productReview.update(request);
+		Product product = productReview.getProduct();
+		product.updateStarAvg();
+
+		productRepository.save(product);
+		return productReview;
+	}
+
+	@Override
+	@Transactional
+	public ProductReview deleteReview(Long reviewId, Member member) throws CustomException {
+		ProductReview productReview = productReviewRepository.findByIdWithMember(reviewId)
+			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+
+		if (!productReview.getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
+
+		Product product = productReview.getProduct();
+		product.getProductReviews().remove(productReview);
+		product.updateStarAvg();
+
+		productRepository.save(product);
 		return productReview;
 	}
 }

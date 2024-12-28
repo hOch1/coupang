@@ -100,7 +100,7 @@ public class Product extends BaseTimeEntity {
 		updateStarAvg();
 	}
 
-	private void updateStarAvg() {
+	public void updateStarAvg() {
 		if (this.productReviews.isEmpty())
 			this.starAvg = 0.0;
 		else {

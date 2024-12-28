@@ -12,6 +12,7 @@ import lombok.Getter;
 public class ReviewResponse {
 
 	private final Long id;
+	private final Long productId;
 	private final MemberResponse member;
 	private final String content;
 	private final int star;
@@ -21,6 +22,7 @@ public class ReviewResponse {
 	public static ReviewResponse from(ProductReview productReview) {
 		return new ReviewResponse(
 			productReview.getId(),
+			productReview.getProduct().getId(),
 			MemberResponse.from(productReview.getMember()),
 			productReview.getContent(),
 			productReview.getStar(),

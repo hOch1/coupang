@@ -1,15 +1,24 @@
 package ecommerce.coupang.controller.product;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.dto.request.product.review.CreateReviewRequest;
+import ecommerce.coupang.dto.request.product.review.UpdateReviewRequest;
+import ecommerce.coupang.dto.response.Result;
+import ecommerce.coupang.dto.response.product.ReviewResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.product.ProductReviewService;
@@ -41,6 +50,39 @@ public class ProductReviewController {
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		productReviewService.likeReview(reviewId, userDetails.getMember());
-		return ResponseEntity.ok().build();
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+
+	@GetMapping("/me")
+	@Operation(summary = "내가 작성한 리뷰 조회 API", description = "내가 작성한 리뷰를 조회합니다.")
+	public ResponseEntity<Result<List<ReviewResponse>>> getMyReviews(
+		@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+		List<ProductReview> productReviews = productReviewService.findMyReviews(userDetails.getMember());
+		List<ReviewResponse> responses = productReviews.stream()
+			.map(ReviewResponse::from)
+			.toList();
+		return ResponseEntity.ok(new Result<>(responses, responses.size()));
+	}
+
+	@PatchMapping("/{reviewId}")
+	@Operation(summary = "리뷰 수정 API", description = "리뷰를 수정합니다.")
+	public ResponseEntity<Void> updateReview(
+		@PathVariable Long reviewId,
+		@RequestBody UpdateReviewRequest request,
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
+
+		productReviewService.updateReview(reviewId, request, userDetails.getMember());
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+
+	@DeleteMapping("/{reviewId}")
+	@Operation(summary = "리뷰 삭제 API", description = "리뷰를 삭제합니다.")
+	public ResponseEntity<Void> deleteReview(
+		@PathVariable Long reviewId,
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
+
+		productReviewService.deleteReview(reviewId, userDetails.getMember());
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 }
