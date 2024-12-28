@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.Product;
-import ecommerce.coupang.domain.product.ProductReview;
-import ecommerce.coupang.domain.product.ReviewLike;
+import ecommerce.coupang.domain.product.review.ProductReview;
+import ecommerce.coupang.domain.product.review.ReviewLike;
 import ecommerce.coupang.dto.request.product.review.CreateReviewRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;

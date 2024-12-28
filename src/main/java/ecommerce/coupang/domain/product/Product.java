@@ -5,6 +5,7 @@ import java.util.List;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.category.Category;
+import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.domain.store.Store;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
@@ -39,15 +40,18 @@ public class Product extends BaseTimeEntity {
 	@JoinColumn(name = "store_id", nullable = false)
 	private Store store;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "category_id", nullable = false)
+	private Category category;
+
 	@Column(name = "name", nullable = false)
 	private String name;
 
 	@Column(name = "description", nullable = false)
 	private String description;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "category_id", nullable = false)
-	private Category category;
+	@Column(name = "star_avg", nullable = false)
+	private double starAvg = 0.0;
 
 	@Column(name = "is_active", nullable = false)
 	private boolean isActive = true;
@@ -92,6 +96,19 @@ public class Product extends BaseTimeEntity {
 
 	public void addProductReviews(ProductReview productReview) {
 		this.productReviews.add(productReview);
+
+		updateStarAvg();
+	}
+
+	private void updateStarAvg() {
+		if (this.productReviews.isEmpty())
+			this.starAvg = 0.0;
+		else {
+			this.starAvg = this.productReviews.stream()
+				.mapToInt(ProductReview::getStar)
+				.average()
+				.orElse(0.0);
+		}
 	}
 
 	public void delete() {

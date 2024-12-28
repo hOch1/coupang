@@ -1,4 +1,4 @@
-package ecommerce.coupang.domain.product;
+package ecommerce.coupang.domain.product.review;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.Objects;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Member;
+import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.dto.request.product.review.CreateReviewRequest;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

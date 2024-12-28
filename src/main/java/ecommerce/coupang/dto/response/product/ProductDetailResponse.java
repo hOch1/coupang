@@ -4,7 +4,7 @@ import java.util.List;
 
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
-import ecommerce.coupang.domain.product.ProductReview;
+import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;

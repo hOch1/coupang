@@ -2,7 +2,7 @@ package ecommerce.coupang.dto.response.product;
 
 import java.time.LocalDateTime;
 
-import ecommerce.coupang.domain.product.ProductReview;
+import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.dto.response.member.MemberResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
