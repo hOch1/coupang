@@ -1,5 +1,7 @@
 package ecommerce.coupang.controller.product;
 
+import ecommerce.coupang.domain.product.inquiry.ProductInquiry;
+import ecommerce.coupang.dto.response.product.inquiry.InquiryResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -19,6 +21,8 @@ import ecommerce.coupang.service.product.ProductInquiryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/product/inquiries")
@@ -44,17 +48,34 @@ public class ProductInquiryController {
 	public ResponseEntity<Void> createAnswer(
 		@PathVariable Long inquiryId,
 		@RequestBody CreateAnswerRequest request,
-		@AuthenticationPrincipal CustomUserDetails userDetails) {
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
+		productInquiryService.createAnswer(inquiryId, request, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
 	@GetMapping("/me")
 	@Operation(summary = "내가 등록한 문의 조회 API", description = "내가 등록한 상품 문의 목록을 조회합니다.")
-	public ResponseEntity<Result<Void>> findMyInquiries(
+	public ResponseEntity<Result<List<InquiryResponse>>> findMyInquiries(
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-		return ResponseEntity.ok(null);
+		List<ProductInquiry> productInquiries = productInquiryService.findMyInquiries(userDetails.getMember());
+		List<InquiryResponse> responses = productInquiries.stream()
+				.map(InquiryResponse::from)
+				.toList();
+		return ResponseEntity.ok(new Result<>(responses, responses.size()));
+	}
+
+	@GetMapping("/{productId}/product")
+	@Operation(summary = "상품 문의 조회 API", description = "해당 상품의 문의 내용을 조회합니다")
+	public ResponseEntity<Result<List<InquiryResponse>>> findInquiryByProduct(
+		@PathVariable Long productId) throws CustomException {
+
+		List<ProductInquiry> productInquiries = productInquiryService.getInquiryByProduct(productId);
+		List<InquiryResponse> responses = productInquiries.stream()
+				.map(InquiryResponse::from)
+				.toList();
+		return ResponseEntity.ok(new Result<>(responses, responses.size()));
 	}
 
 }

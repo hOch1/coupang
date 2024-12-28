@@ -68,4 +68,9 @@ public class ProductInquiry extends BaseTimeEntity {
 			request.getContent()
 		);
 	}
+
+	public void setAnswer(Answer answer) {
+		this.answer = answer;
+		this.isAnswered = true;
+	}
 }

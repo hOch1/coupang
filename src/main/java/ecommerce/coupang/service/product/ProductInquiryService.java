@@ -3,9 +3,13 @@ package ecommerce.coupang.service.product;
 import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
+import ecommerce.coupang.domain.product.inquiry.Answer;
 import ecommerce.coupang.domain.product.inquiry.ProductInquiry;
+import ecommerce.coupang.dto.request.product.inquiry.CreateAnswerRequest;
 import ecommerce.coupang.dto.request.product.inquiry.CreateInquiryRequest;
 import ecommerce.coupang.exception.CustomException;
+
+import java.util.List;
 
 @LogLevel("ProductInquiryService")
 public interface ProductInquiryService {
@@ -19,4 +23,30 @@ public interface ProductInquiryService {
 	 */
 	@LogAction("상품 문의 등록")
 	ProductInquiry createInquiry(Long productId, CreateInquiryRequest request, Member member) throws CustomException;
+
+	/**
+	 * 문의 답변 등록
+	 * @param inquiryId 상품 문의 ID
+	 * @param request 답변 등록 요청 정보
+	 * @param member 요청한 회원
+	 * @return 답변
+	 */
+	@LogAction("문의 답변 등록")
+    Answer createAnswer(Long inquiryId, CreateAnswerRequest request, Member member) throws CustomException;
+
+	/**
+	 * 내가 등록한 문의 목록 조회
+	 * @param member 요청한 회원
+	 * @return 문의 목록
+	 */
+	@LogAction("내가 등록한 문의 조회")
+	List<ProductInquiry> findMyInquiries(Member member);
+
+	/**
+	 * 해당 상품 문의 조회
+	 * @param productId 상품 ID
+	 * @return 문의 리스트
+	 */
+	@LogAction("해당 상품 문의 조회")
+	List<ProductInquiry> getInquiryByProduct(Long productId) throws CustomException;
 }
