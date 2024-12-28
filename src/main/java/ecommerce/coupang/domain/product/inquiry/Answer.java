@@ -2,6 +2,7 @@ package ecommerce.coupang.domain.product.inquiry;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Member;
+import ecommerce.coupang.domain.store.Store;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,8 +33,8 @@ public class Answer extends BaseTimeEntity {
 	private ProductInquiry productInquiry;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "member_id", nullable = false)
-	private Member member;
+	@JoinColumn(name = "store_id", nullable = false)
+	private Store store;
 
 	@Column(name = "answer", nullable = false)
 	private String answer;
