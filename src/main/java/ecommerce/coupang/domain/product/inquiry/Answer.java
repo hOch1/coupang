@@ -1,4 +1,4 @@
-package ecommerce.coupang.domain.product.qna;
+package ecommerce.coupang.domain.product.inquiry;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Member;
@@ -28,8 +28,8 @@ public class Answer extends BaseTimeEntity {
 	private Long id;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_question_id", nullable = false, unique = true)
-	private ProductQuestion productQuestion;
+	@JoinColumn(name = "product_inquiry_id", nullable = false, unique = true)
+	private ProductInquiry productInquiry;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", nullable = false)

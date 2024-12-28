@@ -1,4 +1,4 @@
-package ecommerce.coupang.domain.product.qna;
+package ecommerce.coupang.domain.product.inquiry;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Member;
@@ -24,11 +24,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class ProductQuestion extends BaseTimeEntity {
+public class ProductInquiry extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "product_question_id")
+	@Column(name = "product_inquiry_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -39,12 +39,12 @@ public class ProductQuestion extends BaseTimeEntity {
 	@JoinColumn(name = "member_id")
 	private Member member;
 
-	@OneToOne(mappedBy = "productQuestion", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(mappedBy = "productInquiry", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Answer answer;
 
-	@Column(name = "question_type", nullable = false)
+	@Column(name = "inquiry_type", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private QuestionType type;
+	private InquiryType type;
 
 	@Column(name = "content", nullable = false)
 	private String content;

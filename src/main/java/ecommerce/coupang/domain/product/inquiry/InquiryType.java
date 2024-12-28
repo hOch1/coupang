@@ -1,11 +1,11 @@
-package ecommerce.coupang.domain.product.qna;
+package ecommerce.coupang.domain.product.inquiry;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum QuestionType {
+public enum InquiryType {
 
 	DELIVERY("배송문의"),
 	PRODUCT("싱품문의"),
