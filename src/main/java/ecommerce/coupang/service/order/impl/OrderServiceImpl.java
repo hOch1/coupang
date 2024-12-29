@@ -81,6 +81,7 @@ public class OrderServiceImpl implements OrderService {
 			orderItem.setDelivery(delivery);
 
 			order.addOrderItem(orderItem);
+			cartItemRepository.delete(cartItem);
 		}
 
 		orderRepository.save(order);
