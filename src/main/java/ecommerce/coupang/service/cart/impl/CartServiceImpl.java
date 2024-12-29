@@ -1,5 +1,10 @@
 package ecommerce.coupang.service.cart.impl;
 
+import ecommerce.coupang.domain.product.variant.ProductVariantOption;
+import ecommerce.coupang.dto.response.cart.CartResponse;
+import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,14 +21,18 @@ import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.service.cart.CartService;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
+	private static final Logger log = LoggerFactory.getLogger(CartServiceImpl.class);
 	private final CartRepository cartRepository;
 	private final CartItemRepository cartItemRepository;
 	private final ProductVariantRepository productVariantRepository;
+	private final ProductVariantOptionRepository productVariantOptionRepository;
 
 	@Override
 	@Transactional
@@ -48,9 +57,21 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
-	public Cart findMyCart(Member member) throws CustomException {
-		return cartRepository.findByMemberId(member.getId())
-			.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
+	public CartResponse findMyCart(Member member) throws CustomException {
+		Cart cart = cartRepository.findByMemberId(member.getId())
+				.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
+
+		List<CartItem> cartItems = cartItemRepository.findByMemberIdWithProductStore(member.getId());
+
+		CartResponse response = CartResponse.from(cart);
+
+		for (CartItem cartItem : cartItems) {
+			List<ProductVariantOption> productVariantOptions = productVariantOptionRepository.findByProductVariantId(cartItem.getProductVariant().getId());
+			CartResponse.CartItemResponse cartItemResponse = CartResponse.CartItemResponse.from(cartItem, productVariantOptions);
+			response.addItems(cartItemResponse);
+		}
+
+		return response;
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package ecommerce.coupang.repository.cart;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -41,4 +42,11 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 	 * @return 장바구니 상품
 	 */
 	Optional<CartItem> findByCartIdAndProductVariantId(Long cartId, Long productVariantId);
+
+	@Query("select ci from CartItem ci " +
+			"join fetch ci.productVariant pv " +
+			"join fetch pv.product p " +
+			"join fetch p.store s " +
+			"where ci.cart.member.id = :memberId")
+	List<CartItem> findByMemberIdWithProductStore(Long memberId);
 }

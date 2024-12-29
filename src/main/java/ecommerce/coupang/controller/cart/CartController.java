@@ -48,9 +48,9 @@ public class CartController {
 	public ResponseEntity<Result<CartResponse>> findMyCart(
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		Cart cart = cartService.findMyCart(userDetails.getMember());
+		CartResponse response = cartService.findMyCart(userDetails.getMember());
 
-		return ResponseEntity.ok(new Result<>(CartResponse.from(cart)));
+		return ResponseEntity.ok(new Result<>(response));
 	}
 
 	@PatchMapping("/item/{cartItemId}")

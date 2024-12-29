@@ -1,10 +1,12 @@
 package ecommerce.coupang.dto.response.cart;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import ecommerce.coupang.domain.cart.Cart;
 import ecommerce.coupang.domain.cart.CartItem;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
+import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.dto.response.option.OptionResponse;
 import ecommerce.coupang.dto.response.store.StoreResponse;
 import lombok.AllArgsConstructor;
@@ -14,23 +16,30 @@ import lombok.Getter;
 @AllArgsConstructor
 public class CartResponse {
 
-	private final Long cartId;
-	private final int itemCount;
-	private final List<CartItemResponse> items;
+	private Long cartId;
+	private int itemCount;
+	private List<CartItemResponse> items;
+
+	public CartResponse(Long cartId, int itemCount) {
+		this.cartId = cartId;
+		this.itemCount = itemCount;
+		this.items = new ArrayList<>();
+	}
 
 	public static CartResponse from(Cart cart) {
 		return new CartResponse(
 			cart.getId(),
-			cart.getCartItems().size(),
-			cart.getCartItems().stream()
-				.map(CartItemResponse::from)
-				.toList()
+			cart.getCartItems().size()
 		);
+	}
+
+	public void addItems(CartItemResponse cartItemResponse) {
+		this.items.add(cartItemResponse);
 	}
 
 	@Getter
 	@AllArgsConstructor
-	private static class CartItemResponse {
+	public static class CartItemResponse {
 
 		private final Long cartItemId;
 		private final StoreResponse store;
@@ -39,10 +48,9 @@ public class CartResponse {
 		private final int price;
 		private final int quantity;
 		private final ProductStatus status;
-		private final List<OptionResponse> categoryOptions;
 		private final List<OptionResponse> variantOptions;
 
-		public static CartItemResponse from(CartItem cartItem) {
+		public static CartItemResponse from(CartItem cartItem, List<ProductVariantOption> productVariantOptions) {
 			return new CartItemResponse(
 				cartItem.getId(),
 				StoreResponse.from(cartItem.getProductVariant().getProduct().getStore()),
@@ -51,10 +59,7 @@ public class CartResponse {
 				cartItem.getProductVariant().getPrice(),
 				cartItem.getQuantity(),
 				cartItem.getProductVariant().getStatus(),
-				cartItem.getProductVariant().getProduct().getProductOptions().stream()
-					.map(OptionResponse::productCategoryFrom)
-					.toList(),
-				cartItem.getProductVariant().getProductVariantOptions().stream()
+				productVariantOptions.stream()
 					.map(OptionResponse::productVariantFrom)
 					.toList()
 			);

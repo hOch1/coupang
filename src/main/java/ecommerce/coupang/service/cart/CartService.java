@@ -6,6 +6,7 @@ import ecommerce.coupang.domain.cart.Cart;
 import ecommerce.coupang.domain.cart.CartItem;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.dto.request.cart.AddCartRequest;
+import ecommerce.coupang.dto.response.cart.CartResponse;
 import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("CartService")
@@ -26,7 +27,7 @@ public interface CartService {
 	 * @return 장바구니 목록
 	 */
 	@LogAction("장바구니 조회")
-	Cart findMyCart(Member member) throws CustomException;
+	CartResponse findMyCart(Member member) throws CustomException;
 
 	/**
 	 * 장바구니 상푼 수량 변경
