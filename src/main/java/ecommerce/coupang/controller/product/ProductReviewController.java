@@ -67,6 +67,18 @@ public class ProductReviewController {
 		return ResponseEntity.ok(new Result<>(responses, responses.size()));
 	}
 
+	@GetMapping("/{productId}")
+	@Operation(summary = "상품 리뷰 조회 API", description = "해당 상품의 리뷰를 조회합니다")
+	public ResponseEntity<Result<List<ReviewResponse>>> getReviewsByProduct(
+		@PathVariable Long productId) {
+
+		List<ProductReview> productReviews = productReviewService.findReviewsByProduct(productId);
+		List<ReviewResponse> responses = productReviews.stream()
+			.map(ReviewResponse::from)
+			.toList();
+		return ResponseEntity.ok(new Result<>(responses, responses.size()));
+	}
+
 	@PatchMapping("/{reviewId}")
 	@Operation(summary = "리뷰 수정 API", description = "리뷰를 수정합니다.")
 	public ResponseEntity<Void> updateReview(

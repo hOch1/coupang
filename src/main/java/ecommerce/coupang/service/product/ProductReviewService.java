@@ -57,5 +57,14 @@ public interface ProductReviewService {
 	 * @param member 요청한 회원
 	 * @return 삭제한 리뷰
 	 */
+	@LogAction("리뷰 삭제")
 	ProductReview deleteReview(Long reviewId, Member member) throws CustomException;
+
+	/**
+	 * 해당 상품 리뷰 목록 조회
+	 * @param productId 상품 ID
+	 * @return 리뷰 리스트
+	 */
+	@LogAction("상품 리뷰 조회")
+	List<ProductReview> findReviewsByProduct(Long productId);
 }
