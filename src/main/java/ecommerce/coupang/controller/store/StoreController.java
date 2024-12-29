@@ -47,21 +47,21 @@ public class StoreController {
 
 	@GetMapping("/{storeId}")
 	@Operation(summary = "상점 상세 조회 API", description = "상점 상세 정보를 조회합니다")
-	public ResponseEntity<Result<StoreResponse>> getStoreDetail(
+	public ResponseEntity<Result<StoreDetailResponse>> getStoreDetail(
 		@PathVariable Long storeId) throws CustomException {
 
 		Store store = storeService.findStore(storeId);
-		return ResponseEntity.ok(new Result<>(StoreResponse.from(store)));
+		return ResponseEntity.ok(new Result<>(StoreDetailResponse.from(store)));
 	}
 
 	@GetMapping("/my")
 	@Operation(summary = "내 상점 목록 조회", description = "나의 상점 목록을 조회합니다")
-	public ResponseEntity<Result<List<StoreDetailResponse>>> getMyStore(
+	public ResponseEntity<Result<List<StoreResponse>>> getMyStore(
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		List<Store> stores = storeService.findMyStore(userDetails.getMember());
-		List<StoreDetailResponse> responses = stores.stream()
-			.map(StoreDetailResponse::from)
+		List<StoreResponse> responses = stores.stream()
+			.map(StoreResponse::from)
 			.toList();
 
 		return ResponseEntity.ok(new Result<>(responses, responses.size()));
