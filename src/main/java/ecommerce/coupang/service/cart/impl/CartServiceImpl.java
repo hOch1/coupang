@@ -47,7 +47,7 @@ public class CartServiceImpl implements CartService {
 			.orElse(null);
 
 		if (cartItem != null)
-			cartItem.changeQuantity(request.getQuantity());
+			cartItem.addQuantity(request.getQuantity());
 		else {
 			cartItem = CartItem.create(cart, productVariant, request.getQuantity());
 			cart.addItem(cartItem);

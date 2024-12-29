@@ -64,4 +64,8 @@ public class CartItem extends BaseTimeEntity {
 			throw new CustomException(ErrorCode.QUANTITY_IS_WRONG);
 		this.quantity = quantity;
 	}
+
+	public void addQuantity(int quantity) {
+		this.quantity += quantity;
+	}
 }
