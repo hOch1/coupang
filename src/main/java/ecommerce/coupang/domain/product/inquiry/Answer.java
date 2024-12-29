@@ -4,6 +4,7 @@ import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.store.Store;
 import ecommerce.coupang.dto.request.product.inquiry.CreateAnswerRequest;
+import ecommerce.coupang.dto.request.product.inquiry.UpdateAnswerRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -52,5 +53,9 @@ public class Answer extends BaseTimeEntity {
 				store,
 				request.getAnswer()
 		);
+	}
+
+	public void update(UpdateAnswerRequest request) {
+		this.answer = request.getAnswer() != null ? request.getAnswer() : this.answer;
 	}
 }

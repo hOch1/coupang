@@ -18,6 +18,7 @@ public enum ErrorCode {
 	DELIVERY_NOT_FOUND(404, "배송 정보를 찾을 수 없습니다."),
 	REVIEW_NOT_FOUND(404, "리뷰를 찾을 수 없습니다."),
 	INQUIRY_NOT_FOUND(404, "해당 문의를 찾을 수 없습니다."),
+	ANSWER_NOT_FOUND(404, "답변을 찾을 수 없습니다."),
 
 	PASSWORD_NOT_MATCHED(400, "비밀번호가 맞지 앉습니다."),
 	ALREADY_EXITS_EMAIL(400, "중복된 이메일 입니다."),

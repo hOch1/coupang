@@ -3,6 +3,8 @@ package ecommerce.coupang.service.product.impl;
 import ecommerce.coupang.domain.product.inquiry.Answer;
 import ecommerce.coupang.domain.store.Store;
 import ecommerce.coupang.dto.request.product.inquiry.CreateAnswerRequest;
+import ecommerce.coupang.dto.request.product.inquiry.UpdateAnswerRequest;
+import ecommerce.coupang.dto.request.product.inquiry.UpdateInquiryRequest;
 import ecommerce.coupang.repository.product.inquiry.AnswerRepository;
 import ecommerce.coupang.repository.store.StoreRepository;
 import org.springframework.stereotype.Service;
@@ -83,5 +85,63 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
 				.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
 		return productInquiryRepository.findByProductIdWithMember(productId);
+	}
+
+	@Override
+	public Answer findAnswer(Long inquiryId) throws CustomException {
+		return answerRepository.findByInquiryId(inquiryId)
+			.orElseThrow(() -> new CustomException(ErrorCode.ANSWER_NOT_FOUND));
+	}
+
+	@Override
+	@Transactional
+	public ProductInquiry updateInquiry(Long inquiryId, UpdateInquiryRequest request, Member member) throws CustomException {
+		ProductInquiry productInquiry = productInquiryRepository.findByIdWithMember(inquiryId)
+			.orElseThrow(() -> new CustomException(ErrorCode.INQUIRY_NOT_FOUND));
+
+		if (!productInquiry.getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
+
+		productInquiry.update(request);
+		return productInquiry;
+	}
+
+	@Override
+	@Transactional
+	public Answer updateAnswer(Long answerId, UpdateAnswerRequest request, Member member) throws CustomException {
+		Answer answer = answerRepository.findByIdWithMember(answerId)
+			.orElseThrow(() -> new CustomException(ErrorCode.ANSWER_NOT_FOUND));
+
+		if (!answer.getStore().getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
+
+		answer.update(request);
+		return answer;
+	}
+
+	@Override
+	@Transactional
+	public ProductInquiry deleteInquiry(Long inquiryId, Member member) throws CustomException {
+		ProductInquiry productInquiry = productInquiryRepository.findByIdWithMember(inquiryId)
+			.orElseThrow(() -> new CustomException(ErrorCode.INQUIRY_NOT_FOUND));
+
+		if (!productInquiry.getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
+
+		productInquiryRepository.delete(productInquiry);
+		return productInquiry;
+	}
+
+	@Override
+	@Transactional
+	public Answer deleteAnswer(Long answerId, Member member) throws CustomException {
+		Answer answer = answerRepository.findByIdWithMember(answerId)
+			.orElseThrow(() -> new CustomException(ErrorCode.ANSWER_NOT_FOUND));
+
+		if (!answer.getStore().getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
+
+		answerRepository.delete(answer);
+		return answer;
 	}
 }

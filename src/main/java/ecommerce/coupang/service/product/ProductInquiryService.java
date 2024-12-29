@@ -7,6 +7,8 @@ import ecommerce.coupang.domain.product.inquiry.Answer;
 import ecommerce.coupang.domain.product.inquiry.ProductInquiry;
 import ecommerce.coupang.dto.request.product.inquiry.CreateAnswerRequest;
 import ecommerce.coupang.dto.request.product.inquiry.CreateInquiryRequest;
+import ecommerce.coupang.dto.request.product.inquiry.UpdateAnswerRequest;
+import ecommerce.coupang.dto.request.product.inquiry.UpdateInquiryRequest;
 import ecommerce.coupang.exception.CustomException;
 
 import java.util.List;
@@ -49,4 +51,50 @@ public interface ProductInquiryService {
 	 */
 	@LogAction("해당 상품 문의 조회")
 	List<ProductInquiry> getInquiryByProduct(Long productId) throws CustomException;
+
+	/**
+	 * 해당 상품의 답변 조회
+	 * @param inquiryId 상품 문의 ID
+	 * @return 답변
+	 */
+	@LogAction("문의 답변 조회")
+	Answer findAnswer(Long inquiryId) throws CustomException;
+
+	/**
+	 * 해당 문의 수정
+	 * @param inquiryId 문의 ID
+	 * @param request 문의 수정 요청 정보
+	 * @param member 요청한 회원
+	 * @return 문의
+	 */
+	@LogAction("문의 수정")
+	ProductInquiry updateInquiry(Long inquiryId, UpdateInquiryRequest request, Member member) throws CustomException;
+
+	/**
+	 * 해당 답변 수정
+	 * @param answerId 답변 ID
+	 * @param request 답변 수정 요청 정보
+	 * @param member 요청한 회원
+	 * @return 답변
+	 */
+	@LogAction("답변 수정")
+	Answer updateAnswer(Long answerId, UpdateAnswerRequest request, Member member) throws CustomException;
+
+	/**
+	 * 해당 문의 삭제
+	 * @param inquiryId 문의 ID
+	 * @param member 요청한 회원
+	 * @return 문의
+	 */
+	@LogAction("문의 삭제")
+	ProductInquiry deleteInquiry(Long inquiryId, Member member) throws CustomException;
+
+	/**
+	 * 해당 답변 삭제
+	 * @param answerId 답변 ID
+	 * @param member 요청한 회원
+	 * @return 답변
+	 */
+	@LogAction("답변 삭제")
+	Answer deleteAnswer(Long answerId, Member member) throws CustomException;
 }

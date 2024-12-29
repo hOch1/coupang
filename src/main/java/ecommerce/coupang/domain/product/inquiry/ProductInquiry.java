@@ -4,6 +4,7 @@ import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.dto.request.product.inquiry.CreateInquiryRequest;
+import ecommerce.coupang.dto.request.product.inquiry.UpdateInquiryRequest;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -72,5 +73,9 @@ public class ProductInquiry extends BaseTimeEntity {
 	public void setAnswer(Answer answer) {
 		this.answer = answer;
 		this.isAnswered = true;
+	}
+
+	public void update(UpdateInquiryRequest request) {
+		this.content = request.getContent() != null ? request.getContent() : this.content;
 	}
 }
