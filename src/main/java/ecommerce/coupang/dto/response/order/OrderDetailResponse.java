@@ -51,9 +51,8 @@ public class OrderDetailResponse {
 		private final int quantity;
 		private final int totalPrice;
 		private final List<OptionResponse> variantOptions;
-		private final List<OptionResponse> categoryOptions;
 
-		public static OrderItemResponse from(OrderItem orderItem, List<ProductVariantOption> productVariantOptions, List<ProductCategoryOption> productCategoryOptions) {
+		public static OrderItemResponse from(OrderItem orderItem, List<ProductVariantOption> productVariantOptions) {
 			return new OrderItemResponse(
 				orderItem.getId(),
 				orderItem.getProductVariant().getId(),
@@ -63,9 +62,6 @@ public class OrderDetailResponse {
 				orderItem.getTotalPrice(),
 				productVariantOptions.stream()
 					.map(OptionResponse::productVariantFrom)
-					.toList(),
-				productCategoryOptions.stream()
-					.map(OptionResponse::productCategoryFrom)
 					.toList()
 			);
 		}

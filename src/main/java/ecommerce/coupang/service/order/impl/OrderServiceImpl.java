@@ -30,6 +30,8 @@ import ecommerce.coupang.service.member.AddressService;
 import ecommerce.coupang.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 
+import static ecommerce.coupang.dto.response.order.OrderDetailResponse.*;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -103,17 +105,13 @@ public class OrderServiceImpl implements OrderService {
 
 		List<OrderItem> orderItems = orderItemRepository.findByOrderId(order.getId());
 
-		OrderDetailResponse response = OrderDetailResponse.from(order);
+		OrderDetailResponse response = from(order);
 
 		for (OrderItem orderItem : orderItems) {
 			List<ProductVariantOption> productVariantOptions = productVariantOptionRepository.findByProductVariantId(
 					orderItem.getProductVariant().getId());
 
-			List<ProductCategoryOption> productCategoryOptions = productCategoryOptionRepository.findByProductId(
-					orderItem.getProductVariant().getProduct().getId());
-
-			OrderDetailResponse.OrderItemResponse orderItemResponse = OrderDetailResponse.OrderItemResponse.from(
-					orderItem, productVariantOptions, productCategoryOptions);
+			OrderItemResponse orderItemResponse = OrderItemResponse.from(orderItem, productVariantOptions);
 
 			response.getOrderItems().add(orderItemResponse);
 		}

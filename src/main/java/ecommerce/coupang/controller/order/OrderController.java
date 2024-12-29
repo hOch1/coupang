@@ -64,7 +64,7 @@ public class OrderController {
 			.map(OrderResponse::from)
 			.toList();
 
-		return ResponseEntity.ok(new Result<>(responses));
+		return ResponseEntity.ok(new Result<>(responses, responses.size()));
 	}
 
 	@GetMapping("/{orderId}")
