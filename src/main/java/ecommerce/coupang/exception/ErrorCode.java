@@ -34,6 +34,7 @@ public enum ErrorCode {
 	CAN_NOT_WRITE_MY_PRODUCT(400, "자신의 상품엔 리뷰를 작성할 수 없습니다."),
 	CAN_NOT_INQUIRY_MY_PRODUCT(400, "자신의 상품엔 문의를 등록할 수 없습니다."),
 	ALREADY_ANSWERED(400, "이미 답변이 등록된 문의 입니다."),
+	ALREADY_CANCELLED_ORDER(400, "이미 취소된 주문 입니다."),
 
 	FORBIDDEN(401, "권한이 없습니다."),
 

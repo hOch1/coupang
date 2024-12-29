@@ -2,6 +2,7 @@ package ecommerce.coupang.service.order.impl;
 
 import java.util.List;
 
+import ecommerce.coupang.domain.order.OrderStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -127,6 +128,9 @@ public class OrderServiceImpl implements OrderService {
 
 		if (!order.getMember().equals(member))
 			throw new CustomException(ErrorCode.FORBIDDEN);
+
+		if (order.getStatus().equals(OrderStatus.CANCELLED))
+			throw new CustomException(ErrorCode.ALREADY_CANCELLED_ORDER);
 
 		order.cancel();
 		return order;
