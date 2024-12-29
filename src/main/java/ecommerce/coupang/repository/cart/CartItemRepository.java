@@ -32,7 +32,7 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
 		+ "join fetch ci.productVariant pv "
 		+ "join fetch pv.product p "
 		+ "join fetch p.store s "
-		+ "where ci.id = :id ")
+		+ "where ci.id = :cartItemId ")
 	Optional<CartItem> findByIdWithStore(Long cartItemId);
 
 	/**
