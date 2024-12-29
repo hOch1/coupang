@@ -41,7 +41,7 @@ public class ProductInquiry extends BaseTimeEntity {
 	@JoinColumn(name = "member_id")
 	private Member member;
 
-	@OneToOne(mappedBy = "productInquiry", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "productInquiry", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Answer answer;
 
 	@Column(name = "inquiry_type", nullable = false)

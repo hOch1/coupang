@@ -2,6 +2,7 @@ package ecommerce.coupang.domain.member;
 
 import java.util.Objects;
 
+import jakarta.persistence.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
@@ -9,15 +10,6 @@ import ecommerce.coupang.domain.cart.Cart;
 import ecommerce.coupang.dto.request.auth.SignupRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -57,7 +49,7 @@ public class Member extends BaseTimeEntity {
 	@Column(name = "is_active", nullable = false)
 	private boolean isActive = true;
 
-	@OneToOne(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Cart cart;
 
 	public Member(String name, String phoneNumber, String email, String password) {
