@@ -19,5 +19,9 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, Lo
 
 	List<ProductReview> findByProductId(Long id);
 
+	@Query("select pr from ProductReview pr "
+		+ "join fetch pr.member m " 
+		+ "join fetch m.cart c "
+		+ "where m.id = :memberId")
 	List<ProductReview> findByMemberId(Long memberId);
 }

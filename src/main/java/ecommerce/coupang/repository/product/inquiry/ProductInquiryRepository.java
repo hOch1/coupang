@@ -14,16 +14,19 @@ public interface ProductInquiryRepository extends JpaRepository<ProductInquiry, 
             "join fetch pi.product p " +
             "join fetch p.store s " +
             "join fetch s.member m " +
+            "join fetch pi.answer a " +
             "where pi.id = :productInquiryId")
     Optional<ProductInquiry> findByIdWithMember(Long productInquiryId);
 
     @Query("select pi from ProductInquiry pi " +
             "join fetch pi.product p " +
+            "join fetch pi.answer a " +
             "where pi.member.id = :memberId")
     List<ProductInquiry> findByMemberId(Long memberId);
 
     @Query("select pi from ProductInquiry pi " +
             "join fetch pi.product p " +
+            "join fetch pi.answer a " +
             "where p.id = :productId")
     List<ProductInquiry> findByProductIdWithMember(Long productId);
 }

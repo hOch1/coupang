@@ -26,6 +26,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 	 */
 	@Query("select s from Store s "
 		+ "join fetch s.member m "
+		+ "join fetch m.cart c "
 		+ "where s.id = :storeId")
 	Optional<Store> findByIdWithMember(Long storeId);
 
@@ -36,6 +37,7 @@ public interface StoreRepository extends JpaRepository<Store, Long> {
 	 */
 	@Query("select s from Store s "
 		+ "join fetch s.member m "
+		+ "join fetch m.cart c "
 		+ "where m.id = :memberId "
 		+ "and s.isActive = true")
 	List<Store> findByMemberId(Long memberId);
