@@ -113,6 +113,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 		Product product = productReview.getProduct();
 		product.getProductReviews().remove(productReview);
 		product.updateStarAvg();
+		product.decreaseReviewCount();
 
 		productRepository.save(product);
 		return productReview;

@@ -1,6 +1,7 @@
 package ecommerce.coupang.repository.product.custom.impl;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.domain.category.QCategory;
@@ -12,10 +13,10 @@ import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.QProductVariant;
 import ecommerce.coupang.domain.product.variant.QProductVariantOption;
 import ecommerce.coupang.domain.store.QStore;
+import ecommerce.coupang.dto.request.product.ProductSort;
 import ecommerce.coupang.repository.product.custom.ProductCustomRepository;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 	}
 
 	@Override
-	public List<ProductVariant> searchProducts(List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions) {
+	public List<ProductVariant> searchProducts(List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort) {
 		QProduct product = QProduct.product;
 		QProductVariant productVariant = QProductVariant.productVariant;
 		QProductCategoryOption productCategoryOption = QProductCategoryOption.productCategoryOption;
@@ -58,7 +59,36 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 
 		BooleanBuilder builder = new BooleanBuilder();
 
-		builder.and(productVariant.isDefault.isTrue());
+		searchFilter(builder, categories, storeId, categoryOptions, variantOptions, product, productCategoryOption, productVariantOption);
+
+		JPQLQuery<ProductVariant> query = queryFactory
+			.selectDistinct(productVariant)
+			.from(productVariant)
+			.join(productVariant.product, product).fetchJoin()
+			.join(productVariant.product.store, store).fetchJoin()
+			.join(productVariant.product.category, category).fetchJoin()
+			.where(builder
+				.and(productVariant.isDefault.isTrue()));
+
+		searchSort(query, product, productVariant, sort);
+
+		return query.fetch();
+	}
+
+	private void searchSort(JPQLQuery<ProductVariant> query, QProduct product, QProductVariant productVariant, ProductSort sort) {
+		switch (sort) {
+			case LATEST -> query.orderBy(product.createdAt.desc());
+			case OLDEST -> query.orderBy(product.createdAt.asc());
+			case REVIEW -> query.orderBy(product.reviewCount.desc());
+			case RATING -> query.orderBy(product.starAvg.desc());
+			case PRICE_HIGH -> query.orderBy(productVariant.price.desc());
+			case PRICE_LOW -> query.orderBy(productVariant.price.asc());
+			case SALES -> query.orderBy(productVariant.salesCount.desc());
+		}
+	}
+
+	private void searchFilter(BooleanBuilder builder, List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions,
+		QProduct product, QProductCategoryOption productCategoryOption, QProductVariantOption productVariantOption) {
 
 		if (!categories.isEmpty())
 			builder.and(product.category.in(categories));
@@ -68,14 +98,5 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 			builder.and(productCategoryOption.categoryOptionValue.id.in(categoryOptions));
 		if (variantOptions != null)
 			builder.and(productVariantOption.variantOptionValue.id.in(variantOptions));
-
-		return queryFactory
-			.selectDistinct(productVariant)
-			.from(productVariant)
-			.join(productVariant.product, product).fetchJoin()
-			.join(productVariant.product.store, store).fetchJoin()
-			.join(productVariant.product.category, category).fetchJoin()
-			.where(builder)
-			.fetch();
 	}
 }

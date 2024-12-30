@@ -39,6 +39,9 @@ public class ProductVariant {
 	@Column(name = "status", nullable = false)
 	private ProductStatus status;
 
+	@Column(name = "sales_count", nullable = false)
+	private int salesCount = 0;
+
 	@Column(name = "is_default", nullable = false)
 	private boolean isDefault = false;
 
@@ -83,6 +86,14 @@ public class ProductVariant {
 
 	public void changeDefault(boolean change) {
 		this.isDefault = change;
+	}
+
+	public void increaseSalesCount(int quantity) {
+		this.salesCount += quantity;
+	}
+
+	public void decreaseSalesCount(int quantity) {
+		this.salesCount -= quantity;
 	}
 
 	public void changeStock(int stockQuantity) throws CustomException {

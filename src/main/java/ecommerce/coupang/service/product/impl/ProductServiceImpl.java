@@ -8,6 +8,7 @@ import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.domain.product.variant.VariantOptionValue;
+import ecommerce.coupang.dto.request.product.ProductSort;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
@@ -142,13 +143,13 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<ProductResponse> search(Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions) throws CustomException {
+	public List<ProductResponse> search(Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort) throws CustomException {
 		List<Category> categories = new ArrayList<>();
 
 		if (categoryId != null)
 			categories = categoryService.findAllSubCategories(categoryId);
 
-		List<ProductVariant> productVariants = productRepository.searchProducts(categories, storeId, categoryOptions, variantOptions);
+		List<ProductVariant> productVariants = productRepository.searchProducts(categories, storeId, categoryOptions, variantOptions, sort);
 
 		return productVariants.stream()
 			.map(ProductResponse::from)

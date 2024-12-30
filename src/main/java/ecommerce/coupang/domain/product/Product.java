@@ -53,6 +53,9 @@ public class Product extends BaseTimeEntity {
 	@Column(name = "star_avg", nullable = false)
 	private double starAvg = 0.0;
 
+	@Column(name = "review_count", nullable = false)
+	private int reviewCount = 0;
+
 	@Column(name = "is_active", nullable = false)
 	private boolean isActive = true;
 
@@ -97,7 +100,16 @@ public class Product extends BaseTimeEntity {
 	public void addProductReviews(ProductReview productReview) {
 		this.productReviews.add(productReview);
 
+		increaseReviewCount();
 		updateStarAvg();
+	}
+
+	public void increaseReviewCount() {
+		this.reviewCount++;
+	}
+
+	public void decreaseReviewCount() {
+		this.reviewCount--;
 	}
 
 	public void updateStarAvg() {

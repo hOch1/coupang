@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
+import ecommerce.coupang.dto.request.product.ProductSort;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
@@ -56,9 +57,10 @@ public class ProductController {
 		@RequestParam(required = false) Long categoryId,
 		@RequestParam(required = false) Long storeId,
 		@RequestParam(required = false) List<Long> categoryOptions,
-		@RequestParam(required = false) List<Long> variantOptions) throws CustomException {
+		@RequestParam(required = false) List<Long> variantOptions,
+		@RequestParam(required = false, defaultValue = "LATEST") ProductSort sort) throws CustomException {
 
-		List<ProductResponse> responses = productService.search(categoryId, storeId, categoryOptions, variantOptions);
+		List<ProductResponse> responses = productService.search(categoryId, storeId, categoryOptions, variantOptions, sort);
 		return ResponseEntity.ok(new Result<>(responses, responses.size()));
 	}
 

@@ -62,6 +62,7 @@ public class OrderItem {
 	}
 
 	public static OrderItem createByProduct(Order order, ProductVariant productVariant, CreateOrderByProductRequest request) {
+		productVariant.increaseSalesCount(request.getQuantity());
 		return new OrderItem(
 			order,
 			productVariant,
@@ -72,6 +73,7 @@ public class OrderItem {
 	}
 
 	public static OrderItem createByCartItem(Order order, CartItem cartItem) {
+		cartItem.getProductVariant().increaseSalesCount(cartItem.getQuantity());
 		return new OrderItem(
 			order,
 			cartItem.getProductVariant(),
@@ -83,6 +85,7 @@ public class OrderItem {
 
 	public void cancel() {
 		productVariant.addStock(quantity);
+		productVariant.decreaseSalesCount(quantity);
 	}
 
 	@Override
