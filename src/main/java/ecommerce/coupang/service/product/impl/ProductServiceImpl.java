@@ -21,6 +21,7 @@ import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.repository.product.VariantOptionValueRepository;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -151,7 +152,7 @@ public class ProductServiceImpl implements ProductService {
 		if (categoryId != null)
 			categories = categoryService.findAllSubCategories(categoryId);
 
-		return productRepository.searchProducts(categories, storeId, categoryOptions, variantOptions, sort, page, pageSize);
+		return productRepository.searchProducts(categories, storeId, categoryOptions, variantOptions, sort, PageRequest.of(page, pageSize));
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package ecommerce.coupang.controller.product;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -75,13 +76,20 @@ public class ProductReviewController {
 	public ResponseEntity<Result<List<ReviewResponse>>> getReviewsByProduct(
 		@PathVariable Long productId,
 		@RequestParam(required = false) Integer star,
-		@RequestParam(required = false, defaultValue = "LATEST") ReviewSort sort) {
+		@RequestParam(required = false, defaultValue = "LATEST") ReviewSort sort,
+		@RequestParam(required = false, defaultValue = "0") int page,
+		@RequestParam(required = false, defaultValue = "20") int pageSize) {
 
-		List<ProductReview> productReviews = productReviewService.findReviewsByProduct(productId, star, sort);
-		List<ReviewResponse> responses = productReviews.stream()
-			.map(ReviewResponse::from)
-			.toList();
-		return ResponseEntity.ok(new Result<>(responses, responses.size()));
+		Page<ProductReview> productReviews = productReviewService.findReviewsByProduct(productId, star, sort, page, pageSize);
+		Page<ReviewResponse> responses = productReviews.map(ReviewResponse::from);
+		return ResponseEntity.ok(new Result<>(
+			responses.getContent(),
+			responses.getContent().size(),
+			page,
+			pageSize,
+			responses.getTotalPages(),
+			responses.getTotalElements()
+		));
 	}
 
 	@PatchMapping("/{reviewId}")

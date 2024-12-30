@@ -2,6 +2,8 @@ package ecommerce.coupang.service.product;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
@@ -67,5 +69,5 @@ public interface ProductReviewService {
 	 * @return 리뷰 리스트
 	 */
 	@LogAction("상품 리뷰 조회")
-	List<ProductReview> findReviewsByProduct(Long productId, Integer star, ReviewSort sort);
+	Page<ProductReview> findReviewsByProduct(Long productId, Integer star, ReviewSort sort, int page, int pageSize);
 }

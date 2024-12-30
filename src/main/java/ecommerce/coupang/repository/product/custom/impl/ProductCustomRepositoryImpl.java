@@ -2,6 +2,7 @@ package ecommerce.coupang.repository.product.custom.impl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.JPQLQuery;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.domain.category.QCategory;
@@ -18,7 +19,7 @@ import ecommerce.coupang.repository.product.custom.ProductCustomRepository;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
@@ -52,8 +53,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 	}
 
 	@Override
-	public Page<ProductVariant> searchProducts(List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, int page, int pageSize) {
-
+	public Page<ProductVariant> searchProducts(List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, Pageable pageable) {
 		QProduct product = QProduct.product;
 		QProductVariant productVariant = QProductVariant.productVariant;
 		QProductCategoryOption productCategoryOption = QProductCategoryOption.productCategoryOption;
@@ -61,9 +61,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 		QCategory category = QCategory.category;
 		QStore store = QStore.store;
 
-		BooleanBuilder builder = new BooleanBuilder();
-
-		searchFilter(builder, categories, storeId, categoryOptions, variantOptions, product, productCategoryOption, productVariantOption);
+		BooleanBuilder builder = searchFilter(productVariant, categories, storeId, categoryOptions, variantOptions, product, productCategoryOption, productVariantOption);
 
 		JPQLQuery<ProductVariant> query = queryFactory
 			.selectDistinct(productVariant)
@@ -71,22 +69,18 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 			.join(productVariant.product, product).fetchJoin()
 			.join(productVariant.product.store, store).fetchJoin()
 			.join(productVariant.product.category, category).fetchJoin()
-			.where(builder
-				.and(productVariant.isDefault.isTrue()));
+			.where(builder);
 
 		searchSort(query, product, productVariant, sort);
 
-		query.offset((long)page * pageSize).limit(pageSize);
-
+		query.offset(pageable.getOffset()).limit(pageable.getPageSize());
 		List<ProductVariant> result = query.fetch();
 
-		long total = queryFactory
-			.selectDistinct(productVariant)
+		JPAQuery<Long> countQuery = queryFactory.select(productVariant.count())
 			.from(productVariant)
-			.where(builder.and(productVariant.isDefault.isTrue()))
-			.fetchCount();
+			.where(builder);
 
-		return PageableExecutionUtils.getPage(result, PageRequest.of(page, pageSize), () -> total);
+		return PageableExecutionUtils.getPage(result, pageable, countQuery::fetchOne);
 	}
 
 	private void searchSort(JPQLQuery<ProductVariant> query, QProduct product, QProductVariant productVariant, ProductSort sort) {
@@ -101,8 +95,10 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 		}
 	}
 
-	private void searchFilter(BooleanBuilder builder, List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions,
+	private BooleanBuilder searchFilter(QProductVariant productVariant, List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions,
 		QProduct product, QProductCategoryOption productCategoryOption, QProductVariantOption productVariantOption) {
+
+		BooleanBuilder builder = new BooleanBuilder(productVariant.isDefault.isTrue());
 
 		if (!categories.isEmpty())
 			builder.and(product.category.in(categories));
@@ -112,5 +108,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 			builder.and(productCategoryOption.categoryOptionValue.id.in(categoryOptions));
 		if (variantOptions != null)
 			builder.and(productVariantOption.variantOptionValue.id.in(variantOptions));
+
+		return builder;
 	}
 }

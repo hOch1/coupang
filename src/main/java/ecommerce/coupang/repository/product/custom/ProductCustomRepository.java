@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface ProductCustomRepository {
 
@@ -26,8 +27,7 @@ public interface ProductCustomRepository {
 		List<Long> categoryOptions,
 		List<Long> variantOptions,
 		ProductSort sort,
-		int page,
-		int pageSize);
+		Pageable pageable);
 
 	/**
 	 * ID로 상품 조회
