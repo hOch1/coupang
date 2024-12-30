@@ -7,6 +7,7 @@ import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.dto.request.product.review.CreateReviewRequest;
+import ecommerce.coupang.dto.request.product.review.ReviewSort;
 import ecommerce.coupang.dto.request.product.review.UpdateReviewRequest;
 import ecommerce.coupang.exception.CustomException;
 
@@ -66,5 +67,5 @@ public interface ProductReviewService {
 	 * @return 리뷰 리스트
 	 */
 	@LogAction("상품 리뷰 조회")
-	List<ProductReview> findReviewsByProduct(Long productId);
+	List<ProductReview> findReviewsByProduct(Long productId, Integer star, ReviewSort sort);
 }

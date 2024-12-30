@@ -49,6 +49,9 @@ public class ProductReview extends BaseTimeEntity {
 	@Column(name = "star", nullable = false)
 	private int star = 0;
 
+	@Column(name = "like_count", nullable = false)
+	private int likeCount = 0;
+
 	@OneToMany(mappedBy = "productReview", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ReviewLike> likes = new ArrayList<>();
 
@@ -70,6 +73,15 @@ public class ProductReview extends BaseTimeEntity {
 
 	public void addLikes(ReviewLike newLike) {
 		this.likes.add(newLike);
+		increaseLikeCount();
+	}
+
+	public void increaseLikeCount() {
+		this.likeCount++;
+	}
+
+	public void decreaseLikeCount() {
+		this.likeCount--;
 	}
 
 	public void update(UpdateReviewRequest request) {

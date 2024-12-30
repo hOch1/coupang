@@ -11,6 +11,7 @@ import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.domain.product.review.ReviewLike;
 import ecommerce.coupang.dto.request.product.review.CreateReviewRequest;
+import ecommerce.coupang.dto.request.product.review.ReviewSort;
 import ecommerce.coupang.dto.request.product.review.UpdateReviewRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
@@ -74,6 +75,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 			ReviewLike reviewLike = findLike.get();
 			reviewLikeRepository.delete(reviewLike);
 			productReview.getLikes().remove(reviewLike);
+			productReview.decreaseLikeCount();
 		}
 
 		return productReview;
@@ -120,7 +122,7 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 	}
 
 	@Override
-	public List<ProductReview> findReviewsByProduct(Long productId) {
-		return productReviewRepository.findByProductId(productId);
+	public List<ProductReview> findReviewsByProduct(Long productId, Integer star, ReviewSort sort) {
+		return productReviewRepository.findByProductId(productId, star, sort);
 	}
 }

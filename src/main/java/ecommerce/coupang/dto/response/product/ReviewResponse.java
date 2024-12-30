@@ -16,7 +16,7 @@ public class ReviewResponse {
 	private final MemberResponse member;
 	private final String content;
 	private final int star;
-	private final int likes;
+	private final int likeCount;
 	private final LocalDateTime createdAt;
 
 	public static ReviewResponse from(ProductReview productReview) {
@@ -26,7 +26,7 @@ public class ReviewResponse {
 			MemberResponse.from(productReview.getMember()),
 			productReview.getContent(),
 			productReview.getStar(),
-			productReview.getLikes().size(),
+			productReview.getLikeCount(),
 			productReview.getCreatedAt()
 		);
 	}

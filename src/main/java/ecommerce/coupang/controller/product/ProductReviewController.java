@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.dto.request.product.review.CreateReviewRequest;
+import ecommerce.coupang.dto.request.product.review.ReviewSort;
 import ecommerce.coupang.dto.request.product.review.UpdateReviewRequest;
 import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.product.ReviewResponse;
@@ -71,9 +73,11 @@ public class ProductReviewController {
 	@GetMapping("/{productId}")
 	@Operation(summary = "상품 리뷰 조회 API", description = "해당 상품의 리뷰를 조회합니다")
 	public ResponseEntity<Result<List<ReviewResponse>>> getReviewsByProduct(
-		@PathVariable Long productId) {
+		@PathVariable Long productId,
+		@RequestParam(required = false) Integer star,
+		@RequestParam(required = false, defaultValue = "LATEST") ReviewSort sort) {
 
-		List<ProductReview> productReviews = productReviewService.findReviewsByProduct(productId);
+		List<ProductReview> productReviews = productReviewService.findReviewsByProduct(productId, star, sort);
 		List<ReviewResponse> responses = productReviews.stream()
 			.map(ReviewResponse::from)
 			.toList();
