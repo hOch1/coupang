@@ -4,6 +4,8 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.domain.category.QCategory;
+import ecommerce.coupang.domain.member.QMember;
+import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.QProduct;
 import ecommerce.coupang.domain.product.QProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
@@ -12,15 +14,38 @@ import ecommerce.coupang.domain.product.variant.QProductVariantOption;
 import ecommerce.coupang.domain.store.QStore;
 import ecommerce.coupang.repository.product.custom.ProductCustomRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
 public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 
 	private final JPAQueryFactory queryFactory;
+
+	@Override
+	public Optional<Product> findByIdWithMemberAndCategory(Long productId) {
+		QProduct product = QProduct.product;
+		QStore store = QStore.store;
+		QMember member = QMember.member;
+		QCategory category = QCategory.category;
+
+		Product result = queryFactory.selectDistinct(product)
+			.from(product)
+			.join(product.store, store).fetchJoin()
+			.join(store.member, member).fetchJoin()
+			.join(product.category, category).fetchJoin()
+			.where(product.id.eq(productId)
+				.and(product.isActive.isTrue())
+				.and(store.isActive.isTrue()))
+			.fetchOne();
+
+		return Optional.ofNullable(result);
+	}
 
 	@Override
 	public List<ProductVariant> searchProducts(List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions) {

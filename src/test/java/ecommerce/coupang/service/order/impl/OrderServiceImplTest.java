@@ -222,16 +222,11 @@ class OrderServiceImplTest {
         Long orderId = 1L;
         OrderItem mockOrderItem = mock(OrderItem.class);
         ProductVariantOption mockProductVariantOption = mock(ProductVariantOption.class);
-        ProductCategoryOption mockProductCategoryOption = mock(ProductCategoryOption.class);
         VariantOptionValue mockVariantOptionValue = mock(VariantOptionValue.class);
-        CategoryOptionValue mockCategoryOptionValue = mock(CategoryOptionValue.class);
         VariantOption mockVariantOption = mock(VariantOption.class);
-        CategoryOption mockCategoryOption = mock(CategoryOption.class);
 
         when(mockVariantOptionValue.getVariantOption()).thenReturn(mockVariantOption);
-        when(mockCategoryOptionValue.getCategoryOption()).thenReturn(mockCategoryOption);
         when(mockProductVariantOption.getVariantOptionValue()).thenReturn(mockVariantOptionValue);
-        when(mockProductCategoryOption.getCategoryOptionValue()).thenReturn(mockCategoryOptionValue);
         when(mockOrder.getMember()).thenReturn(mockMember);
         when(mockOrder.getAddress()).thenReturn(mockAddress);
         when(mockOrderItem.getProductVariant()).thenReturn(mockProductVariant);
@@ -240,14 +235,12 @@ class OrderServiceImplTest {
         when(orderRepository.findByIdWithMemberAndAddress(orderId)).thenReturn(Optional.of(mockOrder));
         when(orderItemRepository.findByOrderId(anyLong())).thenReturn(List.of(mockOrderItem));
         when(productVariantOptionRepository.findByProductVariantId(anyLong())).thenReturn(List.of(mockProductVariantOption));
-        when(productCategoryOptionRepository.findByProductId(anyLong())).thenReturn(List.of(mockProductCategoryOption));
 
         OrderDetailResponse response = orderService.findOrder(orderId, mockMember);
 
         verify(orderRepository).findByIdWithMemberAndAddress(orderId);
         verify(orderItemRepository).findByOrderId(anyLong());
         verify(productVariantOptionRepository).findByProductVariantId(anyLong());
-        verify(productCategoryOptionRepository).findByProductId(anyLong());
 
         assertThat(response).isNotNull();
     }
@@ -288,6 +281,7 @@ class OrderServiceImplTest {
         Long orderId = 1L;
         when(orderRepository.findByIdWithMemberAndAddress(orderId)).thenReturn(Optional.of(mockOrder));
         when(mockOrder.getMember()).thenReturn(mockMember);
+        when(mockOrder.getStatus()).thenReturn(OrderStatus.PAID);
 
         Order order = orderService.cancelOrder(orderId, mockMember);
 
