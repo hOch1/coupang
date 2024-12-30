@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ecommerce.coupang.domain.cart.Cart;
 import ecommerce.coupang.dto.request.cart.AddCartRequest;
 import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.cart.CartResponse;

@@ -8,7 +8,6 @@ import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.domain.order.OrderItem;
 import ecommerce.coupang.domain.order.OrderStatus;
 import ecommerce.coupang.domain.order.Payment;
-import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.dto.response.option.OptionResponse;
 import lombok.AllArgsConstructor;

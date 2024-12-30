@@ -4,7 +4,6 @@ import java.util.List;
 
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
-import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
@@ -33,8 +32,7 @@ public class ProductDetailResponse {
 	public static ProductDetailResponse from(
 		ProductVariant productVariant,
 		List<ProductCategoryOption> productCategoryOptions,
-		List<ProductVariantOption> productVariantOptions,
-		List<ProductReview> reviews) {
+		List<ProductVariantOption> productVariantOptions) {
 
 		Product product = productVariant.getProduct();
 		return new ProductDetailResponse(

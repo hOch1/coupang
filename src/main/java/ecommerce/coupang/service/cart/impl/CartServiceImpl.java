@@ -3,8 +3,6 @@ package ecommerce.coupang.service.cart.impl;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.dto.response.cart.CartResponse;
 import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +26,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
-	private static final Logger log = LoggerFactory.getLogger(CartServiceImpl.class);
 	private final CartRepository cartRepository;
 	private final CartItemRepository cartItemRepository;
 	private final ProductVariantRepository productVariantRepository;
@@ -44,14 +41,13 @@ public class CartServiceImpl implements CartService {
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
 		CartItem cartItem = cartItemRepository.findByCartIdAndProductVariantId(cart.getId(), productVariant.getId())
-			.orElse(null);
+			.orElseGet(() -> CartItem.create(cart, productVariant, request.getQuantity()));
 
-		if (cartItem != null)
+		if (cartItem.getId() != null)
 			cartItem.addQuantity(request.getQuantity());
-		else {
-			cartItem = CartItem.create(cart, productVariant, request.getQuantity());
+		else
 			cart.addItem(cartItem);
-		}
+
 
 		return cart;
 	}

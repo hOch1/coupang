@@ -11,7 +11,6 @@ import ecommerce.coupang.domain.member.Address;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.dto.request.member.AddAddressRequest;
 import ecommerce.coupang.dto.request.member.UpdateAddressRequest;
-import ecommerce.coupang.dto.response.member.AddressResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.member.AddressRepository;
@@ -77,10 +76,6 @@ public class AddressServiceImpl implements AddressService {
 	}
 
 	private void unsetDefaultAddress(Long memberId) {
-		Address defaultAddress = addressRepository.findByMemberIdAndIsDefaultTrue(memberId).orElse(null);
-
-		if (defaultAddress != null) {
-			defaultAddress.unsetAsDefault();
-		}
+		addressRepository.findByMemberIdAndIsDefaultTrue(memberId).ifPresent(Address::unsetAsDefault);
 	}
 }

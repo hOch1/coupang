@@ -19,6 +19,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -48,6 +49,7 @@ public class OrderItem {
 	@Column(name = "total_price", nullable = false)
 	private int totalPrice;
 
+	@Setter
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Delivery delivery;
 
@@ -77,10 +79,6 @@ public class OrderItem {
 			cartItem.getQuantity(),
 			cartItem.getProductVariant().getPrice() * cartItem.getQuantity()
 		);
-	}
-
-	public void setDelivery(Delivery delivery) {
-		this.delivery = delivery;
 	}
 
 	public void cancel() {

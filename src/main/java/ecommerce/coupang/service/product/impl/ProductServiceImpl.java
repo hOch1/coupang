@@ -5,7 +5,6 @@ import java.util.List;
 
 import ecommerce.coupang.domain.category.CategoryOptionValue;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
-import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.domain.product.variant.VariantOptionValue;
@@ -16,7 +15,6 @@ import ecommerce.coupang.dto.response.product.ProductDetailResponse;
 import ecommerce.coupang.dto.response.product.ProductResponse;
 import ecommerce.coupang.repository.category.CategoryOptionValueRepository;
 import ecommerce.coupang.repository.product.ProductCategoryOptionRepository;
-import ecommerce.coupang.repository.product.review.ProductReviewRepository;
 import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.repository.product.VariantOptionValueRepository;
@@ -52,7 +50,6 @@ public class ProductServiceImpl implements ProductService {
 	private final StoreRepository storeRepository;
 	private final ProductVariantOptionRepository productVariantOptionRepository;
 	private final ProductCategoryOptionRepository productCategoryOptionRepository;
-	private final ProductReviewRepository productReviewRepository;
 
 	@Override
 	@Transactional
@@ -165,9 +162,8 @@ public class ProductServiceImpl implements ProductService {
 
 		List<ProductCategoryOption> productCategoryOptions = productCategoryOptionRepository.findByProductId(productVariant.getProduct().getId());
 		List<ProductVariantOption> productVariantOptions = productVariantOptionRepository.findByProductVariantId(productVariantId);
-		List<ProductReview> productReviews = productReviewRepository.findByProductId(productVariant.getProduct().getId());
 
-		return ProductDetailResponse.from(productVariant, productCategoryOptions, productVariantOptions, productReviews);
+		return ProductDetailResponse.from(productVariant, productCategoryOptions, productVariantOptions);
 	}
 
 	@Override

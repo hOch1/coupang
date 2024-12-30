@@ -15,8 +15,6 @@ public interface ProductReviewRepository extends JpaRepository<ProductReview, Lo
 		+ "where pr.id = :productReviewId ")
 	Optional<ProductReview> findByIdWithMember(Long productReviewId);
 
-	boolean existsByProductIdAndMemberId(Long id, Long id1);
-
 	List<ProductReview> findByProductId(Long id);
 
 	@Query("select pr from ProductReview pr "

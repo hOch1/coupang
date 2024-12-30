@@ -12,7 +12,6 @@ import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.order.Delivery;
 import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.domain.order.OrderItem;
-import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
@@ -24,7 +23,6 @@ import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.cart.CartItemRepository;
 import ecommerce.coupang.repository.order.OrderItemRepository;
 import ecommerce.coupang.repository.order.OrderRepository;
-import ecommerce.coupang.repository.product.ProductCategoryOptionRepository;
 import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.service.member.AddressService;
@@ -42,7 +40,6 @@ public class OrderServiceImpl implements OrderService {
 	private final OrderItemRepository orderItemRepository;
 	private final ProductVariantRepository productVariantRepository;
 	private final ProductVariantOptionRepository productVariantOptionRepository;
-	private final ProductCategoryOptionRepository productCategoryOptionRepository;
 	private final CartItemRepository cartItemRepository;
 	private final AddressService addressService;
 

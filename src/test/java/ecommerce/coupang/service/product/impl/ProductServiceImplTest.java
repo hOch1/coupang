@@ -91,7 +91,7 @@ class ProductServiceImplTest {
 		VariantOptionValue mockVariantOptionValue = mock(VariantOptionValue.class);
 		when(variantOptionValueRepository.findById(1L)).thenReturn(Optional.of(mockVariantOptionValue));
 
-		Product product = productService.createProduct(request, mockMember);
+		Product product = productService.createProduct(request, 1L, mockMember);
 
 		verify(categoryService).findBottomCategory(anyLong());
 		verify(storeRepository).findByIdWithMember(anyLong());
@@ -113,7 +113,7 @@ class ProductServiceImplTest {
 		when(storeRepository.findByIdWithMember(1L)).thenReturn(Optional.empty());
 
 		CustomException customException = assertThrows(CustomException.class,
-			() -> productService.createProduct(request, mockMember));
+			() -> productService.createProduct(request, 1L, mockMember));
 
 		verify(categoryService).findBottomCategory(anyLong());
 		verify(storeRepository).findByIdWithMember(anyLong());
@@ -135,7 +135,7 @@ class ProductServiceImplTest {
 		when(mockStore.getMember()).thenReturn(mockStoreMember);
 
 		CustomException customException = assertThrows(CustomException.class,
-			() -> productService.createProduct(request, mockMember));
+			() -> productService.createProduct(request, 1L, mockMember));
 
 		verify(categoryService).findBottomCategory(anyLong());
 		verify(storeRepository).findByIdWithMember(anyLong());
@@ -157,7 +157,7 @@ class ProductServiceImplTest {
 		when(categoryOptionValueRepository.findById(1L)).thenReturn(Optional.empty());
 
 		CustomException customException = assertThrows(CustomException.class,
-			() -> productService.createProduct(request, mockMember));
+			() -> productService.createProduct(request, 1L, mockMember));
 
 		verify(categoryService).findBottomCategory(anyLong());
 		verify(storeRepository).findByIdWithMember(anyLong());
@@ -181,7 +181,7 @@ class ProductServiceImplTest {
 		when(variantOptionValueRepository.findById(1L)).thenReturn(Optional.empty());
 
 		CustomException customException = assertThrows(CustomException.class,
-			() -> productService.createProduct(request, mockMember));
+			() -> productService.createProduct(request, 1L, mockMember));
 
 		verify(categoryService).findBottomCategory(anyLong());
 		verify(storeRepository).findByIdWithMember(anyLong());
@@ -604,7 +604,6 @@ class ProductServiceImplTest {
 		return new CreateProductRequest(
 			"ProductA",
 			"Test Product",
-			1L,
 			1L,
 			List.of(categoryOptionsRequest),
 			List.of(variantRequest)

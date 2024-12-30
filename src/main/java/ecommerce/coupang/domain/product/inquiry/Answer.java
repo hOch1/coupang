@@ -1,7 +1,6 @@
 package ecommerce.coupang.domain.product.inquiry;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
-import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.store.Store;
 import ecommerce.coupang.dto.request.product.inquiry.CreateAnswerRequest;
 import ecommerce.coupang.dto.request.product.inquiry.UpdateAnswerRequest;
