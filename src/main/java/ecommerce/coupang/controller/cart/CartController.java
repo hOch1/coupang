@@ -22,6 +22,7 @@ import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.cart.CartService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -35,7 +36,7 @@ public class CartController {
 	@PostMapping("/item")
 	@Operation(summary = "장바구니 상품 추가 API", description = "장바구니에 상품을 추가합니다.")
 	public ResponseEntity<Void> addCartItem(
-		@RequestBody AddCartRequest request,
+		@RequestBody @Valid AddCartRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		cartService.addCart(request, userDetails.getMember());

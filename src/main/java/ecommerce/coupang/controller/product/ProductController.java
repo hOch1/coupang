@@ -28,6 +28,7 @@ import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.product.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -38,13 +39,14 @@ public class ProductController {
 
 	private final ProductService productService;
 
-	@PostMapping
+	@PostMapping("/{storeId}")
 	@Operation(summary = "상품 등록 API", description = "상품을 등록합니다.")
 	public ResponseEntity<Void> createProduct(
-		@RequestBody CreateProductRequest request,
+		@PathVariable Long storeId,
+		@RequestBody @Valid CreateProductRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		productService.createProduct(request, userDetails.getMember());
+		productService.createProduct(request, storeId, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 

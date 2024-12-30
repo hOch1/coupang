@@ -34,7 +34,7 @@ public interface ProductInquiryService {
 	 * @return 답변
 	 */
 	@LogAction("문의 답변 등록")
-    Answer createAnswer(Long inquiryId, CreateAnswerRequest request, Member member) throws CustomException;
+    Answer createAnswer(Long inquiryId, Long storeId, CreateAnswerRequest request, Member member) throws CustomException;
 
 	/**
 	 * 내가 등록한 문의 목록 조회

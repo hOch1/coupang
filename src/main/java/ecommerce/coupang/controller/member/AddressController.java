@@ -23,6 +23,7 @@ import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.member.AddressService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -36,7 +37,7 @@ public class AddressController {
 	@PostMapping
 	@Operation(summary = "주소 추가 API", description = "주소를 추가합니다")
 	public ResponseEntity<Void> addAddress(
-		@RequestBody AddAddressRequest request,
+		@RequestBody @Valid AddAddressRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
 		addressService.addAddress(request, userDetails.getMember());

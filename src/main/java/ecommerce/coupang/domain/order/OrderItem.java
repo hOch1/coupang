@@ -1,5 +1,7 @@
 package ecommerce.coupang.domain.order;
 
+import java.util.Objects;
+
 import ecommerce.coupang.domain.cart.CartItem;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
@@ -83,5 +85,21 @@ public class OrderItem {
 
 	public void cancel() {
 		productVariant.addStock(quantity);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o)
+			return true;
+		if (o == null || getClass() != o.getClass())
+			return false;
+
+		OrderItem orderItem = (OrderItem)o;
+		return Objects.equals(id, orderItem.id);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(id);
 	}
 }

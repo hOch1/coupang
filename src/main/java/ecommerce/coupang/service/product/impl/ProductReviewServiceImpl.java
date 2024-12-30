@@ -117,4 +117,9 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 		productRepository.save(product);
 		return productReview;
 	}
+
+	@Override
+	public List<ProductReview> findReviewsByProduct(Long productId) {
+		return productReviewRepository.findByProductId(productId);
+	}
 }

@@ -25,6 +25,7 @@ import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.store.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -38,7 +39,7 @@ public class StoreController {
 	@PostMapping
 	@Operation(summary = "상점 등록 API", description = "상점을 등록합니다")
 	public ResponseEntity<Void> createStore(
-		@RequestBody CreateStoreRequest request,
+		@RequestBody @Valid CreateStoreRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		storeService.createStore(request, userDetails.getMember());

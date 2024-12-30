@@ -26,6 +26,7 @@ import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.product.ProductInquiryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -42,21 +43,22 @@ public class ProductInquiryController {
 	@Operation(summary = "상품 문의 등록 API", description = "상품 문의를 등록합니다")
 	public ResponseEntity<Void> createProductInquiry(
 		@PathVariable Long productId,
-		@RequestBody CreateInquiryRequest request,
+		@RequestBody @Valid CreateInquiryRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		productInquiryService.createInquiry(productId, request, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@PostMapping("/{inquiryId}/answer")
+	@PostMapping("/{inquiryId}/answer/{storeId}")
 	@Operation(summary = "상품 문의의 답변 등록 API", description = "상품 문의에 대한 답변을 등록합니다.")
 	public ResponseEntity<Void> createAnswer(
 		@PathVariable Long inquiryId,
-		@RequestBody CreateAnswerRequest request,
+		@PathVariable Long storeId,
+		@RequestBody @Valid CreateAnswerRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		productInquiryService.createAnswer(inquiryId, request, userDetails.getMember());
+		productInquiryService.createAnswer(inquiryId, storeId, request, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 

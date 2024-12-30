@@ -53,11 +53,11 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
 
 	@Override
 	@Transactional
-	public Answer createAnswer(Long inquiryId, CreateAnswerRequest request, Member member) throws CustomException {
+	public Answer createAnswer(Long inquiryId, Long storeId, CreateAnswerRequest request, Member member) throws CustomException {
 		ProductInquiry productInquiry = productInquiryRepository.findByIdWithMember(inquiryId)
 				.orElseThrow(() -> new CustomException(ErrorCode.INQUIRY_NOT_FOUND));
 
-		Store store = storeRepository.findByIdWithMember(request.getStoreId())
+		Store store = storeRepository.findByIdWithMember(storeId)
 				.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
 		if (productInquiry.isAnswered())

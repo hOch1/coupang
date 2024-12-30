@@ -29,7 +29,6 @@ public class ProductDetailResponse {
 	private final StoreResponse store;
 	private final List<OptionResponse> categoryOptions;
 	private final List<OptionResponse> variantOptions;
-	private final List<ReviewResponse> reviews;
 
 	public static ProductDetailResponse from(
 		ProductVariant productVariant,
@@ -53,9 +52,6 @@ public class ProductDetailResponse {
 				.toList(),
 			productVariantOptions.stream()
 				.map(OptionResponse::productVariantFrom)
-				.toList(),
-			reviews.stream()
-				.map(ReviewResponse::from)
 				.toList()
 		);
 	}

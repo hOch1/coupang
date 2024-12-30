@@ -15,6 +15,7 @@ import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.service.auth.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -27,14 +28,16 @@ public class AuthController {
 
 	@PostMapping("/login")
 	@Operation(summary = "로그인 API", description = "로그인 진행 후 JWT 발급")
-	public ResponseEntity<Result<LoginResponse>> login(@RequestBody LoginRequest request) throws CustomException {
+	public ResponseEntity<Result<LoginResponse>> login(
+		@RequestBody @Valid LoginRequest request) throws CustomException {
 
 		return ResponseEntity.ok(new Result<>(authService.login(request)));
 	}
 
 	@PostMapping("/signup")
 	@Operation(summary = "회원가입 API", description = "회원가입 진행")
-	public ResponseEntity<Void> signup(@RequestBody SignupRequest signupRequest) throws CustomException {
+	public ResponseEntity<Void> signup(
+		@RequestBody @Valid SignupRequest signupRequest) throws CustomException {
 
 		authService.signup(signupRequest);
 		return ResponseEntity.status(HttpStatus.CREATED).build();

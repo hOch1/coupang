@@ -24,6 +24,7 @@ import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.order.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -37,7 +38,7 @@ public class OrderController {
 	@PostMapping("/product")
 	@Operation(summary = "상품 주문 API", description = "상품을 직접 주문합니다 ")
 	public ResponseEntity<Void> createOrderByProduct(
-		@RequestBody CreateOrderByProductRequest request,
+		@RequestBody @Valid CreateOrderByProductRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		orderService.createOrderByProduct(request, userDetails.getMember());
@@ -47,7 +48,7 @@ public class OrderController {
 	@PostMapping("/cart")
 	@Operation(summary = "장바구니 상품 주문 API", description = "장바구니에 담긴 상품을 주문합니다")
 	public ResponseEntity<Void> createOrderByCart(
-		@RequestBody CreateOrderByCartRequest request,
+		@RequestBody @Valid CreateOrderByCartRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		orderService.createOrderByCart(request, userDetails.getMember());

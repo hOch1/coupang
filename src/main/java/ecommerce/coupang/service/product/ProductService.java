@@ -27,7 +27,7 @@ public interface ProductService {
 	 * @throws CustomException
 	 */
 	@LogAction("상품 등록")
-	Product createProduct(CreateProductRequest request, Member member) throws CustomException;
+	Product createProduct(CreateProductRequest request, Long storeId, Member member) throws CustomException;
 
 	/**
 	 * 상품 수정

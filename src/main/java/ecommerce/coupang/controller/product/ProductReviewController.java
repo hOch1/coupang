@@ -24,6 +24,7 @@ import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.product.ProductReviewService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -38,7 +39,7 @@ public class ProductReviewController {
 	@Operation(summary = "리뷰 등록 API", description = "리뷰를 등록합니다.")
 	public ResponseEntity<Void> createReview(
 		@PathVariable Long productId,
-		@RequestBody CreateReviewRequest request,
+		@RequestBody @Valid CreateReviewRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		productReviewService.createReview(productId, request, userDetails.getMember());

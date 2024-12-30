@@ -56,9 +56,9 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	@Transactional
-	public Product createProduct(CreateProductRequest request, Member member) throws CustomException {
+	public Product createProduct(CreateProductRequest request, Long storeId, Member member) throws CustomException {
 		Category category = categoryService.findBottomCategory(request.getCategoryId());
-		Store store = storeRepository.findByIdWithMember(request.getStoreId())
+		Store store = storeRepository.findByIdWithMember(storeId)
 				.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 
 		validateMember(store, member);
