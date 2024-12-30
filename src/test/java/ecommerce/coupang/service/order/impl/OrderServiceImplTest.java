@@ -207,7 +207,7 @@ class OrderServiceImplTest {
         when(mockMember.getId()).thenReturn(1L);
         when(orderRepository.findByMemberIdWithAddress(mockMember.getId())).thenReturn(List.of(mockOrder));
 
-        List<Order> orders = orderService.findOrders(mockMember);
+        List<Order> orders = orderService.findOrders(mockMember, null, null);
 
         verify(orderRepository).findByMemberIdWithAddress(mockMember.getId());
 

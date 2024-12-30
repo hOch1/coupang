@@ -8,9 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.order.Order;
+import ecommerce.coupang.repository.order.custom.OrderCustomRepository;
 
 @LogLevel("OrderRepository")
-public interface OrderRepository extends JpaRepository<Order, Long> {
+public interface OrderRepository extends JpaRepository<Order, Long>, OrderCustomRepository {
 
 	@Query("select o from Order o "
 		+ "join fetch o.member m "

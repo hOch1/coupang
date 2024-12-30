@@ -17,6 +17,7 @@ import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
 import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
+import ecommerce.coupang.dto.request.order.OrderSort;
 import ecommerce.coupang.dto.response.order.OrderDetailResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
@@ -89,8 +90,8 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<Order> findOrders(Member member) {
-		return orderRepository.findByMemberIdWithAddress(member.getId());
+	public List<Order> findOrders(Member member, OrderStatus status, OrderSort sort) {
+		return orderRepository.findOrders(member.getId(), status, sort);
 	}
 
 	@Override

@@ -6,8 +6,11 @@ import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.order.Order;
+import ecommerce.coupang.domain.order.OrderStatus;
 import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
 import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
+import ecommerce.coupang.dto.request.order.OrderSearchStatus;
+import ecommerce.coupang.dto.request.order.OrderSort;
 import ecommerce.coupang.dto.response.order.OrderDetailResponse;
 import ecommerce.coupang.exception.CustomException;
 
@@ -37,7 +40,7 @@ public interface OrderService {
 	 * @return 주문 목록
 	 */
 	@LogAction("주문 목록 조회")
-	List<Order> findOrders(Member member);
+	List<Order> findOrders(Member member, OrderStatus status, OrderSort sort);
 
 	/**
 	 * 주문 상세 조회
