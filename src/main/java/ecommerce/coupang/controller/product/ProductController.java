@@ -2,6 +2,7 @@ package ecommerce.coupang.controller.product;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.ProductSort;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
@@ -58,10 +60,20 @@ public class ProductController {
 		@RequestParam(required = false) Long storeId,
 		@RequestParam(required = false) List<Long> categoryOptions,
 		@RequestParam(required = false) List<Long> variantOptions,
-		@RequestParam(required = false, defaultValue = "LATEST") ProductSort sort) throws CustomException {
+		@RequestParam(required = false, defaultValue = "LATEST") ProductSort sort,
+		@RequestParam(required = false, defaultValue = "0") int page,
+		@RequestParam(required = false, defaultValue = "20") int pageSize) throws CustomException {
 
-		List<ProductResponse> responses = productService.search(categoryId, storeId, categoryOptions, variantOptions, sort);
-		return ResponseEntity.ok(new Result<>(responses, responses.size()));
+		Page<ProductVariant> productVariants = productService.search(categoryId, storeId, categoryOptions, variantOptions, sort, page, pageSize);
+		Page<ProductResponse> responses = productVariants.map(ProductResponse::from);
+		return ResponseEntity.ok(new Result<>(
+			responses.getContent(),
+			responses.getContent().size(),
+			page,
+			pageSize,
+			responses.getTotalPages(),
+			responses.getTotalElements()
+		));
 	}
 
 	@GetMapping("/{productVariantId}")

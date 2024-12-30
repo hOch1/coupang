@@ -8,6 +8,8 @@ import ecommerce.coupang.dto.request.product.ProductSort;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+
 public interface ProductCustomRepository {
 
 	/**
@@ -18,7 +20,14 @@ public interface ProductCustomRepository {
 	 * @param variantOptions 포함된 변형 옵션
 	 * @return 상품 변형 목록 (대표상품)
 	 */
-	List<ProductVariant> searchProducts(List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort);
+	Page<ProductVariant> searchProducts(
+		List<Category> categories,
+		Long storeId,
+		List<Long> categoryOptions,
+		List<Long> variantOptions,
+		ProductSort sort,
+		int page,
+		int pageSize);
 
 	/**
 	 * ID로 상품 조회

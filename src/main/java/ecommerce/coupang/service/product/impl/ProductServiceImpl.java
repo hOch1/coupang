@@ -19,6 +19,8 @@ import ecommerce.coupang.repository.product.ProductCategoryOptionRepository;
 import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.repository.product.VariantOptionValueRepository;
+
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -143,17 +145,13 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<ProductResponse> search(Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort) throws CustomException {
+	public Page<ProductVariant> search(Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, int page, int pageSize) throws CustomException {
 		List<Category> categories = new ArrayList<>();
 
 		if (categoryId != null)
 			categories = categoryService.findAllSubCategories(categoryId);
 
-		List<ProductVariant> productVariants = productRepository.searchProducts(categories, storeId, categoryOptions, variantOptions, sort);
-
-		return productVariants.stream()
-			.map(ProductResponse::from)
-			.toList();
+		return productRepository.searchProducts(categories, storeId, categoryOptions, variantOptions, sort, page, pageSize);
 	}
 
 	@Override

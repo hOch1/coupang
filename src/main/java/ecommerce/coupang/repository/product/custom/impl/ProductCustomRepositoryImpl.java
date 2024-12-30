@@ -17,6 +17,9 @@ import ecommerce.coupang.dto.request.product.ProductSort;
 import ecommerce.coupang.repository.product.custom.ProductCustomRepository;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -49,7 +52,8 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 	}
 
 	@Override
-	public List<ProductVariant> searchProducts(List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort) {
+	public Page<ProductVariant> searchProducts(List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, int page, int pageSize) {
+
 		QProduct product = QProduct.product;
 		QProductVariant productVariant = QProductVariant.productVariant;
 		QProductCategoryOption productCategoryOption = QProductCategoryOption.productCategoryOption;
@@ -72,7 +76,17 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 
 		searchSort(query, product, productVariant, sort);
 
-		return query.fetch();
+		query.offset((long)page * pageSize).limit(pageSize);
+
+		List<ProductVariant> result = query.fetch();
+
+		long total = queryFactory
+			.selectDistinct(productVariant)
+			.from(productVariant)
+			.where(builder.and(productVariant.isDefault.isTrue()))
+			.fetchCount();
+
+		return PageableExecutionUtils.getPage(result, PageRequest.of(page, pageSize), () -> total);
 	}
 
 	private void searchSort(JPQLQuery<ProductVariant> query, QProduct product, QProductVariant productVariant, ProductSort sort) {

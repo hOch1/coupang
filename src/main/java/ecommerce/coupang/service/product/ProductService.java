@@ -2,6 +2,8 @@ package ecommerce.coupang.service.product;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+
 import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
@@ -113,5 +115,5 @@ public interface ProductService {
 	 * @throws CustomException
 	 */
 	@LogAction("상품 목록 조회")
-	List<ProductResponse> search(Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort) throws CustomException;
+	Page<ProductVariant> search(Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, int page, int pageSize) throws CustomException;
 }
