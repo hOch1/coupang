@@ -2,6 +2,7 @@ package ecommerce.coupang.dto.response.product;
 
 import java.util.List;
 
+import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
@@ -31,6 +32,7 @@ public class ProductDetailResponse {
 
 	public static ProductDetailResponse from(
 		ProductVariant productVariant,
+		Category category,
 		List<ProductCategoryOption> productCategoryOptions,
 		List<ProductVariantOption> productVariantOptions) {
 
@@ -43,7 +45,7 @@ public class ProductDetailResponse {
 			productVariant.getPrice(),
 			productVariant.getStockQuantity(),
 			productVariant.getStatus(),
-			ParentCategoryResponse.from(product.getCategory()),
+			ParentCategoryResponse.from(category),
 			StoreResponse.from(product.getStore()),
 			productCategoryOptions.stream()
 				.map(OptionResponse::productCategoryFrom)

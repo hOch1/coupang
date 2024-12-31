@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ecommerce.coupang.domain.category.Category;
+import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
+import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.ProductSort;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
@@ -28,6 +31,7 @@ import ecommerce.coupang.dto.response.product.ProductDetailResponse;
 import ecommerce.coupang.dto.response.product.ProductResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
+import ecommerce.coupang.service.category.CategoryService;
 import ecommerce.coupang.service.product.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,6 +45,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 
 	private final ProductService productService;
+	private final CategoryService categoryService;
 
 	@PostMapping("/{storeId}")
 	@Operation(summary = "상품 등록 API", description = "상품을 등록합니다.")
@@ -69,8 +74,8 @@ public class ProductController {
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),
 			responses.getContent().size(),
-			page,
-			pageSize,
+			responses.getNumber(),
+			responses.getSize(),
 			responses.getTotalPages(),
 			responses.getTotalElements()
 		));

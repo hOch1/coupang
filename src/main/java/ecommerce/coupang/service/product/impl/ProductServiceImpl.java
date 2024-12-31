@@ -13,7 +13,6 @@ import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
 import ecommerce.coupang.dto.response.product.ProductDetailResponse;
-import ecommerce.coupang.dto.response.product.ProductResponse;
 import ecommerce.coupang.repository.category.CategoryOptionValueRepository;
 import ecommerce.coupang.repository.product.ProductCategoryOptionRepository;
 import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
@@ -161,9 +160,10 @@ public class ProductServiceImpl implements ProductService {
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
 		List<ProductCategoryOption> productCategoryOptions = productCategoryOptionRepository.findByProductId(productVariant.getProduct().getId());
-		List<ProductVariantOption> productVariantOptions = productVariantOptionRepository.findByProductVariantId(productVariantId);
+		List<ProductVariantOption> productVariantOptions = productVariantOptionRepository.findByProductVariantId(productVariant.getId());
+		Category category = categoryService.findCategoryWithRoot(productVariant.getProduct().getCategory().getId());
 
-		return ProductDetailResponse.from(productVariant, productCategoryOptions, productVariantOptions);
+		return ProductDetailResponse.from(productVariant, category, productCategoryOptions, productVariantOptions);
 	}
 
 	@Override

@@ -43,6 +43,12 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	@Override
+	public Category findCategoryWithRoot(Long categoryId) throws CustomException {
+		return categoryRepository.findCategoryWithRoot(categoryId)
+			.orElseThrow(() -> new CustomException(ErrorCode.CATEGORY_NOT_FOUND));
+	}
+
+	@Override
 	public List<Category> findAll() {
 		return categoryRepository.findByLevel(1);
 	}

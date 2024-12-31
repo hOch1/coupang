@@ -29,6 +29,15 @@ public interface CategoryService {
 	Category findBottomCategory(Long categoryId) throws CustomException;
 
 	/**
+	 * ID로 카테고리 조회 (Root Category 까지 fetch join)
+	 * @param categoryId 카테고리 ID
+	 * @return 조회한 카테고리
+	 * @throws CustomException
+	 */
+	@LogAction("카테고리 조회 (최상위 부모 fetch join)")
+	Category findCategoryWithRoot(Long categoryId) throws CustomException;
+
+	/**
 	 * 전체 카테고리 조회
 	 * @return 전체 카테고리 목록
 	 */
