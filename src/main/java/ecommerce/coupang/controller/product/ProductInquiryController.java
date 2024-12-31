@@ -34,7 +34,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/product/inquiries")
 @RequiredArgsConstructor
-@Tag(name = "상품 문의 API", description = "상품 문의관련 API")
+@Tag(name = "상품 문의 API V1", description = "상품 문의, 답변관련 API")
 public class ProductInquiryController {
 
 	private final ProductInquiryService productInquiryService;

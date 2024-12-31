@@ -33,7 +33,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1/product/reviews")
 @RequiredArgsConstructor
-@Tag(name = "상품 리뷰 API", description = "상품 리뷰 관련 API")
+@Tag(name = "상품 리뷰 API V1", description = "상품 리뷰 관련 API")
 public class ProductReviewController {
 
 	private final ProductReviewService productReviewService;
