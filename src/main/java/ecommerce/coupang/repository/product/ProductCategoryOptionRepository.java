@@ -5,8 +5,10 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
 
+@LogLevel("ProductCategoryOptionRepository")
 public interface ProductCategoryOptionRepository extends JpaRepository<ProductCategoryOption, Long> {
 
 	@Query("select pco from ProductCategoryOption pco "

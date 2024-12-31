@@ -5,8 +5,10 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 
+@LogLevel("ProductVariantRepository")
 public interface ProductVariantRepository extends JpaRepository<ProductVariant, Long> {
 
 	@Query("select pv from ProductVariant pv "

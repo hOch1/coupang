@@ -2,12 +2,14 @@ package ecommerce.coupang.repository.product.inquiry;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.product.inquiry.ProductInquiry;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
 
+@LogLevel("ProductInquiryRepository")
 public interface ProductInquiryRepository extends JpaRepository<ProductInquiry, Long> {
 
     @Query("select pi from ProductInquiry pi " +
