@@ -1,9 +1,5 @@
 package ecommerce.coupang.dto.response;
 
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import lombok.Data;
