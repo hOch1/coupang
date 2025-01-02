@@ -35,64 +35,42 @@ import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.store.CouponProductRepository;
-import ecommerce.coupang.repository.store.StoreRepository;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.service.category.CategoryService;
 import ecommerce.coupang.service.product.ProductService;
+import ecommerce.coupang.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-@Slf4j
 public class ProductServiceImpl implements ProductService {
 
 	private final ProductRepository productRepository;
 	private final ProductVariantRepository productVariantRepository;
 	private final VariantOptionValueRepository variantOptionValueRepository;
-	private final CategoryService categoryService;
 	private final CategoryOptionValueRepository categoryOptionValueRepository;
-	private final StoreRepository storeRepository;
 	private final ProductVariantOptionRepository productVariantOptionRepository;
 	private final ProductCategoryOptionRepository productCategoryOptionRepository;
 	private final CouponProductRepository couponProductRepository;
+	private final StoreService storeService;
+	private final CategoryService categoryService;
 
 	@Override
 	@Transactional
 	public Product createProduct(CreateProductRequest request, Long storeId, Member member) throws CustomException {
 		Category category = categoryService.findBottomCategory(request.getCategoryId());
-		Store store = storeRepository.findByIdWithMember(storeId)
-				.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
-
-		validateMember(store, member);
+		Store store = storeService.validateStoreMember(storeId, member);
 
 		Product product = Product.create(request, store, category);
 
-		for (CreateProductRequest.CategoryOptionsRequest c : request.getCategoryOptions()) {
-			CategoryOptionValue categoryOptionValue = categoryOptionValueRepository.findById(c.getOptionValueId())
-					.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
-
-			ProductCategoryOption productCategoryOption = ProductCategoryOption.create(product, categoryOptionValue);
-			product.addProductOptions(productCategoryOption);
-		}
-
-		for (CreateProductVariantRequest v : request.getVariants()) {
-			ProductVariant productVariant = ProductVariant.create(v, product);
-
-			for (CreateProductVariantRequest.VariantOptionRequest o : v.getVariantOptions()) {
-				VariantOptionValue variantOptionValue = variantOptionValueRepository.findById(o.getOptionValueId())
-						.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
-
-				ProductVariantOption productVariantOption = ProductVariantOption.create(productVariant, variantOptionValue);
-				productVariant.addProductVariantOptions(productVariantOption);
-			}
-
-			product.addProductVariants(productVariant);
+		addCategoryOptionsToProduct(request, product);
+		for (CreateProductVariantRequest variantRequest : request.getVariants()) {
+			ProductVariant productVariant = ProductVariant.create(variantRequest, product);
+			addVariantToProduct(productVariant, variantRequest, product);
 		}
 
 		productRepository.save(product);
-
 		return product;
 	}
 
@@ -104,15 +82,8 @@ public class ProductServiceImpl implements ProductService {
 
 		ProductVariant productVariant = ProductVariant.create(request, product);
 
-		for (CreateProductVariantRequest.VariantOptionRequest o : request.getVariantOptions()) {
-			VariantOptionValue variantOptionValue = variantOptionValueRepository.findById(o.getOptionValueId())
-				.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
+		addVariantToProduct(productVariant, request, product);
 
-			ProductVariantOption productVariantOption = ProductVariantOption.create(productVariant, variantOptionValue);
-			productVariant.addProductVariantOptions(productVariantOption);
-		}
-
-		product.addProductVariants(productVariant);
 		productVariantRepository.save(productVariant);
 		return productVariant;
 	}
@@ -122,8 +93,7 @@ public class ProductServiceImpl implements ProductService {
 	public Product updateProduct(UpdateProductRequest request, Member member) throws CustomException {
 		Product product = productRepository.findByIdWithMemberAndCategory(request.getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-
-		validateMember(product.getStore(), member);
+		storeService.validateStoreMember(product.getStore().getId(), member);
 
 		product.update(request);
 
@@ -132,8 +102,7 @@ public class ProductServiceImpl implements ProductService {
 			product.getProductOptions().clear();
 
 			for (UpdateProductRequest.UpdateCategoryOptionsRequest c : request.getCategoryOptions()) {
-				CategoryOptionValue categoryOptionValue = categoryOptionValueRepository.findById(c.getOptionValueId())
-					.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
+				CategoryOptionValue categoryOptionValue = getCategoryOptionValue(c.getOptionValueId());
 
 				ProductCategoryOption productCategoryOption = ProductCategoryOption.create(product, categoryOptionValue);
 				product.addProductOptions(productCategoryOption);
@@ -146,10 +115,8 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@Transactional
 	public ProductVariant updateProductVariant(UpdateProductVariantRequest request, Member member) throws CustomException {
-		ProductVariant productVariant = productVariantRepository.findByIdWithMember(request.getId())
-			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-
-		validateMember(productVariant.getProduct().getStore(), member);
+		ProductVariant productVariant = getProductVariantWithMember(request.getId());
+		storeService.validateStoreMember(productVariant.getProduct().getStore().getId(), member);
 
 		productVariant.update(request);
 
@@ -158,8 +125,7 @@ public class ProductServiceImpl implements ProductService {
 			productVariant.getProductVariantOptions().clear();
 
 			for (UpdateProductVariantRequest.UpdateVariantOption o : request.getVariantOptions()) {
-				VariantOptionValue variantOptionValue = variantOptionValueRepository.findById(o.getOptionValueId())
-					.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
+				VariantOptionValue variantOptionValue = getVariantOptionValue(o.getOptionValueId());
 
 				ProductVariantOption productVariantOption = ProductVariantOption.create(productVariant, variantOptionValue);
 				productVariant.addProductVariantOptions(productVariantOption);
@@ -195,10 +161,8 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@Transactional
 	public ProductVariant updateDefaultProduct(Long productVariantId, Member member) throws CustomException {
-		ProductVariant productVariant = productVariantRepository.findByIdWithMember(productVariantId)
-			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-
-		validateMember(productVariant.getProduct().getStore(), member);
+		ProductVariant productVariant = getProductVariantWithMember(productVariantId);
+		storeService.validateStoreMember(productVariant.getProduct().getStore().getId(), member);
 
 		ProductVariant defaultProductVariant = productVariantRepository.findByProductIdAndDefault(productVariant.getProduct().getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -215,10 +179,8 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@Transactional
 	public ProductVariant updateProductStock(Long productVariantId, UpdateProductStockRequest request, Member member) throws CustomException {
-		ProductVariant productVariant = productVariantRepository.findByIdWithMember(productVariantId)
-			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-
-		validateMember(productVariant.getProduct().getStore(), member);
+		ProductVariant productVariant = getProductVariantWithMember(productVariantId);
+		storeService.validateStoreMember(productVariant.getProduct().getStore().getId(), member);
 
 		productVariant.changeStock(request.getStockQuantity());
 
@@ -228,10 +190,8 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@Transactional
 	public ProductVariant updateProductStatus(Long productVariantId, UpdateProductStatusRequest request, Member member) throws CustomException {
-		ProductVariant productVariant = productVariantRepository.findByIdWithMember(productVariantId)
-			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-
-		validateMember(productVariant.getProduct().getStore(), member);
+		ProductVariant productVariant = getProductVariantWithMember(productVariantId);
+		storeService.validateStoreMember(productVariant.getProduct().getStore().getId(), member);
 
 		productVariant.changeStatus(request.getStatus());
 
@@ -243,8 +203,7 @@ public class ProductServiceImpl implements ProductService {
 	public Product deleteProduct(Long productId, Member member) throws CustomException {
 		Product product = productRepository.findByIdWithMemberAndCategory(productId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-
-		validateMember(product.getStore(), member);
+		storeService.validateStoreMember(product.getStore().getId(), member);
 
 		product.delete();
 		return product;
@@ -253,18 +212,46 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@Transactional
 	public ProductVariant deleteProductVariant(Long productVariantId, Member member) throws CustomException {
-		ProductVariant productVariant = productVariantRepository.findByIdWithMember(productVariantId)
-			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-
-		validateMember(productVariant.getProduct().getStore(), member);
+		ProductVariant productVariant = getProductVariantWithMember(productVariantId);
+		storeService.validateStoreMember(productVariant.getProduct().getStore().getId(), member);
 
 		productVariant.delete();
 		return productVariant;
 	}
 
-	private void validateMember(Store store, Member member) throws CustomException {
-		if (!store.getMember().equals(member))
-			throw new CustomException(ErrorCode.FORBIDDEN);
+	private ProductVariant getProductVariantWithMember(Long productVariantId) throws CustomException {
+		return productVariantRepository.findByIdWithMember(productVariantId)
+			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+	}
+
+	private void addVariantToProduct(ProductVariant productVariant, CreateProductVariantRequest request, Product product) throws CustomException {
+		for (CreateProductVariantRequest.VariantOptionRequest o : request.getVariantOptions()) {
+			VariantOptionValue variantOptionValue = getVariantOptionValue(o.getOptionValueId());
+
+			ProductVariantOption productVariantOption = ProductVariantOption.create(productVariant, variantOptionValue);
+			productVariant.addProductVariantOptions(productVariantOption);
+		}
+
+		product.addProductVariants(productVariant);
+	}
+
+	private VariantOptionValue getVariantOptionValue(Long o) throws CustomException {
+		return variantOptionValueRepository.findById(o)
+			.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
+	}
+
+	private void addCategoryOptionsToProduct(CreateProductRequest request, Product product) throws CustomException {
+		for (CreateProductRequest.CategoryOptionsRequest c : request.getCategoryOptions()) {
+			CategoryOptionValue categoryOptionValue = getCategoryOptionValue(c.getOptionValueId());
+
+			ProductCategoryOption productCategoryOption = ProductCategoryOption.create(product, categoryOptionValue);
+			product.addProductOptions(productCategoryOption);
+		}
+	}
+
+	private CategoryOptionValue getCategoryOptionValue(Long c) throws CustomException {
+		return categoryOptionValueRepository.findById(c)
+			.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
 	}
 }
 

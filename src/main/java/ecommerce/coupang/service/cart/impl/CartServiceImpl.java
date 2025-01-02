@@ -34,8 +34,7 @@ public class CartServiceImpl implements CartService {
 	@Override
 	@Transactional
 	public Cart addCart(AddCartRequest request, Member member) throws CustomException {
-		Cart cart = cartRepository.findByMemberId(member.getId())
-			.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
+		Cart cart = getCartWithMember(member);
 
 		ProductVariant productVariant = productVariantRepository.findById(request.getProductVariantId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -48,14 +47,12 @@ public class CartServiceImpl implements CartService {
 		else
 			cart.addItem(cartItem);
 
-
 		return cart;
 	}
 
 	@Override
 	public CartResponse findMyCart(Member member) throws CustomException {
-		Cart cart = cartRepository.findByMemberId(member.getId())
-				.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
+		Cart cart = getCartWithMember(member);
 
 		List<CartItem> cartItems = cartItemRepository.findByMemberIdWithProductStore(member.getId());
 
@@ -87,8 +84,7 @@ public class CartServiceImpl implements CartService {
 	@Override
 	@Transactional
 	public CartItem removeItem(Long cartItemId, Member member) throws CustomException {
-		Cart cart = cartRepository.findByMemberId(member.getId())
-			.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
+		Cart cart = getCartWithMember(member);
 
 		CartItem cartItem = cartItemRepository.findById(cartItemId)
 			.orElseThrow(() -> new CustomException(ErrorCode.CART_ITEM_NOT_FOUND));
@@ -102,10 +98,14 @@ public class CartServiceImpl implements CartService {
 	@Override
 	@Transactional
 	public void clearCart(Member member) throws CustomException {
-		Cart cart = cartRepository.findByMemberId(member.getId())
-			.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
+		Cart cart = getCartWithMember(member);
 
 		cartItemRepository.deleteAll(cart.getCartItems());
 		cart.getCartItems().clear();
+	}
+
+	private Cart getCartWithMember(Member member) throws CustomException {
+		return cartRepository.findByMemberId(member.getId())
+			.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
 	}
 }

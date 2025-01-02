@@ -51,11 +51,7 @@ public class StoreServiceImpl implements StoreService {
 	@Override
 	@Transactional
 	public Store updateStore(Long storeId, UpdateStoreRequest request, Member member) throws CustomException {
-		Store store = storeRepository.findByIdWithMember(storeId).orElseThrow(() ->
-			new CustomException(ErrorCode.STORE_NOT_FOUND));
-
-		if (!Objects.equals(store.getMember().getId(), member.getId()))
-			throw new CustomException(ErrorCode.FORBIDDEN);
+		Store store = validateStoreMember(storeId, member);
 
 		store.update(request);
 
@@ -65,13 +61,18 @@ public class StoreServiceImpl implements StoreService {
 	@Override
 	@Transactional
 	public Store deleteStore(Long storeId, Member member) throws CustomException {
-		Store store = storeRepository.findByIdWithMember(storeId).orElseThrow(() ->
-			new CustomException(ErrorCode.STORE_NOT_FOUND));
-
-		if (!Objects.equals(store.getMember().getId(), member.getId()))
-			throw new CustomException(ErrorCode.FORBIDDEN);
+		Store store = validateStoreMember(storeId, member);
 
 		store.delete();
+
+		return store;
+	}
+
+	@Override
+	public Store validateStoreMember(Long storeId, Member member) throws CustomException {
+		Store store = findStore(storeId);
+		if (!store.getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
 
 		return store;
 	}

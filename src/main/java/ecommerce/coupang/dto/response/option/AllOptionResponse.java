@@ -18,6 +18,11 @@ public class AllOptionResponse {
 	private List<CategoryOptionResponse> categoryOptions;
 	private List<VariantOptionResponse> variantOptions;
 
+	public void setOptions(List<CategoryOptionResponse> categoryOptions, List<VariantOptionResponse> variantOptions) {
+		this.categoryOptions = categoryOptions;
+		this.variantOptions = variantOptions;
+	}
+
 	@Data
 	@AllArgsConstructor
 	public static class CategoryOptionResponse {

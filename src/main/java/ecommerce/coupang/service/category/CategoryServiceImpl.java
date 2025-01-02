@@ -55,37 +55,26 @@ public class CategoryServiceImpl implements CategoryService {
 
 	@Override
 	public AllOptionResponse findOptions(Long categoryId) throws CustomException {
-		Category category = findBottomCategory(categoryId);
-		AllOptionResponse response = new AllOptionResponse();
+		Category category = findCategoryWithRoot(categoryId);
 
 		List<AllOptionResponse.CategoryOptionResponse> categoryOptions = new ArrayList<>();
 		List<AllOptionResponse.VariantOptionResponse> variantOptions = new ArrayList<>();
 
-		addCategoryOptions(category, categoryOptions);
-		addVariantOptions(category, variantOptions);
-
-		while (category.getParent() != null) {
-			addCategoryOptions(category.getParent(), categoryOptions);
-			addVariantOptions(category.getParent(), variantOptions);
+		while (category != null) {
+			categoryOptions.addAll(
+				category.getCategoryOptions().stream()
+					.map(AllOptionResponse.CategoryOptionResponse::from)
+					.toList()
+			);
+			variantOptions.addAll(
+				category.getVariantOptions().stream()
+					.map(AllOptionResponse.VariantOptionResponse::from)
+					.toList()
+			);
 			category = category.getParent();
 		}
 
-		response.setCategoryOptions(categoryOptions);
-		response.setVariantOptions(variantOptions);
-
-		return response;
-	}
-
-	private void addCategoryOptions(Category category, List<AllOptionResponse.CategoryOptionResponse> categoryOptions) {
-		category.getCategoryOptions().forEach(co ->
-			categoryOptions.add(AllOptionResponse.CategoryOptionResponse.from(co))
-		);
-	}
-
-	private void addVariantOptions(Category category, List<AllOptionResponse.VariantOptionResponse> variantOptions) {
-		category.getVariantOptions().forEach(vo ->
-			variantOptions.add(AllOptionResponse.VariantOptionResponse.from(vo))
-		);
+		return new AllOptionResponse(categoryOptions, variantOptions);
 	}
 
 	private void addAllSubCategory(Category category, List<Category> categories) {

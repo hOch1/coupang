@@ -41,8 +41,7 @@ public interface ProductService {
 	 * @return 변형 상품
 	 */
 	@LogAction("변형 상품 추가")
-	ProductVariant addProductVariant(Long productId, CreateProductVariantRequest request, Member member) throws
-		CustomException;
+	ProductVariant addProductVariant(Long productId, CreateProductVariantRequest request, Member member) throws CustomException;
 
 	/**
 	 * 상품 수정

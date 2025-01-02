@@ -24,4 +24,6 @@ public class CreateOrderByProductRequest {
 	private final Payment payment;
 
 	private final String orderMessage;
+
+	private final Long couponId;
 }
