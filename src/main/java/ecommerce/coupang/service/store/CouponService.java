@@ -63,14 +63,14 @@ public interface CouponService {
 
 	/**
 	 * 상품 쿠폰 조회
-	 * @param productVariantId 변형 상품 ID
+	 * @param productId 상품 ID
 	 * @param page 현재 페이지
 	 * @param pageSize 페이지당 쿠폰 개수
 	 * @param sort 정렬 타입
 	 * @return 쿠폰 목록
 	 */
 	@LogAction("상품 쿠폰 목록 조회")
-	Page<CouponProduct> findCouponsByProduct(Long productVariantId, int page, int pageSize, CouponSort sort);
+	Page<CouponProduct> findCouponsByProduct(Long productId, int page, int pageSize, CouponSort sort);
 
 	/**
 	 * 쿠폰 상세 조회

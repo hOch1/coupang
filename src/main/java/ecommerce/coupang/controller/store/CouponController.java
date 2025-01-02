@@ -38,7 +38,7 @@ public class CouponController {
 
 	private final CouponService couponService;
 
-	@PostMapping("/{storeId}")
+	@PostMapping("/{storeId}/store")
 	@Operation(summary = "쿠폰 생성 API", description = "쿠폰을 생성합니다.")
 	public ResponseEntity<Void> createCoupon(
 		@PathVariable Long storeId,
@@ -49,7 +49,7 @@ public class CouponController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@PostMapping("/{couponId}")
+	@PostMapping("/{couponId}/member")
 	@Operation(summary = "쿠폰 다운로드 API", description = "해당 쿠폰을 받습니다.")
 	public ResponseEntity<Void> downloadCoupon(
 		@PathVariable Long couponId,
@@ -99,15 +99,15 @@ public class CouponController {
 		));
 	}
 
-	@GetMapping("/{productVariantId}/product")
+	@GetMapping("/{productId}/product")
 	@Operation(summary = "상품 쿠폰 조회 API", description = "해당 상품의 쿠폰목록 조회")
 	public ResponseEntity<Result<List<CouponResponse>>> getCouponByProduct(
-		@PathVariable Long productVariantId,
+		@PathVariable Long productId,
 		@RequestParam(required = false, defaultValue = "LATEST") CouponSort sort,
 		@RequestParam(required = false, defaultValue = "0") int page,
 		@RequestParam(required = false, defaultValue = "10") int pageSize) {
 
-		Page<CouponProduct> coupons = couponService.findCouponsByProduct(productVariantId, page, pageSize, sort);
+		Page<CouponProduct> coupons = couponService.findCouponsByProduct(productId, page, pageSize, sort);
 		Page<CouponResponse> responses = coupons.map(CouponResponse::from);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),

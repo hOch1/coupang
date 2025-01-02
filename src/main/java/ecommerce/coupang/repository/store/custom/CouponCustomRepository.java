@@ -14,7 +14,7 @@ public interface CouponCustomRepository {
 
 	Page<MemberCoupon> findMyCoupons(Long memberId, Pageable pageable, CouponSort sort);
 
-	Page<CouponProduct> finCouponsByProduct(Long productVariantId, Pageable pageable, CouponSort sort);
+	Page<CouponProduct> finCouponsByProduct(Long productId, Pageable pageable, CouponSort sort);
 
 	Page<Coupon> findCouponsByStore(Long storeId, Pageable pageable, CouponSort sort);
 }

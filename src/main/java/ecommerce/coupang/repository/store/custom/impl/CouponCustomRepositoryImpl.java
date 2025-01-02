@@ -49,13 +49,13 @@ public class CouponCustomRepositoryImpl implements CouponCustomRepository {
 	}
 
 	@Override
-	public Page<CouponProduct> finCouponsByProduct(Long productVariantId, Pageable pageable, CouponSort sort) {
+	public Page<CouponProduct> finCouponsByProduct(Long productId, Pageable pageable, CouponSort sort) {
 		QCoupon coupon = QCoupon.coupon;
 		QCouponProduct couponProduct = QCouponProduct.couponProduct;
 
 		JPAQuery<CouponProduct> query = queryFactory.selectFrom(couponProduct)
 			.join(couponProduct.coupon, coupon).fetchJoin()
-			.where(couponProduct.product.id.eq(productVariantId));
+			.where(couponProduct.product.id.eq(productId));
 
 		couponSort(query, sort, coupon);
 		query.offset(pageable.getOffset()).limit(pageable.getPageSize());
@@ -64,7 +64,7 @@ public class CouponCustomRepositoryImpl implements CouponCustomRepository {
 		JPAQuery<Long> countQuery = queryFactory
 			.select(couponProduct.count())
 			.from(couponProduct)
-			.where(couponProduct.product.id.eq(productVariantId));
+			.where(couponProduct.product.id.eq(productId));
 
 		return PageableExecutionUtils.getPage(result, pageable, countQuery::fetchOne);
 	}

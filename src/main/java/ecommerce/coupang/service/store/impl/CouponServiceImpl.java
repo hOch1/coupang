@@ -49,7 +49,7 @@ public class CouponServiceImpl implements CouponService {
 
 		Coupon coupon = Coupon.create(request, store);
 
-		for (Long productVariantId : request.getProductVariantIds()) {
+		for (Long productVariantId : request.getProductIds()) {
 			Product product = productRepository.findById(productVariantId)
 				.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
@@ -91,9 +91,9 @@ public class CouponServiceImpl implements CouponService {
 	}
 
 	@Override
-	public Page<CouponProduct> findCouponsByProduct(Long productVariantId, int page, int pageSize, CouponSort sort) {
+	public Page<CouponProduct> findCouponsByProduct(Long productId, int page, int pageSize, CouponSort sort) {
 		Pageable pageable = PageRequest.of(page, pageSize);
-		return couponRepository.finCouponsByProduct(productVariantId, pageable, sort);
+		return couponRepository.finCouponsByProduct(productId, pageable, sort);
 	}
 
 	@Override
