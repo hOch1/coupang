@@ -9,6 +9,7 @@ import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.domain.product.variant.VariantOptionValue;
 import ecommerce.coupang.domain.store.CouponProduct;
+import ecommerce.coupang.dto.request.product.CreateProductVariantRequest;
 import ecommerce.coupang.dto.request.product.ProductSort;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
@@ -76,10 +77,10 @@ public class ProductServiceImpl implements ProductService {
 			product.addProductOptions(productCategoryOption);
 		}
 
-		for (CreateProductRequest.VariantRequest v : request.getVariants()) {
+		for (CreateProductVariantRequest v : request.getVariants()) {
 			ProductVariant productVariant = ProductVariant.create(v, product);
 
-			for (CreateProductRequest.VariantRequest.VariantOptionRequest o : v.getVariantOptions()) {
+			for (CreateProductVariantRequest.VariantOptionRequest o : v.getVariantOptions()) {
 				VariantOptionValue variantOptionValue = variantOptionValueRepository.findById(o.getOptionValueId())
 						.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
 
@@ -93,6 +94,27 @@ public class ProductServiceImpl implements ProductService {
 		productRepository.save(product);
 
 		return product;
+	}
+
+	@Override
+	@Transactional
+	public ProductVariant addProductVariant(Long productId, CreateProductVariantRequest request, Member member) throws CustomException {
+		Product product = productRepository.findByIdWithMemberAndCategory(productId)
+			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+
+		ProductVariant productVariant = ProductVariant.create(request, product);
+
+		for (CreateProductVariantRequest.VariantOptionRequest o : request.getVariantOptions()) {
+			VariantOptionValue variantOptionValue = variantOptionValueRepository.findById(o.getOptionValueId())
+				.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
+
+			ProductVariantOption productVariantOption = ProductVariantOption.create(productVariant, variantOptionValue);
+			productVariant.addProductVariantOptions(productVariantOption);
+		}
+
+		product.addProductVariants(productVariant);
+		productVariantRepository.save(productVariant);
+		return productVariant;
 	}
 
 	@Override

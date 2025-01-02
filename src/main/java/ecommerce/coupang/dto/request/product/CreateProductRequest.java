@@ -25,7 +25,7 @@ public class CreateProductRequest {
 	private final List<CategoryOptionsRequest> categoryOptions;
 
 	@NotEmpty(message = "옵션을 선택해주세요.")
-	private final List<VariantRequest> variants;
+	private final List<CreateProductVariantRequest> variants;
 
 	@Getter
 	@AllArgsConstructor

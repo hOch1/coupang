@@ -10,6 +10,7 @@ import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
+import ecommerce.coupang.dto.request.product.CreateProductVariantRequest;
 import ecommerce.coupang.dto.request.product.ProductSort;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
@@ -31,6 +32,17 @@ public interface ProductService {
 	 */
 	@LogAction("상품 등록")
 	Product createProduct(CreateProductRequest request, Long storeId, Member member) throws CustomException;
+
+	/**
+	 * 변형 상품 추가
+	 * @param productId 상품 ID
+	 * @param request 변형 상품 추가 요청 정보
+	 * @param member 요청한 회원
+	 * @return 변형 상품
+	 */
+	@LogAction("변형 상품 추가")
+	ProductVariant addProductVariant(Long productId, CreateProductVariantRequest request, Member member) throws
+		CustomException;
 
 	/**
 	 * 상품 수정

@@ -3,6 +3,7 @@ package ecommerce.coupang.domain.product.variant;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.store.CouponProduct;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
+import ecommerce.coupang.dto.request.product.CreateProductVariantRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
@@ -60,7 +61,7 @@ public class ProductVariant {
 		this.isDefault = isDefault;
 	}
 
-	public static ProductVariant create(CreateProductRequest.VariantRequest request, Product product) {
+	public static ProductVariant create(CreateProductVariantRequest request, Product product) {
 		return new ProductVariant(
 			product,
 			request.getPrice(),

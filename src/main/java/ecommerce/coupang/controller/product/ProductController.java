@@ -16,11 +16,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import ecommerce.coupang.domain.category.Category;
-import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
-import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
+import ecommerce.coupang.dto.request.product.CreateProductVariantRequest;
 import ecommerce.coupang.dto.request.product.ProductSort;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
@@ -31,7 +29,6 @@ import ecommerce.coupang.dto.response.product.ProductDetailResponse;
 import ecommerce.coupang.dto.response.product.ProductResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
-import ecommerce.coupang.service.category.CategoryService;
 import ecommerce.coupang.service.product.ProductService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -45,9 +42,8 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 
 	private final ProductService productService;
-	private final CategoryService categoryService;
 
-	@PostMapping("/{storeId}")
+	@PostMapping("/{storeId}/store")
 	@Operation(summary = "상품 등록 API", description = "상품을 등록합니다.")
 	public ResponseEntity<Void> createProduct(
 		@PathVariable Long storeId,
@@ -55,6 +51,17 @@ public class ProductController {
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		productService.createProduct(request, storeId, userDetails.getMember());
+		return ResponseEntity.status(HttpStatus.CREATED).build();
+	}
+
+	@PostMapping("/{productId}/variant")
+	@Operation(summary = "변형 상품 추가 API", description = "변형 상품을 추가합니다")
+	public ResponseEntity<Void> createProductVariant(
+		@PathVariable Long productId,
+		@RequestBody @Valid CreateProductVariantRequest request,
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
+
+		productService.addProductVariant(productId, request, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
