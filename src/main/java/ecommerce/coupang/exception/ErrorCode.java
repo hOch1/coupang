@@ -19,6 +19,7 @@ public enum ErrorCode {
 	REVIEW_NOT_FOUND(404, "리뷰를 찾을 수 없습니다."),
 	INQUIRY_NOT_FOUND(404, "해당 문의를 찾을 수 없습니다."),
 	ANSWER_NOT_FOUND(404, "답변을 찾을 수 없습니다."),
+	COUPON_NOT_FOUND(404, "쿠폰을 찾을 수 없습니다."),
 
 	PASSWORD_NOT_MATCHED(400, "비밀번호가 맞지 앉습니다."),
 	ALREADY_EXITS_EMAIL(400, "중복된 이메일 입니다."),
@@ -35,6 +36,7 @@ public enum ErrorCode {
 	CAN_NOT_INQUIRY_MY_PRODUCT(400, "자신의 상품엔 문의를 등록할 수 없습니다."),
 	ALREADY_ANSWERED(400, "이미 답변이 등록된 문의 입니다."),
 	ALREADY_CANCELLED_ORDER(400, "이미 취소된 주문 입니다."),
+	ALREADY_HAS_COUPON(400, "이미 등록한 쿠폰입니다."),
 
 	FORBIDDEN(401, "권한이 없습니다."),
 

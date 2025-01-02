@@ -1,6 +1,7 @@
 package ecommerce.coupang.domain.product.variant;
 
 import ecommerce.coupang.domain.product.Product;
+import ecommerce.coupang.domain.store.CouponProduct;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
 import ecommerce.coupang.exception.CustomException;
@@ -50,6 +51,9 @@ public class ProductVariant {
 
 	@OneToMany(mappedBy = "productVariant", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductVariantOption> productVariantOptions = new ArrayList<>();
+
+	@OneToMany(mappedBy = "productVariant", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CouponProduct> couponProducts = new ArrayList<>();
 
 	public ProductVariant(Product product, int price, int stockQuantity, ProductStatus status, boolean isDefault) {
 		this.product = product;

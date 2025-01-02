@@ -1,6 +1,7 @@
 package ecommerce.coupang.domain.member;
 
-import ecommerce.coupang.domain.store.StoreCoupon;
+import ecommerce.coupang.domain.BaseTimeEntity;
+import ecommerce.coupang.domain.store.Coupon;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class MemberCoupon {
+public class MemberCoupon extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,5 +32,20 @@ public class MemberCoupon {
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "store_coupon_id", nullable = false)
-	private StoreCoupon storeCoupon;
+	private Coupon coupon;
+
+	@Column(name = "is_used", nullable = false)
+	private boolean isUsed = false;
+
+	public MemberCoupon(Member member, Coupon coupon) {
+		this.member = member;
+		this.coupon = coupon;
+	}
+
+	public static MemberCoupon create(Member member, Coupon coupon) {
+		return new MemberCoupon(
+			member,
+			coupon
+		);
+	}
 }

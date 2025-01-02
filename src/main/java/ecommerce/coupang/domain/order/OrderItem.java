@@ -4,6 +4,7 @@ import java.util.Objects;
 
 import ecommerce.coupang.domain.cart.CartItem;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
+import ecommerce.coupang.domain.store.Coupon;
 import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -39,6 +40,13 @@ public class OrderItem {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "product_variant_id", nullable = false)
 	private ProductVariant productVariant;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "coupon_id")
+	private Coupon coupon;
+
+	@Column(name = "original_price", nullable = false)
+	private int originalPrice;
 
 	@Column(name = "price", nullable = false)
 	private int price;

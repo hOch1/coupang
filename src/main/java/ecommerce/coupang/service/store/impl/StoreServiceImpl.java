@@ -1,4 +1,4 @@
-package ecommerce.coupang.service.store;
+package ecommerce.coupang.service.store.impl;
 
 import java.util.List;
 import java.util.Objects;
@@ -14,12 +14,13 @@ import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.store.StoreRepository;
+import ecommerce.coupang.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class StoreServiceImpl implements StoreService{
+public class StoreServiceImpl implements StoreService {
 
 	private final StoreRepository storeRepository;
 

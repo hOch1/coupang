@@ -1,10 +1,13 @@
 package ecommerce.coupang.domain.store;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
-import ecommerce.coupang.domain.member.Member;
+import ecommerce.coupang.dto.request.store.coupon.CreateCouponRequest;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,6 +18,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -24,7 +28,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class StoreCoupon extends BaseTimeEntity {
+public class Coupon extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,9 +38,6 @@ public class StoreCoupon extends BaseTimeEntity {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "store_id", nullable = false)
 	private Store store;
-
-	@Column(name = "coupon_code", unique = true, nullable = false)
-	private String couponCode;
 
 	@Column(name = "name", nullable = false)
 	private String name;
@@ -63,6 +64,41 @@ public class StoreCoupon extends BaseTimeEntity {
 	@Column(name = "limit_date", nullable = false)
 	private LocalDateTime limitDate = LocalDateTime.MAX;
 
+	@OneToMany(mappedBy = "storeCoupon", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CouponProduct> couponProducts = new ArrayList<>();
+
+	public Coupon(Store store, String name, String description, CouponType type,
+		int discountValue,
+		int minPrice, int limitDiscountPrice, int couponStock, LocalDateTime limitDate) {
+		this.store = store;
+		this.name = name;
+		this.description = description;
+		this.type = type;
+		this.discountValue = discountValue;
+		this.minPrice = minPrice;
+		this.limitDiscountPrice = limitDiscountPrice;
+		this.couponStock = couponStock;
+		this.limitDate = limitDate;
+	}
+
+	public static Coupon create(CreateCouponRequest request, Store store) {
+		return new Coupon(
+			store,
+			request.getName(),
+			request.getDescription(),
+			request.getType(),
+			request.getDiscountValue(),
+			request.getMinPrice(),
+			request.getLimitDiscountPrice(),
+			request.getCouponStock(),
+			request.getLimitDate()
+		);
+	}
+
+	public void reduceStock() {
+		this.couponStock--;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)
@@ -70,14 +106,12 @@ public class StoreCoupon extends BaseTimeEntity {
 		if (o == null || getClass() != o.getClass())
 			return false;
 
-		StoreCoupon that = (StoreCoupon)o;
-		return Objects.equals(id, that.id) && Objects.equals(couponCode, that.couponCode);
+		Coupon that = (Coupon)o;
+		return Objects.equals(id, that.id);
 	}
 
 	@Override
 	public int hashCode() {
-		int result = Objects.hashCode(id);
-		result = 31 * result + Objects.hashCode(couponCode);
-		return result;
+		return Objects.hashCode(id);
 	}
 }

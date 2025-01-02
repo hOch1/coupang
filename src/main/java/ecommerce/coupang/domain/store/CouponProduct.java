@@ -18,11 +18,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class StoreCouponProduct {
+public class CouponProduct {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "store_coupon_product_id")
+	@Column(name = "coupon_product_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)

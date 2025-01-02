@@ -1,9 +1,9 @@
 package ecommerce.coupang.service.discount;
 
 import ecommerce.coupang.domain.member.Member;
-import ecommerce.coupang.domain.store.StoreCoupon;
+import ecommerce.coupang.domain.store.Coupon;
 
 public interface DiscountPolicy {
 
-	int calculateDiscount(int price, Member member, StoreCoupon coupon);
+	int calculateDiscount(int price, Member member, Coupon coupon);
 }

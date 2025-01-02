@@ -23,6 +23,7 @@ import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.store.StoreRepository;
+import ecommerce.coupang.service.store.impl.StoreServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class StoreServiceImplTest {
