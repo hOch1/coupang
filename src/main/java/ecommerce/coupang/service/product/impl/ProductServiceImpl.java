@@ -8,6 +8,7 @@ import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.domain.product.variant.VariantOptionValue;
+import ecommerce.coupang.domain.store.CouponProduct;
 import ecommerce.coupang.dto.request.product.ProductSort;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
@@ -32,6 +33,7 @@ import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
+import ecommerce.coupang.repository.store.CouponProductRepository;
 import ecommerce.coupang.repository.store.StoreRepository;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.service.category.CategoryService;
@@ -53,6 +55,7 @@ public class ProductServiceImpl implements ProductService {
 	private final StoreRepository storeRepository;
 	private final ProductVariantOptionRepository productVariantOptionRepository;
 	private final ProductCategoryOptionRepository productCategoryOptionRepository;
+	private final CouponProductRepository couponProductRepository;
 
 	@Override
 	@Transactional
@@ -81,7 +84,7 @@ public class ProductServiceImpl implements ProductService {
 						.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
 
 				ProductVariantOption productVariantOption = ProductVariantOption.create(productVariant, variantOptionValue);
-				productVariant.addProductVariantOption(productVariantOption);
+				productVariant.addProductVariantOptions(productVariantOption);
 			}
 
 			product.addProductVariants(productVariant);
@@ -137,7 +140,7 @@ public class ProductServiceImpl implements ProductService {
 					.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
 
 				ProductVariantOption productVariantOption = ProductVariantOption.create(productVariant, variantOptionValue);
-				productVariant.addProductVariantOption(productVariantOption);
+				productVariant.addProductVariantOptions(productVariantOption);
 			}
 		}
 
@@ -161,9 +164,10 @@ public class ProductServiceImpl implements ProductService {
 
 		List<ProductCategoryOption> productCategoryOptions = productCategoryOptionRepository.findByProductId(productVariant.getProduct().getId());
 		List<ProductVariantOption> productVariantOptions = productVariantOptionRepository.findByProductVariantId(productVariant.getId());
+		List<CouponProduct> couponProducts = couponProductRepository.findByProductId(productVariant.getProduct().getId());
 		Category category = categoryService.findCategoryWithRoot(productVariant.getProduct().getCategory().getId());
 
-		return ProductDetailResponse.from(productVariant, category, productCategoryOptions, productVariantOptions);
+		return ProductDetailResponse.from(productVariant, category, productCategoryOptions, productVariantOptions, couponProducts);
 	}
 
 	@Override

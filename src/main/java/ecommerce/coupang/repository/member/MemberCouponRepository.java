@@ -10,10 +10,10 @@ import ecommerce.coupang.domain.member.MemberCoupon;
 public interface MemberCouponRepository extends JpaRepository<MemberCoupon, Long> {
 
 	@Query("select mc from MemberCoupon mc "
-		+ "join fetch mc.storeCoupon sc "
+		+ "join fetch mc.coupon c "
 		+ "where mc.id = :memberId "
 		+ "order by mc.createdAt desc ")
 	List<MemberCoupon> findByMemberId(Long memberId);
 
-	boolean existsByStoreCouponId(Long StoreCouponId);
+	boolean existsByCouponId(Long CouponId);
 }

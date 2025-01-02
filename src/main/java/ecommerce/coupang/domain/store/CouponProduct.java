@@ -1,6 +1,6 @@
 package ecommerce.coupang.domain.store;
 
-import ecommerce.coupang.domain.product.variant.ProductVariant;
+import ecommerce.coupang.domain.product.Product;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,6 +26,22 @@ public class CouponProduct {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "product_variant_id")
-	private ProductVariant productVariant;
+	@JoinColumn(name = "coupon_id", nullable = false)
+	private Coupon coupon;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "product_id", nullable = false)
+	private Product product;
+
+	public CouponProduct(Coupon coupon, Product product) {
+		this.coupon = coupon;
+		this.product = product;
+	}
+
+	public static CouponProduct create(Coupon coupon, Product product) {
+		return new CouponProduct(
+			coupon,
+			product
+		);
+	}
 }

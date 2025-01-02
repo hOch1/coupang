@@ -1,6 +1,7 @@
 package ecommerce.coupang.dto.request.store.coupon;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import ecommerce.coupang.domain.store.CouponType;
 import jakarta.validation.constraints.Min;
@@ -28,4 +29,5 @@ public class CreateCouponRequest {
 	private final Integer limitDiscountPrice;
 	private final Integer couponStock;
 	private final LocalDateTime limitDate;
+	private final List<Long> productVariantIds;
 }

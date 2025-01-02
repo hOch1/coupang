@@ -32,7 +32,7 @@ public class Coupon extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "store_coupon_id")
+	@Column(name = "coupon_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -64,7 +64,7 @@ public class Coupon extends BaseTimeEntity {
 	@Column(name = "limit_date", nullable = false)
 	private LocalDateTime limitDate = LocalDateTime.MAX;
 
-	@OneToMany(mappedBy = "storeCoupon", cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CouponProduct> couponProducts = new ArrayList<>();
 
 	public Coupon(Store store, String name, String description, CouponType type,
@@ -93,6 +93,10 @@ public class Coupon extends BaseTimeEntity {
 			request.getCouponStock(),
 			request.getLimitDate()
 		);
+	}
+
+	public void addCouponProducts(CouponProduct couponProduct) {
+		this.couponProducts.add(couponProduct);
 	}
 
 	public void reduceStock() {

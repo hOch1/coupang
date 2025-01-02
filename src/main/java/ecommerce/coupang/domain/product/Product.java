@@ -6,6 +6,7 @@ import java.util.List;
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.domain.product.review.ProductReview;
+import ecommerce.coupang.domain.store.CouponProduct;
 import ecommerce.coupang.domain.store.Store;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
@@ -68,6 +69,9 @@ public class Product extends BaseTimeEntity {
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductReview> productReviews = new ArrayList<>();
 
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CouponProduct> couponProducts = new ArrayList<>();
+
 	public Product(String name, String description, Store store, Category category) {
 		this.name = name;
 		this.description = description;
@@ -102,6 +106,10 @@ public class Product extends BaseTimeEntity {
 
 		increaseReviewCount();
 		updateStarAvg();
+	}
+
+	public void addCouponProducts(CouponProduct couponProduct) {
+		this.couponProducts.add(couponProduct);
 	}
 
 	public void increaseReviewCount() {

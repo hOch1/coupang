@@ -52,9 +52,6 @@ public class ProductVariant {
 	@OneToMany(mappedBy = "productVariant", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductVariantOption> productVariantOptions = new ArrayList<>();
 
-	@OneToMany(mappedBy = "productVariant", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<CouponProduct> couponProducts = new ArrayList<>();
-
 	public ProductVariant(Product product, int price, int stockQuantity, ProductStatus status, boolean isDefault) {
 		this.product = product;
 		this.price = price;
@@ -73,7 +70,7 @@ public class ProductVariant {
 		);
 	}
 
-	public void addProductVariantOption(ProductVariantOption productVariantOption) {
+	public void addProductVariantOptions(ProductVariantOption productVariantOption) {
 		this.productVariantOptions.add(productVariantOption);
 	}
 

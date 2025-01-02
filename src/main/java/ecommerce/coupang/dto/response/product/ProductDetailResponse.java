@@ -8,9 +8,11 @@ import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
+import ecommerce.coupang.domain.store.CouponProduct;
 import ecommerce.coupang.dto.response.category.ParentCategoryResponse;
 import ecommerce.coupang.dto.response.option.OptionResponse;
 import ecommerce.coupang.dto.response.store.StoreResponse;
+import ecommerce.coupang.dto.response.store.coupon.CouponResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -29,12 +31,14 @@ public class ProductDetailResponse {
 	private final StoreResponse store;
 	private final List<OptionResponse> categoryOptions;
 	private final List<OptionResponse> variantOptions;
+	private final List<CouponResponse> coupons;
 
 	public static ProductDetailResponse from(
 		ProductVariant productVariant,
 		Category category,
 		List<ProductCategoryOption> productCategoryOptions,
-		List<ProductVariantOption> productVariantOptions) {
+		List<ProductVariantOption> productVariantOptions,
+		List<CouponProduct> couponProducts) {
 
 		Product product = productVariant.getProduct();
 		return new ProductDetailResponse(
@@ -52,6 +56,9 @@ public class ProductDetailResponse {
 				.toList(),
 			productVariantOptions.stream()
 				.map(OptionResponse::productVariantFrom)
+				.toList(),
+			couponProducts.stream()
+				.map(CouponResponse::from)
 				.toList()
 		);
 	}

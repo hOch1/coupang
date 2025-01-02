@@ -95,8 +95,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 		}
 	}
 
-	private BooleanBuilder searchFilter(QProductVariant productVariant, List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions,
-		QProduct product, QProductCategoryOption productCategoryOption, QProductVariantOption productVariantOption) {
+	private BooleanBuilder searchFilter(QProductVariant productVariant, List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, QProduct product, QProductCategoryOption productCategoryOption, QProductVariantOption productVariantOption) {
 
 		BooleanBuilder builder = new BooleanBuilder(productVariant.isDefault.isTrue());
 
