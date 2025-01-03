@@ -16,6 +16,7 @@ import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.domain.store.CouponProduct;
 import ecommerce.coupang.dto.request.product.ProductSort;
 import ecommerce.coupang.dto.response.product.ProductDetailResponse;
+import ecommerce.coupang.dto.response.product.ProductResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.product.ProductCategoryOptionRepository;
@@ -62,11 +63,14 @@ public class ProductQueryService {
 	 * @param storeId 상점 ID
 	 * @param categoryOptions 카테고리 옵션 값 ID
 	 * @param variantOptions 변형 옵션 값 ID
+	 * @param sort 정렬 타입
+	 * @param page 현재 페이지
+	 * @param pageSize 페이지당 개수
 	 * @return 조회 상품 리스트
 	 * @throws CustomException
 	 */
 	@LogAction("상품 목록 조회")
-	public Page<ProductVariant> search(Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, int page, int pageSize) throws CustomException{
+	public Page<ProductResponse> search(Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, int page, int pageSize) throws CustomException{
 		List<Category> categories = new ArrayList<>();
 
 		if (categoryId != null)
@@ -74,5 +78,4 @@ public class ProductQueryService {
 
 		return productRepository.searchProducts(categories, storeId, categoryOptions, variantOptions, sort, PageRequest.of(page, pageSize));
 	}
-
 }

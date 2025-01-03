@@ -1,6 +1,8 @@
 package ecommerce.coupang.repository.product.custom.impl;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Projections;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -10,11 +12,14 @@ import ecommerce.coupang.domain.member.QMember;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.QProduct;
 import ecommerce.coupang.domain.product.QProductCategoryOption;
-import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.QProductVariant;
 import ecommerce.coupang.domain.product.variant.QProductVariantOption;
+import ecommerce.coupang.domain.store.QCouponProduct;
 import ecommerce.coupang.domain.store.QStore;
 import ecommerce.coupang.dto.request.product.ProductSort;
+import ecommerce.coupang.dto.response.category.CategoryResponse;
+import ecommerce.coupang.dto.response.product.ProductResponse;
+import ecommerce.coupang.dto.response.store.StoreResponse;
 import ecommerce.coupang.repository.product.custom.ProductCustomRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -53,18 +58,40 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 	}
 
 	@Override
-	public Page<ProductVariant> searchProducts(List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, Pageable pageable) {
+	public Page<ProductResponse> searchProducts(List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, Pageable pageable) {
 		QProduct product = QProduct.product;
 		QProductVariant productVariant = QProductVariant.productVariant;
 		QProductCategoryOption productCategoryOption = QProductCategoryOption.productCategoryOption;
 		QProductVariantOption productVariantOption = QProductVariantOption.productVariantOption;
 		QCategory category = QCategory.category;
 		QStore store = QStore.store;
+		QCouponProduct couponProduct = QCouponProduct.couponProduct;
 
 		BooleanBuilder builder = searchFilter(productVariant, categories, storeId, categoryOptions, variantOptions, product, productCategoryOption, productVariantOption);
 
-		JPQLQuery<ProductVariant> query = queryFactory
-			.selectDistinct(productVariant)
+		JPAQuery<ProductResponse> query = queryFactory
+			.select(Projections.constructor(
+				ProductResponse.class,
+				product.id,
+				productVariant.id,
+				product.name,
+				productVariant.price,
+				productVariant.status,
+				Projections.constructor(
+					StoreResponse.class,
+					store.id,
+					store.name
+				),
+				Projections.constructor(
+					CategoryResponse.class,
+					category.id,
+					category.name
+				),
+				JPAExpressions.selectOne()
+					.from(couponProduct)
+					.where(couponProduct.product.id.eq(product.id))
+					.exists()
+			))
 			.from(productVariant)
 			.join(productVariant.product, product).fetchJoin()
 			.join(productVariant.product.store, store).fetchJoin()
@@ -74,7 +101,8 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 		searchSort(query, product, productVariant, sort);
 
 		query.offset(pageable.getOffset()).limit(pageable.getPageSize());
-		List<ProductVariant> result = query.fetch();
+
+		List<ProductResponse> result = query.fetch();
 
 		JPAQuery<Long> countQuery = queryFactory.select(productVariant.count())
 			.from(productVariant)
@@ -83,7 +111,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 		return PageableExecutionUtils.getPage(result, pageable, countQuery::fetchOne);
 	}
 
-	private void searchSort(JPQLQuery<ProductVariant> query, QProduct product, QProductVariant productVariant, ProductSort sort) {
+	private void searchSort(JPQLQuery<ProductResponse> query, QProduct product, QProductVariant productVariant, ProductSort sort) {
 		switch (sort) {
 			case LATEST -> query.orderBy(product.createdAt.desc());
 			case OLDEST -> query.orderBy(product.createdAt.asc());
@@ -103,9 +131,9 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 			builder.and(product.category.in(categories));
 		if (storeId != null)
 			builder.and(product.store.id.eq(storeId));
-		if (categoryOptions != null)
+		if (categoryOptions != null && !categoryOptions.isEmpty())
 			builder.and(productCategoryOption.categoryOptionValue.id.in(categoryOptions));
-		if (variantOptions != null)
+		if (variantOptions != null && !variantOptions.isEmpty())
 			builder.and(productVariantOption.variantOptionValue.id.in(variantOptions));
 
 		return builder;

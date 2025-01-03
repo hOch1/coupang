@@ -78,8 +78,7 @@ public class ProductController {
 		@RequestParam(required = false, defaultValue = "0") int page,
 		@RequestParam(required = false, defaultValue = "20") int pageSize) throws CustomException {
 
-		Page<ProductVariant> productVariants = productQueryService.search(categoryId, storeId, categoryOptions, variantOptions, sort, page, pageSize);
-		Page<ProductResponse> responses = productVariants.map(ProductResponse::from);
+		Page<ProductResponse> responses = productQueryService.search(categoryId, storeId, categoryOptions, variantOptions, sort, page, pageSize);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),
 			responses.getContent().size(),
