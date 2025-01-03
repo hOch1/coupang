@@ -2,6 +2,7 @@ package ecommerce.coupang.service.order.impl;
 
 
 import ecommerce.coupang.domain.member.MemberCoupon;
+import ecommerce.coupang.domain.member.MemberGrade;
 import ecommerce.coupang.domain.order.OrderStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,25 +55,23 @@ public class OrderServiceImpl implements OrderService {
 		verifyStatusAndReduceStock(productVariant, request.getQuantity());
 
 		int couponDiscountPrice = 0;
-		int memberDiscountPrice;
 		MemberCoupon memberCoupon = null;
-		if (request.getCouponId() != null){
+		if (request.getCouponId() != null) {
 			memberCoupon = memberCouponRepository.findByMemberIdAndCouponId(member.getId(), request.getCouponId())
 				.orElseThrow(() -> new CustomException(ErrorCode.COUPON_NOT_FOUND));
-			if (memberCoupon.isUsed())
-				throw new CustomException(ErrorCode.ALREADY_USE_COUPON);
-			couponDiscountPrice = couponDiscountPolicy.calculateDiscount(productVariant.getPrice() * request.getQuantity(), null, memberCoupon.getCoupon());
+			couponDiscountPrice = couponDiscount(memberCoupon, productVariant.getPrice() * request.getQuantity());
 		}
-		memberDiscountPrice = memberDiscountPolicy.calculateDiscount(productVariant.getPrice() * request.getQuantity(), member.getGrade(), null);
 
-		OrderItem orderItem = OrderItem.createByProduct(order, productVariant, memberCoupon.getCoupon(), request, couponDiscountPrice, memberDiscountPrice);
-		memberCoupon.use();
+		int memberDiscountPrice = memberDiscount(member.getGrade(), productVariant.getPrice() * request.getQuantity());
+
+		OrderItem orderItem = OrderItem.createByProduct(order, productVariant, memberCoupon, request, couponDiscountPrice, memberDiscountPrice);
 		Delivery delivery = Delivery.create(orderItem, productVariant.getProduct().getStore());
 		orderItem.setDelivery(delivery);
 
 		order.addOrderItem(orderItem);
 
 		orderRepository.save(order);
+
 		return order;
 	}
 
@@ -89,18 +88,16 @@ public class OrderServiceImpl implements OrderService {
 			verifyStatusAndReduceStock(cartItem.getProductVariant(), cartItem.getQuantity());
 
 			int couponDiscountPrice = 0;
-			int memberDiscountPrice;
 			MemberCoupon memberCoupon = null;
-			if (cartItemRequest.getCouponId() != null){
+			if (cartItemRequest.getCouponId() != null) {
 				memberCoupon = memberCouponRepository.findByMemberIdAndCouponId(member.getId(), cartItemRequest.getCouponId())
 					.orElseThrow(() -> new CustomException(ErrorCode.COUPON_NOT_FOUND));
-				couponDiscountPrice = couponDiscountPolicy.calculateDiscount(cartItem.getProductVariant().getPrice() * cartItem.getQuantity(), null, memberCoupon.getCoupon());
+				couponDiscountPrice = couponDiscount(memberCoupon, cartItem.getProductVariant().getPrice() * cartItem.getQuantity());
 			}
 
-			memberDiscountPrice = memberDiscountPolicy.calculateDiscount(cartItem.getProductVariant().getPrice() * cartItem.getQuantity(), member.getGrade(), null);
+			int memberDiscountPrice = memberDiscount(member.getGrade(), cartItem.getProductVariant().getPrice() * cartItem.getQuantity());
 
-			OrderItem orderItem = OrderItem.createByCartItem(order, cartItem, memberCoupon.getCoupon(), couponDiscountPrice, memberDiscountPrice);
-			memberCoupon.use();
+			OrderItem orderItem = OrderItem.createByCartItem(order, cartItem, memberCoupon, couponDiscountPrice, memberDiscountPrice);
 			Delivery delivery = Delivery.create(orderItem, cartItem.getProductVariant().getProduct().getStore());
 			orderItem.setDelivery(delivery);
 
@@ -110,6 +107,18 @@ public class OrderServiceImpl implements OrderService {
 
 		orderRepository.save(order);
 		return order;
+	}
+
+	private int couponDiscount(MemberCoupon memberCoupon, int price) throws CustomException {
+		if (memberCoupon.isUsed())
+			throw new CustomException(ErrorCode.ALREADY_USE_COUPON);
+
+		memberCoupon.use();
+		return couponDiscountPolicy.calculateDiscount(price, null, memberCoupon.getCoupon());
+	}
+
+	private int memberDiscount(MemberGrade memberGrade, int price) {
+		return memberDiscountPolicy.calculateDiscount(price, memberGrade, null);
 	}
 
 	@Override

@@ -3,6 +3,7 @@ package ecommerce.coupang.domain.order;
 import java.util.Objects;
 
 import ecommerce.coupang.domain.cart.CartItem;
+import ecommerce.coupang.domain.member.MemberCoupon;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.store.Coupon;
 import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
@@ -79,8 +80,9 @@ public class OrderItem {
 		this.discountTotalPrice = discountTotalPrice;
 	}
 
-	public static OrderItem createByProduct(Order order, ProductVariant productVariant, Coupon coupon, CreateOrderByProductRequest request, int couponDiscountPrice, int memberDiscountPrice) {
+	public static OrderItem createByProduct(Order order, ProductVariant productVariant, MemberCoupon memberCoupon, CreateOrderByProductRequest request, int couponDiscountPrice, int memberDiscountPrice) {
 		productVariant.increaseSalesCount(request.getQuantity());
+		Coupon coupon = memberCoupon != null ? memberCoupon.getCoupon() : null;
 		return new OrderItem(
 			order,
 			productVariant,
@@ -94,8 +96,9 @@ public class OrderItem {
 		);
 	}
 
-	public static OrderItem createByCartItem(Order order, CartItem cartItem, Coupon coupon, int couponDiscountPrice, int memberDiscountPrice) {
+	public static OrderItem createByCartItem(Order order, CartItem cartItem, MemberCoupon memberCoupon, int couponDiscountPrice, int memberDiscountPrice) {
 		cartItem.getProductVariant().increaseSalesCount(cartItem.getQuantity());
+		Coupon coupon = memberCoupon != null ? memberCoupon.getCoupon() : null;
 		return new OrderItem(
 			order,
 			cartItem.getProductVariant(),

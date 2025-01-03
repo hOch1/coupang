@@ -18,5 +18,9 @@ public interface MemberCouponRepository extends JpaRepository<MemberCoupon, Long
 
 	boolean existsByCouponId(Long CouponId);
 
+	@Query("select mc from MemberCoupon mc "
+		+ "join fetch mc.coupon c "
+		+ "where mc.id = :memberId "
+		+ "and mc.coupon.id = :couponId ")
 	Optional<MemberCoupon> findByMemberIdAndCouponId(Long memberId, Long couponId);
 }
