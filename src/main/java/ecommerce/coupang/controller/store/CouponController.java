@@ -23,6 +23,8 @@ import ecommerce.coupang.dto.request.store.coupon.CreateCouponRequest;
 import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.store.coupon.CouponDetailResponse;
 import ecommerce.coupang.dto.response.store.coupon.CouponResponse;
+import ecommerce.coupang.dto.response.store.coupon.MemberCouponDetailResponse;
+import ecommerce.coupang.dto.response.store.coupon.MemberCouponResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.store.CouponService;
@@ -63,14 +65,14 @@ public class CouponController {
 
 	@GetMapping("/me")
 	@Operation(summary = "나의 쿠폰 조회 API", description = "나의 쿠폰을 조회합니다")
-	public ResponseEntity<Result<List<CouponResponse>>> getMyCoupons(
+	public ResponseEntity<Result<List<MemberCouponResponse>>> getMyCoupons(
 		@AuthenticationPrincipal CustomUserDetails userDetails,
 		@RequestParam(required = false, defaultValue = "LATEST") CouponSort sort,
 		@RequestParam(required = false, defaultValue = "0") int page,
 		@RequestParam(required = false, defaultValue = "10") int pageSize) {
 
 		Page<MemberCoupon> coupons = couponQueryService.findMyCoupons(userDetails.getMember(), page, pageSize, sort);
-		Page<CouponResponse> responses = coupons.map(CouponResponse::from);
+		Page<MemberCouponResponse> responses = coupons.map(MemberCouponResponse::from);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),
 			responses.getContent().size(),
@@ -79,6 +81,15 @@ public class CouponController {
 			responses.getTotalPages(),
 			responses.getTotalElements()
 		));
+	}
+
+	@GetMapping("/me/{memberCouponId}")
+	public ResponseEntity<MemberCouponDetailResponse> getMyCouponDetail(
+		@PathVariable Long memberCouponId,
+		@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+		couponQueryService.findMyCoupon(memberCouponId, userDetails.getMember());
+		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/{storeId}/store")

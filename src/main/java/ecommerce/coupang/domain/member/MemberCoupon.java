@@ -1,5 +1,7 @@
 package ecommerce.coupang.domain.member;
 
+import java.time.LocalDateTime;
+
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.store.Coupon;
 import jakarta.persistence.Column;
@@ -37,6 +39,9 @@ public class MemberCoupon extends BaseTimeEntity {
 	@Column(name = "is_used", nullable = false)
 	private boolean isUsed = false;
 
+	@Column(name = "used_at")
+	private LocalDateTime usedAt;
+
 	public MemberCoupon(Member member, Coupon coupon) {
 		this.member = member;
 		this.coupon = coupon;
@@ -51,5 +56,6 @@ public class MemberCoupon extends BaseTimeEntity {
 
 	public void use() {
 		this.isUsed = true;
+		this.usedAt = LocalDateTime.now();
 	}
 }

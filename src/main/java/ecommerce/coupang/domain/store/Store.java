@@ -70,15 +70,12 @@ public class Store extends BaseTimeEntity {
 	}
 
 	public void update(UpdateStoreRequest request) {
-		if (request.getName() != null)
-			this.name = request.getName();
-		if (request.getDescription() != null)
-			this.description = request.getDescription();
+		this.name = request.getName() != null ? request.getName() : this.name;
+		this.description = request.getDescription() != null ? request.getDescription() : this.description;
 	}
 
 	public void delete() {
 		products.forEach(Product::delete);
-
 		this.isActive = false;
 	}
 }

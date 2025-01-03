@@ -15,6 +15,7 @@ import ecommerce.coupang.domain.store.Coupon;
 import ecommerce.coupang.domain.store.CouponProduct;
 import ecommerce.coupang.dto.request.store.coupon.CouponSort;
 import ecommerce.coupang.dto.response.store.coupon.CouponDetailResponse;
+import ecommerce.coupang.dto.response.store.coupon.MemberCouponDetailResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.store.CouponProductRepository;
@@ -83,5 +84,10 @@ public class CouponQueryService {
 		List<CouponProduct> couponProducts = couponProductRepository.findByCouponId(couponId);
 
 		return CouponDetailResponse.from(coupon, couponProducts);
+	}
+
+	public MemberCouponDetailResponse findMyCoupon(Long memberCouponId, Member member) {
+		// TODO
+		return null;
 	}
 }
