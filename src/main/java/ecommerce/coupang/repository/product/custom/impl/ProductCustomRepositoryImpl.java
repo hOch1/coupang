@@ -72,9 +72,9 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 		JPAQuery<ProductResponse> query = queryFactory
 			.select(Projections.constructor(
 				ProductResponse.class,
-				product.id,
+				productVariant.product.id,
 				productVariant.id,
-				product.name,
+				productVariant.product.name,
 				productVariant.price,
 				productVariant.status,
 				Projections.constructor(
@@ -125,7 +125,8 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 
 	private BooleanBuilder searchFilter(QProductVariant productVariant, List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, QProduct product, QProductCategoryOption productCategoryOption, QProductVariantOption productVariantOption) {
 
-		BooleanBuilder builder = new BooleanBuilder(productVariant.isDefault.isTrue());
+		BooleanBuilder builder = new BooleanBuilder();
+		builder.and(productVariant.isDefault.isTrue());
 
 		if (!categories.isEmpty())
 			builder.and(product.category.in(categories));
