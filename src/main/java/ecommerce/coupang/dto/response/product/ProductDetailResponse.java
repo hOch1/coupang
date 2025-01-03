@@ -25,6 +25,7 @@ public class ProductDetailResponse {
 	private final String name;
 	private final String description;
 	private final int price;
+	private final int memberDiscountPrice;
 	private final int stockQuantity;
 	private final ProductStatus status;
 	private final ParentCategoryResponse category;
@@ -35,6 +36,7 @@ public class ProductDetailResponse {
 
 	public static ProductDetailResponse from(
 		ProductVariant productVariant,
+		Integer memberDiscountPrice,
 		Category category,
 		List<ProductCategoryOption> productCategoryOptions,
 		List<ProductVariantOption> productVariantOptions,
@@ -47,6 +49,7 @@ public class ProductDetailResponse {
 			product.getName(),
 			product.getDescription(),
 			productVariant.getPrice(),
+			memberDiscountPrice,
 			productVariant.getStockQuantity(),
 			productVariant.getStatus(),
 			ParentCategoryResponse.from(category),

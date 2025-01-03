@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.domain.category.Category;
+import ecommerce.coupang.domain.member.MemberGrade;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
@@ -25,6 +26,7 @@ import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.repository.store.CouponProductRepository;
 import ecommerce.coupang.service.category.CategoryService;
+import ecommerce.coupang.service.discount.DiscountPolicy;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -38,6 +40,8 @@ public class ProductQueryService {
 	private final ProductVariantOptionRepository productVariantOptionRepository;
 	private final CouponProductRepository couponProductRepository;
 	private final CategoryService categoryService;
+	private final DiscountPolicy memberDiscountPolicy;
+
 
 	/**
 	 * 상품 상세 조회
@@ -45,7 +49,7 @@ public class ProductQueryService {
 	 * @return 상품 상세 조회정보
 	 */
 	@LogAction("상품 상세 조회")
-	public ProductDetailResponse findProduct(Long productVariantId) throws CustomException {
+	public ProductDetailResponse findProduct(Long productVariantId, MemberGrade memberGrade) throws CustomException {
 		ProductVariant productVariant = productVariantRepository.findByIdWithStoreAndCategory(productVariantId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
@@ -54,7 +58,9 @@ public class ProductQueryService {
 		List<CouponProduct> couponProducts = couponProductRepository.findByProductId(productVariant.getProduct().getId());
 		Category category = categoryService.findCategoryWithRoot(productVariant.getProduct().getCategory().getId());
 
-		return ProductDetailResponse.from(productVariant, category, productCategoryOptions, productVariantOptions, couponProducts);
+		int discountPrice = memberDiscountPolicy.calculateDiscount(productVariant.getPrice(), memberGrade, null);
+
+		return ProductDetailResponse.from(productVariant, discountPrice, category, productCategoryOptions, productVariantOptions, couponProducts);
 	}
 
 	/**
@@ -70,12 +76,15 @@ public class ProductQueryService {
 	 * @throws CustomException
 	 */
 	@LogAction("상품 목록 조회")
-	public Page<ProductResponse> search(Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, int page, int pageSize) throws CustomException{
+	public Page<ProductResponse> search(Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, int page, int pageSize, MemberGrade memberGrade) throws CustomException{
 		List<Category> categories = new ArrayList<>();
 
 		if (categoryId != null)
 			categories = categoryService.findAllSubCategories(categoryId);
 
-		return productRepository.searchProducts(categories, storeId, categoryOptions, variantOptions, sort, PageRequest.of(page, pageSize));
+		Page<ProductResponse> responses = productRepository.searchProducts(categories, storeId, categoryOptions, variantOptions, sort, PageRequest.of(page, pageSize));
+
+		responses.forEach(productResponse -> productResponse.setMemberDiscountPrice(memberDiscountPolicy.calculateDiscount(productResponse.getPrice(), memberGrade, null)));
+		return responses;
 	}
 }

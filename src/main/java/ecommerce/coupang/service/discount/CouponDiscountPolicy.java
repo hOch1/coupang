@@ -2,14 +2,14 @@ package ecommerce.coupang.service.discount;
 
 import org.springframework.stereotype.Component;
 
-import ecommerce.coupang.domain.member.Member;
+import ecommerce.coupang.domain.member.MemberGrade;
 import ecommerce.coupang.domain.store.Coupon;
 
-@Component
+@Component("couponDiscountPolicy")
 public class CouponDiscountPolicy implements DiscountPolicy{
 
 	@Override
-	public int calculateDiscount(int price, Member member, Coupon coupon) {
+	public int calculateDiscount(int price, MemberGrade memberGrade, Coupon coupon) {
 		if (price < coupon.getMinPrice()) return 0;
 
 		int discountPrice = 0;

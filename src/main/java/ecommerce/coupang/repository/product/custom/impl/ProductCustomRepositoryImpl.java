@@ -8,6 +8,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.domain.category.QCategory;
+import ecommerce.coupang.domain.member.MemberGrade;
 import ecommerce.coupang.domain.member.QMember;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.QProduct;

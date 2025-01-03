@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import ecommerce.coupang.domain.member.MemberGrade;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.CreateProductVariantRequest;
 import ecommerce.coupang.dto.request.product.ProductSort;
@@ -75,9 +76,12 @@ public class ProductController {
 		@RequestParam(required = false) List<Long> variantOptions,
 		@RequestParam(required = false, defaultValue = "LATEST") ProductSort sort,
 		@RequestParam(required = false, defaultValue = "0") int page,
-		@RequestParam(required = false, defaultValue = "20") int pageSize) throws CustomException {
+		@RequestParam(required = false, defaultValue = "20") int pageSize,
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		Page<ProductResponse> responses = productQueryService.search(categoryId, storeId, categoryOptions, variantOptions, sort, page, pageSize);
+		MemberGrade memberGrade = getMemberGrade(userDetails);
+
+		Page<ProductResponse> responses = productQueryService.search(categoryId, storeId, categoryOptions, variantOptions, sort, page, pageSize, memberGrade);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),
 			responses.getContent().size(),
@@ -88,12 +92,21 @@ public class ProductController {
 		));
 	}
 
+	private static MemberGrade getMemberGrade(CustomUserDetails userDetails) {
+		return (userDetails == null || userDetails.getMember() == null)
+			? MemberGrade.NORMAL
+			: userDetails.getMember().getGrade();
+	}
+
 	@GetMapping("/{productVariantId}")
 	@Operation(summary = "상품 상세 조회 API", description = "해당 상품을 상세 조회합니다.")
 	public ResponseEntity<Result<ProductDetailResponse>> getProductById(
-		@PathVariable Long productVariantId) throws CustomException {
+		@PathVariable Long productVariantId,
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		ProductDetailResponse response = productQueryService.findProduct(productVariantId);
+		MemberGrade memberGrade = getMemberGrade(userDetails);
+
+		ProductDetailResponse response = productQueryService.findProduct(productVariantId, memberGrade);
 		return ResponseEntity.ok(new Result<>(response));
 	}
 
