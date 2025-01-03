@@ -26,6 +26,7 @@ import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.domain.product.variant.VariantOptionValue;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
+import ecommerce.coupang.dto.request.product.CreateProductVariantRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
@@ -588,12 +589,12 @@ class ProductServiceImplTest {
 			1L
 		);
 
-		CreateProductRequest.VariantRequest.VariantOptionRequest variantOption = new CreateProductRequest.VariantRequest.VariantOptionRequest(
+		CreateProductVariantRequest.VariantOptionRequest variantOption = new CreateProductVariantRequest.VariantOptionRequest(
 			1L,
 			1L
 		);
 
-		CreateProductRequest.VariantRequest variantRequest = new CreateProductRequest.VariantRequest(
+		CreateProductVariantRequest variantRequest = new CreateProductVariantRequest(
 			10000,
 			10,
 			ProductStatus.ACTIVE,

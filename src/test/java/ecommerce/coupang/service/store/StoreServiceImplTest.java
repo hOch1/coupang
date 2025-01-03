@@ -74,42 +74,6 @@ class StoreServiceImplTest {
 	}
 
 	@Test
-	@DisplayName("가게 상세 조회 테스트")
-	void getStoreTest() throws CustomException {
-		when(storeRepository.findByIdWithMember(1L)).thenReturn(Optional.of(mockStore));
-
-		Store store = storeService.findStore(1L);
-
-		assertThat(store).isNotNull();
-		verify(storeRepository).findByIdWithMember(1L);
-	}
-
-	@Test
-	@DisplayName("가게 상세 조회 테스트 - 실패 (가게 없음)")
-	void getStoreFail() {
-		when(storeRepository.findByIdWithMember(anyLong())).thenReturn(Optional.empty());
-
-		CustomException customException = assertThrows(CustomException.class,
-			() -> storeService.findStore(1L));
-
-		assertThat(customException.getError()).isEqualTo(ErrorCode.STORE_NOT_FOUND.name());
-		verify(storeRepository).findByIdWithMember(1L);
-	}
-
-	@Test
-	@DisplayName("내 가게 목록 조회 테스트")
-	void getMyStoreTest() {
-		when(mockMember.getId()).thenReturn(1L);
-
-		when(storeRepository.findByMemberId(1L)).thenReturn(List.of(mockStore));
-
-		List<Store> stores = storeService.findMyStore(mockMember);
-
-		assertThat(stores).isNotEmpty();
-		verify(storeRepository).findByMemberId(1L);
-	}
-
-	@Test
 	@DisplayName("가게 수정 테스트")
 	void updateStoreTest() throws CustomException {
 		when(mockMember.getId()).thenReturn(1L);

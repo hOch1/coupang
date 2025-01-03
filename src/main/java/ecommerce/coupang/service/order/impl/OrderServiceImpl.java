@@ -1,6 +1,5 @@
 package ecommerce.coupang.service.order.impl;
 
-import java.util.List;
 
 import ecommerce.coupang.domain.order.OrderStatus;
 import org.springframework.stereotype.Service;
@@ -14,23 +13,16 @@ import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.domain.order.OrderItem;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
-import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
 import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
-import ecommerce.coupang.dto.request.order.OrderSort;
-import ecommerce.coupang.dto.response.order.OrderDetailResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.cart.CartItemRepository;
-import ecommerce.coupang.repository.order.OrderItemRepository;
 import ecommerce.coupang.repository.order.OrderRepository;
-import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
-import ecommerce.coupang.service.member.AddressService;
+import ecommerce.coupang.service.member.query.AddressQueryService;
 import ecommerce.coupang.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
-
-import static ecommerce.coupang.dto.response.order.OrderDetailResponse.*;
 
 @Service
 @Transactional(readOnly = true)
@@ -38,16 +30,14 @@ import static ecommerce.coupang.dto.response.order.OrderDetailResponse.*;
 public class OrderServiceImpl implements OrderService {
 
 	private final OrderRepository orderRepository;
-	private final OrderItemRepository orderItemRepository;
 	private final ProductVariantRepository productVariantRepository;
-	private final ProductVariantOptionRepository productVariantOptionRepository;
 	private final CartItemRepository cartItemRepository;
-	private final AddressService addressService;
+	private final AddressQueryService addressQueryService;
 
 	@Override
 	@Transactional
 	public Order createOrderByProduct(CreateOrderByProductRequest request, Member member) throws CustomException {
-		Address address = addressService.getAddress(request.getAddressId());
+		Address address = addressQueryService.getAddress(request.getAddressId());
 		Order order = Order.createByProduct(request, member, address);
 
 		ProductVariant productVariant = productVariantRepository.findByIdWithStore(request.getProductVariantId())
@@ -68,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
 	@Override
 	@Transactional
 	public Order createOrderByCart(CreateOrderByCartRequest request, Member member) throws CustomException {
-		Address address = addressService.getAddress(request.getAddressId());
+		Address address = addressQueryService.getAddress(request.getAddressId());
 		Order order = Order.createByCart(request, member, address);
 
 		for (Long cartItemId : request.getCartItemIds()) {
@@ -87,35 +77,6 @@ public class OrderServiceImpl implements OrderService {
 
 		orderRepository.save(order);
 		return order;
-	}
-
-	@Override
-	public List<Order> findOrders(Member member, OrderStatus status, OrderSort sort) {
-		return orderRepository.findOrders(member.getId(), status, sort);
-	}
-
-	@Override
-	public OrderDetailResponse findOrder(Long orderId, Member member) throws CustomException {
-		Order order = orderRepository.findByIdWithMemberAndAddress(orderId).orElseThrow(() ->
-			new CustomException(ErrorCode.ORDER_NOT_FOUND));
-
-		if (!order.getMember().equals(member))
-			throw new CustomException(ErrorCode.FORBIDDEN);
-
-		List<OrderItem> orderItems = orderItemRepository.findByOrderId(order.getId());
-
-		OrderDetailResponse response = from(order);
-
-		for (OrderItem orderItem : orderItems) {
-			List<ProductVariantOption> productVariantOptions = productVariantOptionRepository.findByProductVariantId(
-					orderItem.getProductVariant().getId());
-
-			OrderItemResponse orderItemResponse = OrderItemResponse.from(orderItem, productVariantOptions);
-
-			response.getOrderItems().add(orderItemResponse);
-		}
-
-		return response;
 	}
 
 	@Override

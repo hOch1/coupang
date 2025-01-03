@@ -37,14 +37,6 @@ public interface ProductReviewService {
 	ProductReview likeReview(Long reviewId, Member member) throws CustomException;
 
 	/**
-	 * 내가 작성한 리뷰 목록 조회
-	 * @param member 요청한 회원
-	 * @return 리뷰 목록
-	 */
-	@LogAction("나의 리뷰 조회")
-	List<ProductReview> findMyReviews(Member member);
-
-	/**
 	 * 리뷰 수정
 	 * @param reviewId 수정할 리뷰 ID
 	 * @param request 리뷰 수정 요청 정보
@@ -62,12 +54,4 @@ public interface ProductReviewService {
 	 */
 	@LogAction("리뷰 삭제")
 	ProductReview deleteReview(Long reviewId, Member member) throws CustomException;
-
-	/**
-	 * 해당 상품 리뷰 목록 조회
-	 * @param productId 상품 ID
-	 * @return 리뷰 리스트
-	 */
-	@LogAction("상품 리뷰 조회")
-	Page<ProductReview> findReviewsByProduct(Long productId, Integer star, ReviewSort sort, int page, int pageSize);
 }

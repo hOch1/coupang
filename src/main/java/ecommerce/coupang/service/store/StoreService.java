@@ -1,7 +1,5 @@
 package ecommerce.coupang.service.store;
 
-import java.util.List;
-
 import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
@@ -22,23 +20,6 @@ public interface StoreService {
 	 */
 	@LogAction("상점 등록")
 	Store createStore(CreateStoreRequest request, Member member) throws CustomException;
-
-	/**
-	 * 내 상점 목록 조회
-	 * @param member 요청한 회원
-	 * @return 상점 목록 리스트
-	 */
-	@LogAction("내 상점 목록 조회")
-	List<Store> findMyStore(Member member);
-
-	/**
-	 * 상점 상세 정보 조회
-	 * @param storeId 상점 ID
-	 * @return 상점 정보
-	 * @throws CustomException
-	 */
-	@LogAction("상점 상세 조회")
-	Store findStore(Long storeId) throws CustomException;
 
 	/**
 	 * 상점 수정
@@ -63,7 +44,7 @@ public interface StoreService {
 
 	/**
 	 * 회원이 해당 상점의 주인인지 확인후 반환
-	 * @param store 상점
+	 * @param storeId 상점 ID
 	 * @param member 회원
 	 * @return 상점
 	 */

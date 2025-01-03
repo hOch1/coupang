@@ -21,6 +21,7 @@ import ecommerce.coupang.dto.response.member.AddressResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.member.AddressService;
+import ecommerce.coupang.service.member.query.AddressQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -33,6 +34,7 @@ import lombok.RequiredArgsConstructor;
 public class AddressController {
 
 	private final AddressService addressService;
+	private final AddressQueryService addressQueryService;
 
 	@PostMapping
 	@Operation(summary = "주소 추가 API", description = "주소를 추가합니다")
@@ -59,7 +61,7 @@ public class AddressController {
 	public ResponseEntity<Result<List<AddressResponse>>> getMyAddresses(
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-		List<Address> addresses = addressService.getMyAddresses(userDetails.getMember());
+		List<Address> addresses = addressQueryService.getMyAddresses(userDetails.getMember());
 		List<AddressResponse> responses = addresses.stream()
 			.map(AddressResponse::from)
 			.toList();
@@ -72,9 +74,8 @@ public class AddressController {
 	public ResponseEntity<Result<AddressResponse>> getAddress(
 		@PathVariable Long addressId) throws CustomException {
 
-		Address address = addressService.getAddress(addressId);
-		return ResponseEntity.ok(
-			new Result<>(AddressResponse.from(address)));
+		Address address = addressQueryService.getAddress(addressId);
+		return ResponseEntity.ok(new Result<>(AddressResponse.from(address)));
 	}
 
 	@PatchMapping("/{addressId}")

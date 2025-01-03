@@ -1,7 +1,5 @@
 package ecommerce.coupang.service.store.impl;
 
-import java.util.List;
-import java.util.Objects;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,13 +17,12 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class StoreServiceImpl implements StoreService {
 
 	private final StoreRepository storeRepository;
 
 	@Override
-	@Transactional
 	public Store createStore(CreateStoreRequest request, Member member) throws CustomException {
 		if (!member.getRole().equals(MemberRole.SELLER))
 			throw new CustomException(ErrorCode.FORBIDDEN);
@@ -38,18 +35,6 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	public List<Store> findMyStore(Member member) {
-		return storeRepository.findByMemberId(member.getId());
-	}
-
-	@Override
-	public Store findStore(Long storeId) throws CustomException {
-		return storeRepository.findByIdWithMember(storeId).orElseThrow(() ->
-			new CustomException(ErrorCode.STORE_NOT_FOUND));
-	}
-
-	@Override
-	@Transactional
 	public Store updateStore(Long storeId, UpdateStoreRequest request, Member member) throws CustomException {
 		Store store = validateStoreMember(storeId, member);
 
@@ -59,7 +44,6 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
-	@Transactional
 	public Store deleteStore(Long storeId, Member member) throws CustomException {
 		Store store = validateStoreMember(storeId, member);
 
@@ -69,8 +53,11 @@ public class StoreServiceImpl implements StoreService {
 	}
 
 	@Override
+	@Transactional(readOnly = true)
 	public Store validateStoreMember(Long storeId, Member member) throws CustomException {
-		Store store = findStore(storeId);
+		Store store = storeRepository.findByIdWithMember(storeId)
+			.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
+
 		if (!store.getMember().equals(member))
 			throw new CustomException(ErrorCode.FORBIDDEN);
 

@@ -1,28 +1,19 @@
 package ecommerce.coupang.service.product.impl;
 
-import java.util.ArrayList;
-import java.util.List;
 
 import ecommerce.coupang.domain.category.CategoryOptionValue;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.domain.product.variant.VariantOptionValue;
-import ecommerce.coupang.domain.store.CouponProduct;
 import ecommerce.coupang.dto.request.product.CreateProductVariantRequest;
-import ecommerce.coupang.dto.request.product.ProductSort;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
-import ecommerce.coupang.dto.response.product.ProductDetailResponse;
 import ecommerce.coupang.repository.category.CategoryOptionValueRepository;
-import ecommerce.coupang.repository.product.ProductCategoryOptionRepository;
-import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.repository.product.VariantOptionValueRepository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +25,6 @@ import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
-import ecommerce.coupang.repository.store.CouponProductRepository;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.service.category.CategoryService;
 import ecommerce.coupang.service.product.ProductService;
@@ -50,9 +40,6 @@ public class ProductServiceImpl implements ProductService {
 	private final ProductVariantRepository productVariantRepository;
 	private final VariantOptionValueRepository variantOptionValueRepository;
 	private final CategoryOptionValueRepository categoryOptionValueRepository;
-	private final ProductVariantOptionRepository productVariantOptionRepository;
-	private final ProductCategoryOptionRepository productCategoryOptionRepository;
-	private final CouponProductRepository couponProductRepository;
 	private final StoreService storeService;
 	private final CategoryService categoryService;
 
@@ -133,29 +120,6 @@ public class ProductServiceImpl implements ProductService {
 		}
 
 		return productVariant;
-	}
-
-	@Override
-	public Page<ProductVariant> search(Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, int page, int pageSize) throws CustomException {
-		List<Category> categories = new ArrayList<>();
-
-		if (categoryId != null)
-			categories = categoryService.findAllSubCategories(categoryId);
-
-		return productRepository.searchProducts(categories, storeId, categoryOptions, variantOptions, sort, PageRequest.of(page, pageSize));
-	}
-
-	@Override
-	public ProductDetailResponse findProduct(Long productVariantId) throws CustomException {
-		ProductVariant productVariant = productVariantRepository.findByIdWithStoreAndCategory(productVariantId)
-			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-
-		List<ProductCategoryOption> productCategoryOptions = productCategoryOptionRepository.findByProductId(productVariant.getProduct().getId());
-		List<ProductVariantOption> productVariantOptions = productVariantOptionRepository.findByProductVariantId(productVariant.getId());
-		List<CouponProduct> couponProducts = couponProductRepository.findByProductId(productVariant.getProduct().getId());
-		Category category = categoryService.findCategoryWithRoot(productVariant.getProduct().getCategory().getId());
-
-		return ProductDetailResponse.from(productVariant, category, productCategoryOptions, productVariantOptions, couponProducts);
 	}
 
 	@Override

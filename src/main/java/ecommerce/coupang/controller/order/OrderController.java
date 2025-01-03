@@ -26,6 +26,7 @@ import ecommerce.coupang.dto.response.order.OrderResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.order.OrderService;
+import ecommerce.coupang.service.order.query.OrderQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -38,6 +39,7 @@ import lombok.RequiredArgsConstructor;
 public class OrderController {
 
 	private final OrderService orderService;
+	private final OrderQueryService orderQueryService;
 
 	@PostMapping("/product")
 	@Operation(summary = "상품 주문 API", description = "상품을 직접 주문합니다 ")
@@ -66,7 +68,7 @@ public class OrderController {
 		@RequestParam(required = false, defaultValue = "LATEST") OrderSort sort,
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-		List<Order> orders = orderService.findOrders(userDetails.getMember(), status, sort);
+		List<Order> orders = orderQueryService.findOrders(userDetails.getMember(), status, sort);
 		List<OrderResponse> responses = orders.stream()
 			.map(OrderResponse::from)
 			.toList();
@@ -80,7 +82,7 @@ public class OrderController {
 		@PathVariable Long orderId,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		OrderDetailResponse response = orderService.findOrder(orderId, userDetails.getMember());
+		OrderDetailResponse response = orderQueryService.findOrder(orderId, userDetails.getMember());
 		return ResponseEntity.ok(new Result<>(response));
 	}
 

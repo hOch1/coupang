@@ -30,6 +30,7 @@ import ecommerce.coupang.dto.response.product.ProductResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.product.ProductService;
+import ecommerce.coupang.service.product.query.ProductQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -42,6 +43,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductController {
 
 	private final ProductService productService;
+	private final ProductQueryService productQueryService;
 
 	@PostMapping("/{storeId}/store")
 	@Operation(summary = "상품 등록 API", description = "상품을 등록합니다.")
@@ -76,7 +78,7 @@ public class ProductController {
 		@RequestParam(required = false, defaultValue = "0") int page,
 		@RequestParam(required = false, defaultValue = "20") int pageSize) throws CustomException {
 
-		Page<ProductVariant> productVariants = productService.search(categoryId, storeId, categoryOptions, variantOptions, sort, page, pageSize);
+		Page<ProductVariant> productVariants = productQueryService.search(categoryId, storeId, categoryOptions, variantOptions, sort, page, pageSize);
 		Page<ProductResponse> responses = productVariants.map(ProductResponse::from);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),
@@ -93,7 +95,7 @@ public class ProductController {
 	public ResponseEntity<Result<ProductDetailResponse>> getProductById(
 		@PathVariable Long productVariantId) throws CustomException {
 
-		ProductDetailResponse response = productService.findProduct(productVariantId);
+		ProductDetailResponse response = productQueryService.findProduct(productVariantId);
 		return ResponseEntity.ok(new Result<>(response));
 	}
 

@@ -25,6 +25,7 @@ import ecommerce.coupang.dto.response.product.ReviewResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.product.ProductReviewService;
+import ecommerce.coupang.service.product.query.ProductReviewQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -37,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 public class ProductReviewController {
 
 	private final ProductReviewService productReviewService;
+	private final ProductReviewQueryService productReviewQueryService;
 
 	@PostMapping("/{productId}")
 	@Operation(summary = "리뷰 등록 API", description = "리뷰를 등록합니다.")
@@ -64,7 +66,7 @@ public class ProductReviewController {
 	public ResponseEntity<Result<List<ReviewResponse>>> getMyReviews(
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-		List<ProductReview> productReviews = productReviewService.findMyReviews(userDetails.getMember());
+		List<ProductReview> productReviews = productReviewQueryService.findMyReviews(userDetails.getMember());
 		List<ReviewResponse> responses = productReviews.stream()
 			.map(ReviewResponse::from)
 			.toList();
@@ -80,7 +82,7 @@ public class ProductReviewController {
 		@RequestParam(required = false, defaultValue = "0") int page,
 		@RequestParam(required = false, defaultValue = "20") int pageSize) {
 
-		Page<ProductReview> productReviews = productReviewService.findReviewsByProduct(productId, star, sort, page, pageSize);
+		Page<ProductReview> productReviews = productReviewQueryService.findReviewsByProduct(productId, star, sort, page, pageSize);
 		Page<ReviewResponse> responses = productReviews.map(ReviewResponse::from);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),

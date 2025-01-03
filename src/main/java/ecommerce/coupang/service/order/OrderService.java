@@ -1,17 +1,11 @@
 package ecommerce.coupang.service.order;
 
-import java.util.List;
-
 import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.order.Order;
-import ecommerce.coupang.domain.order.OrderStatus;
 import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
 import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
-import ecommerce.coupang.dto.request.order.OrderSearchStatus;
-import ecommerce.coupang.dto.request.order.OrderSort;
-import ecommerce.coupang.dto.response.order.OrderDetailResponse;
 import ecommerce.coupang.exception.CustomException;
 
 @LogLevel("OrderService")
@@ -33,23 +27,6 @@ public interface OrderService {
 	 */
 	@LogAction("장바구니 상품 주문")
 	Order createOrderByCart(CreateOrderByCartRequest request, Member member) throws CustomException;
-
-	/**
-	 * 주문 목록 조회
-	 * @param member 요청한 회원
-	 * @return 주문 목록
-	 */
-	@LogAction("주문 목록 조회")
-	List<Order> findOrders(Member member, OrderStatus status, OrderSort sort);
-
-	/**
-	 * 주문 상세 조회
-	 * @param orderId 주문 ID
-	 * @param member 요청한 회원
-	 * @return 주문 내역
-	 */
-	@LogAction("주문 상세 조회")
-	OrderDetailResponse findOrder(Long orderId, Member member) throws CustomException;
 
 	/**
 	 * 주문 취소

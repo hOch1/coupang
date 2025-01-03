@@ -26,6 +26,7 @@ import ecommerce.coupang.dto.response.store.coupon.CouponResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.store.CouponService;
+import ecommerce.coupang.service.store.query.CouponQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ import lombok.RequiredArgsConstructor;
 public class CouponController {
 
 	private final CouponService couponService;
+	private final CouponQueryService couponQueryService;
 
 	@PostMapping("/{storeId}/store")
 	@Operation(summary = "쿠폰 생성 API", description = "쿠폰을 생성합니다.")
@@ -67,7 +69,7 @@ public class CouponController {
 		@RequestParam(required = false, defaultValue = "0") int page,
 		@RequestParam(required = false, defaultValue = "10") int pageSize) {
 
-		Page<MemberCoupon> coupons = couponService.findMyCoupons(userDetails.getMember(), page, pageSize, sort);
+		Page<MemberCoupon> coupons = couponQueryService.findMyCoupons(userDetails.getMember(), page, pageSize, sort);
 		Page<CouponResponse> responses = coupons.map(CouponResponse::from);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),
@@ -87,7 +89,7 @@ public class CouponController {
 		@RequestParam(required = false, defaultValue = "0") int page,
 		@RequestParam(required = false, defaultValue = "10") int pageSize) {
 
-		Page<Coupon> coupons = couponService.findCouponsByStore(storeId, page, pageSize, sort);
+		Page<Coupon> coupons = couponQueryService.findCouponsByStore(storeId, page, pageSize, sort);
 		Page<CouponResponse> responses = coupons.map(CouponResponse::from);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),
@@ -107,7 +109,7 @@ public class CouponController {
 		@RequestParam(required = false, defaultValue = "0") int page,
 		@RequestParam(required = false, defaultValue = "10") int pageSize) {
 
-		Page<CouponProduct> coupons = couponService.findCouponsByProduct(productId, page, pageSize, sort);
+		Page<CouponProduct> coupons = couponQueryService.findCouponsByProduct(productId, page, pageSize, sort);
 		Page<CouponResponse> responses = coupons.map(CouponResponse::from);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),
@@ -124,7 +126,7 @@ public class CouponController {
 	public ResponseEntity<Result<CouponDetailResponse>> getCoupon(
 		@PathVariable Long couponId) throws CustomException {
 
-		CouponDetailResponse response = couponService.findCoupon(couponId);
+		CouponDetailResponse response = couponQueryService.findCoupon(couponId);
 		return ResponseEntity.ok(new Result<>(response));
 	}
 }

@@ -11,8 +11,6 @@ import ecommerce.coupang.dto.request.product.inquiry.UpdateAnswerRequest;
 import ecommerce.coupang.dto.request.product.inquiry.UpdateInquiryRequest;
 import ecommerce.coupang.exception.CustomException;
 
-import java.util.List;
-
 @LogLevel("ProductInquiryService")
 public interface ProductInquiryService {
 
@@ -36,29 +34,6 @@ public interface ProductInquiryService {
 	@LogAction("문의 답변 등록")
     Answer createAnswer(Long inquiryId, Long storeId, CreateAnswerRequest request, Member member) throws CustomException;
 
-	/**
-	 * 내가 등록한 문의 목록 조회
-	 * @param member 요청한 회원
-	 * @return 문의 목록
-	 */
-	@LogAction("내가 등록한 문의 조회")
-	List<ProductInquiry> findMyInquiries(Member member);
-
-	/**
-	 * 해당 상품 문의 조회
-	 * @param productId 상품 ID
-	 * @return 문의 리스트
-	 */
-	@LogAction("해당 상품 문의 조회")
-	List<ProductInquiry> getInquiryByProduct(Long productId) throws CustomException;
-
-	/**
-	 * 해당 상품의 답변 조회
-	 * @param inquiryId 상품 문의 ID
-	 * @return 답변
-	 */
-	@LogAction("문의 답변 조회")
-	Answer findAnswer(Long inquiryId) throws CustomException;
 
 	/**
 	 * 해당 문의 수정

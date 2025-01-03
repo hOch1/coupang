@@ -22,6 +22,7 @@ import ecommerce.coupang.dto.response.store.StoreDetailResponse;
 import ecommerce.coupang.dto.response.store.StoreResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
+import ecommerce.coupang.service.store.query.StoreQueryService;
 import ecommerce.coupang.service.store.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,6 +36,7 @@ import lombok.RequiredArgsConstructor;
 public class StoreController {
 
 	private final StoreService storeService;
+	private final StoreQueryService storeQueryService;
 
 	@PostMapping
 	@Operation(summary = "상점 등록 API", description = "상점을 등록합니다")
@@ -51,7 +53,7 @@ public class StoreController {
 	public ResponseEntity<Result<StoreDetailResponse>> getStoreDetail(
 		@PathVariable Long storeId) throws CustomException {
 
-		Store store = storeService.findStore(storeId);
+		Store store = storeQueryService.findStore(storeId);
 		return ResponseEntity.ok(new Result<>(StoreDetailResponse.from(store)));
 	}
 
@@ -60,7 +62,7 @@ public class StoreController {
 	public ResponseEntity<Result<List<StoreResponse>>> getMyStore(
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-		List<Store> stores = storeService.findMyStore(userDetails.getMember());
+		List<Store> stores = storeQueryService.findMyStore(userDetails.getMember());
 		List<StoreResponse> responses = stores.stream()
 			.map(StoreResponse::from)
 			.toList();

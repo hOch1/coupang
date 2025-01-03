@@ -1,8 +1,6 @@
 package ecommerce.coupang.domain.product.variant;
 
 import ecommerce.coupang.domain.product.Product;
-import ecommerce.coupang.domain.store.CouponProduct;
-import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.CreateProductVariantRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
 import ecommerce.coupang.exception.CustomException;
@@ -76,9 +74,7 @@ public class ProductVariant {
 	}
 
 	public void reduceStock(int quantity) throws CustomException {
-		if (this.stockQuantity - quantity < 0)
-			throw new CustomException(ErrorCode.NOT_ENOUGH_QUANTITY);
-
+		validateStockQuantity(quantity);
 		this.stockQuantity -= quantity;
 	}
 
@@ -98,15 +94,15 @@ public class ProductVariant {
 		this.salesCount -= quantity;
 	}
 
-	public void changeStock(int stockQuantity) throws CustomException {
-		if (stockQuantity < 0)
+	public void changeStock(int quantity) throws CustomException {
+		if (quantity < 0)
 			throw new CustomException(ErrorCode.INVALID_STOCK_QUANTITY);
 
-		if (stockQuantity == 0) {
+		if (quantity == 0) {
 			this.status = ProductStatus.NO_STOCK;
 			this.stockQuantity = 0;
 		} else
-			this.stockQuantity = stockQuantity;
+			this.stockQuantity = quantity;
 	}
 
 	public void changeStatus(ProductStatus status) {
@@ -123,5 +119,11 @@ public class ProductVariant {
 
 	public void delete() {
 		this.isActive = false;
+	}
+
+	private void validateStockQuantity(int quantity) throws CustomException {
+		if (this.stockQuantity - quantity < 0) {
+			throw new CustomException(ErrorCode.NOT_ENOUGH_QUANTITY);
+		}
 	}
 }

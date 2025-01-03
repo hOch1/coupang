@@ -21,10 +21,8 @@ import ecommerce.coupang.repository.product.inquiry.ProductInquiryRepository;
 import ecommerce.coupang.service.product.ProductInquiryService;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class ProductInquiryServiceImpl implements ProductInquiryService {
 
@@ -34,7 +32,6 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
 	private final StoreRepository storeRepository;
 
 	@Override
-	@Transactional
 	public ProductInquiry createInquiry(Long productId, CreateInquiryRequest request, Member member) throws CustomException {
 		Product product = productRepository.findById(productId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -52,7 +49,6 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
 	}
 
 	@Override
-	@Transactional
 	public Answer createAnswer(Long inquiryId, Long storeId, CreateAnswerRequest request, Member member) throws CustomException {
 		ProductInquiry productInquiry = productInquiryRepository.findByIdWithMember(inquiryId)
 				.orElseThrow(() -> new CustomException(ErrorCode.INQUIRY_NOT_FOUND));
@@ -75,26 +71,6 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
 	}
 
 	@Override
-	public List<ProductInquiry> findMyInquiries(Member member) {
-        return productInquiryRepository.findByMemberId(member.getId());
-	}
-
-	@Override
-	public List<ProductInquiry> getInquiryByProduct(Long productId) throws CustomException {
-		Product product = productRepository.findById(productId)
-				.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-
-		return productInquiryRepository.findByProductIdWithMember(productId);
-	}
-
-	@Override
-	public Answer findAnswer(Long inquiryId) throws CustomException {
-		return answerRepository.findByInquiryId(inquiryId)
-			.orElseThrow(() -> new CustomException(ErrorCode.ANSWER_NOT_FOUND));
-	}
-
-	@Override
-	@Transactional
 	public ProductInquiry updateInquiry(Long inquiryId, UpdateInquiryRequest request, Member member) throws CustomException {
 		ProductInquiry productInquiry = productInquiryRepository.findByIdWithMember(inquiryId)
 			.orElseThrow(() -> new CustomException(ErrorCode.INQUIRY_NOT_FOUND));
@@ -107,7 +83,6 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
 	}
 
 	@Override
-	@Transactional
 	public Answer updateAnswer(Long answerId, UpdateAnswerRequest request, Member member) throws CustomException {
 		Answer answer = answerRepository.findByIdWithMember(answerId)
 			.orElseThrow(() -> new CustomException(ErrorCode.ANSWER_NOT_FOUND));
@@ -120,7 +95,6 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
 	}
 
 	@Override
-	@Transactional
 	public ProductInquiry deleteInquiry(Long inquiryId, Member member) throws CustomException {
 		ProductInquiry productInquiry = productInquiryRepository.findByIdWithMember(inquiryId)
 			.orElseThrow(() -> new CustomException(ErrorCode.INQUIRY_NOT_FOUND));
@@ -133,7 +107,6 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
 	}
 
 	@Override
-	@Transactional
 	public Answer deleteAnswer(Long answerId, Member member) throws CustomException {
 		Answer answer = answerRepository.findByIdWithMember(answerId)
 			.orElseThrow(() -> new CustomException(ErrorCode.ANSWER_NOT_FOUND));

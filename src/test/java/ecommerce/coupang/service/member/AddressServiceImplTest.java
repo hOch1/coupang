@@ -20,10 +20,10 @@ import ecommerce.coupang.domain.member.AddressType;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.dto.request.member.AddAddressRequest;
 import ecommerce.coupang.dto.request.member.UpdateAddressRequest;
-import ecommerce.coupang.dto.response.member.AddressResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.member.AddressRepository;
+import ecommerce.coupang.service.member.impl.AddressServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class AddressServiceImplTest {
@@ -91,36 +91,6 @@ class AddressServiceImplTest {
 		verify(addressRepository).save(any(Address.class));
 
 		assertThat(address).isNotNull();
-	}
-
-	@Test
-	@DisplayName("내 주소록 조회 테스트")
-	void getMyAddressesTest() {
-		when(addressRepository.findByMemberId(anyLong())).thenReturn(List.of(mockAddress));
-		List<Address> addresses = addressService.getMyAddresses(mockMember);
-
-		assertThat(addresses).isNotEmpty();
-	}
-
-	@Test
-	@DisplayName("주소록 단건 조회 테스트")
-	void getAddressTest() throws CustomException {
-		when(addressRepository.findById(anyLong())).thenReturn(Optional.of(mockAddress));
-		Address address = addressService.getAddress(anyLong());
-
-		assertThat(address).isNotNull();
-	}
-
-	@Test
-	@DisplayName("주소록 단건 조회 테스트 - 실패 (해당 주소 없을 시)")
-	void getAddressFail() {
-		when(addressRepository.findById(anyLong())).thenReturn(Optional.empty());
-
-		CustomException customException = assertThrows(CustomException.class,
-			() -> addressService.getAddress(anyLong()));
-
-		assertThat(customException).isNotNull();
-		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.ADDRESS_NOT_FOUND);
 	}
 
 	@Test

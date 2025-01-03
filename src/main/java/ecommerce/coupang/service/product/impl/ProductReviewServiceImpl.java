@@ -1,10 +1,7 @@
 package ecommerce.coupang.service.product.impl;
 
-import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,7 +10,6 @@ import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.domain.product.review.ReviewLike;
 import ecommerce.coupang.dto.request.product.review.CreateReviewRequest;
-import ecommerce.coupang.dto.request.product.review.ReviewSort;
 import ecommerce.coupang.dto.request.product.review.UpdateReviewRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
@@ -24,7 +20,7 @@ import ecommerce.coupang.service.product.ProductReviewService;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class ProductReviewServiceImpl implements ProductReviewService {
 
@@ -33,7 +29,6 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 	private final ReviewLikeRepository reviewLikeRepository;
 
 	@Override
-	@Transactional
 	public ProductReview createReview(Long productId, CreateReviewRequest request, Member member) throws CustomException {
 		Product product = productRepository.findByIdWithMemberAndCategory(productId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -56,7 +51,6 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 	}
 
 	@Override
-	@Transactional
 	public ProductReview likeReview(Long reviewId, Member member) throws CustomException {
 		ProductReview productReview = productReviewRepository.findByIdWithMember(reviewId)
 			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
@@ -83,13 +77,8 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 		return productReview;
 	}
 
-	@Override
-	public List<ProductReview> findMyReviews(Member member) {
-		return productReviewRepository.findByMemberId(member.getId());
-	}
 
 	@Override
-	@Transactional
 	public ProductReview updateReview(Long reviewId, UpdateReviewRequest request, Member member) throws CustomException {
 		ProductReview productReview = productReviewRepository.findByIdWithMember(reviewId)
 			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
@@ -106,7 +95,6 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 	}
 
 	@Override
-	@Transactional
 	public ProductReview deleteReview(Long reviewId, Member member) throws CustomException {
 		ProductReview productReview = productReviewRepository.findByIdWithMember(reviewId)
 			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
@@ -121,10 +109,5 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 
 		productRepository.save(product);
 		return productReview;
-	}
-
-	@Override
-	public Page<ProductReview> findReviewsByProduct(Long productId, Integer star, ReviewSort sort, int page, int pageSize) {
-		return productReviewRepository.findByProductId(productId, star, sort, PageRequest.of(page, pageSize));
 	}
 }

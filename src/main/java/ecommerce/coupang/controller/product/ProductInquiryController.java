@@ -24,6 +24,7 @@ import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.product.ProductInquiryService;
+import ecommerce.coupang.service.product.query.ProductInquiryQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -38,6 +39,7 @@ import java.util.List;
 public class ProductInquiryController {
 
 	private final ProductInquiryService productInquiryService;
+	private final ProductInquiryQueryService productInquiryQueryService;
 
 	@PostMapping("/{productId}")
 	@Operation(summary = "상품 문의 등록 API", description = "상품 문의를 등록합니다")
@@ -67,7 +69,7 @@ public class ProductInquiryController {
 	public ResponseEntity<Result<List<InquiryResponse>>> findMyInquiries(
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-		List<ProductInquiry> productInquiries = productInquiryService.findMyInquiries(userDetails.getMember());
+		List<ProductInquiry> productInquiries = productInquiryQueryService.findMyInquiries(userDetails.getMember());
 		List<InquiryResponse> responses = productInquiries.stream()
 				.map(InquiryResponse::from)
 				.toList();
@@ -79,7 +81,7 @@ public class ProductInquiryController {
 	public ResponseEntity<Result<List<InquiryResponse>>> findInquiriesByProduct(
 		@PathVariable Long productId) throws CustomException {
 
-		List<ProductInquiry> productInquiries = productInquiryService.getInquiryByProduct(productId);
+		List<ProductInquiry> productInquiries = productInquiryQueryService.getInquiryByProduct(productId);
 		List<InquiryResponse> responses = productInquiries.stream()
 				.map(InquiryResponse::from)
 				.toList();
@@ -91,7 +93,7 @@ public class ProductInquiryController {
 	public ResponseEntity<Result<AnswerResponse>> findInquiry(
 		@PathVariable Long inquiryId) throws CustomException {
 
-		Answer answer = productInquiryService.findAnswer(inquiryId);
+		Answer answer = productInquiryQueryService.findAnswer(inquiryId);
 		return ResponseEntity.ok(new Result<>(AnswerResponse.from(answer)));
 	}
 
