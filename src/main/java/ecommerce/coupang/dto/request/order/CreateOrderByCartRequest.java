@@ -13,7 +13,7 @@ import lombok.Getter;
 public class CreateOrderByCartRequest {
 
 	@NotEmpty(message = "상품을 하나이상 선택해주세요.")
-	private final List<Long> cartItemIds;
+	private final List<CartItemRequest> cartItems;
 
 	@NotNull(message = "주소를 선택해주세요.")
 	private final Long addressId;
@@ -22,4 +22,11 @@ public class CreateOrderByCartRequest {
 	private final Payment payment;
 
 	private final String orderMessage;
+
+	@Getter
+	@AllArgsConstructor
+	public static class CartItemRequest {
+		private final Long cartItemId;
+		private final Long couponId;
+	}
 }

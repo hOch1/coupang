@@ -45,49 +45,67 @@ public class OrderItem {
 	@JoinColumn(name = "coupon_id")
 	private Coupon coupon;
 
-	@Column(name = "original_price", nullable = false)
-	private int originalPrice;
-
 	@Column(name = "price", nullable = false)
 	private int price;
 
 	@Column(name = "quantity", nullable = false)
 	private int quantity;
 
+	@Column(name = "coupon_discount_price", nullable = false)
+	private int couponDiscountPrice;
+
+	@Column(name = "memberDiscountPrice", nullable = false)
+	private int memberDiscountPrice;
+
 	@Column(name = "total_price", nullable = false)
 	private int totalPrice;
+
+	@Column(name = "discount_total_price", nullable = false)
+	private int discountTotalPrice;
 
 	@Setter
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Delivery delivery;
 
-	public OrderItem(Order order, ProductVariant productVariant, int price, int quantity, int totalPrice) {
+	public OrderItem(Order order, ProductVariant productVariant, Coupon coupon, int price, int quantity, int couponDiscountPrice, int memberDiscountPrice, int totalPrice, int discountTotalPrice) {
 		this.order = order;
 		this.productVariant = productVariant;
+		this.coupon = coupon;
 		this.price = price;
 		this.quantity = quantity;
+		this.couponDiscountPrice = couponDiscountPrice;
+		this.memberDiscountPrice = memberDiscountPrice;
 		this.totalPrice = totalPrice;
+		this.discountTotalPrice = discountTotalPrice;
 	}
 
-	public static OrderItem createByProduct(Order order, ProductVariant productVariant, CreateOrderByProductRequest request) {
+	public static OrderItem createByProduct(Order order, ProductVariant productVariant, Coupon coupon, CreateOrderByProductRequest request, int couponDiscountPrice, int memberDiscountPrice) {
 		productVariant.increaseSalesCount(request.getQuantity());
 		return new OrderItem(
 			order,
 			productVariant,
+			coupon,
 			productVariant.getPrice(),
 			request.getQuantity(),
-			productVariant.getPrice() * request.getQuantity()
+			couponDiscountPrice,
+			memberDiscountPrice,
+			productVariant.getPrice() * request.getQuantity(),
+			productVariant.getPrice() * request.getQuantity() - couponDiscountPrice - memberDiscountPrice
 		);
 	}
 
-	public static OrderItem createByCartItem(Order order, CartItem cartItem) {
+	public static OrderItem createByCartItem(Order order, CartItem cartItem, Coupon coupon, int couponDiscountPrice, int memberDiscountPrice) {
 		cartItem.getProductVariant().increaseSalesCount(cartItem.getQuantity());
 		return new OrderItem(
 			order,
 			cartItem.getProductVariant(),
+			coupon,
 			cartItem.getProductVariant().getPrice(),
 			cartItem.getQuantity(),
-			cartItem.getProductVariant().getPrice() * cartItem.getQuantity()
+			couponDiscountPrice,
+			memberDiscountPrice,
+			cartItem.getProductVariant().getPrice() * cartItem.getQuantity(),
+			cartItem.getProductVariant().getPrice() * cartItem.getQuantity() - couponDiscountPrice - memberDiscountPrice
 		);
 	}
 

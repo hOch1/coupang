@@ -2,7 +2,6 @@ package ecommerce.coupang.dto.request.order;
 
 import ecommerce.coupang.domain.order.Payment;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

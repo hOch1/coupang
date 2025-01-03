@@ -95,7 +95,7 @@ public class Order extends BaseTimeEntity {
 
 	public void addOrderItem(OrderItem orderItem) {
 		this.orderItems.add(orderItem);
-		this.totalPrice += orderItem.getTotalPrice();
+		this.totalPrice += orderItem.getDiscountTotalPrice();
 	}
 
 	public void cancel() throws CustomException {

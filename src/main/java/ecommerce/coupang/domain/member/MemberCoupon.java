@@ -48,4 +48,8 @@ public class MemberCoupon extends BaseTimeEntity {
 			coupon
 		);
 	}
+
+	public void use() {
+		this.isUsed = true;
+	}
 }

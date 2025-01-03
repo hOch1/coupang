@@ -1,6 +1,7 @@
 package ecommerce.coupang.service.order.impl;
 
 
+import ecommerce.coupang.domain.member.MemberCoupon;
 import ecommerce.coupang.domain.order.OrderStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,13 +14,17 @@ import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.domain.order.OrderItem;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
+import ecommerce.coupang.domain.store.Coupon;
 import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
 import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.cart.CartItemRepository;
+import ecommerce.coupang.repository.member.MemberCouponRepository;
 import ecommerce.coupang.repository.order.OrderRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
+import ecommerce.coupang.repository.store.CouponRepository;
+import ecommerce.coupang.service.discount.DiscountPolicy;
 import ecommerce.coupang.service.member.query.AddressQueryService;
 import ecommerce.coupang.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +38,9 @@ public class OrderServiceImpl implements OrderService {
 	private final ProductVariantRepository productVariantRepository;
 	private final CartItemRepository cartItemRepository;
 	private final AddressQueryService addressQueryService;
+	private final MemberCouponRepository memberCouponRepository;
+	private final DiscountPolicy couponDiscountPolicy;
+	private final DiscountPolicy memberDiscountPolicy;
 
 	@Override
 	@Transactional
@@ -45,7 +53,20 @@ public class OrderServiceImpl implements OrderService {
 
 		verifyStatusAndReduceStock(productVariant, request.getQuantity());
 
-		OrderItem orderItem = OrderItem.createByProduct(order, productVariant, request);
+		int couponDiscountPrice = 0;
+		int memberDiscountPrice;
+		MemberCoupon memberCoupon = null;
+		if (request.getCouponId() != null){
+			memberCoupon = memberCouponRepository.findByMemberIdAndCouponId(member.getId(), request.getCouponId())
+				.orElseThrow(() -> new CustomException(ErrorCode.COUPON_NOT_FOUND));
+			if (memberCoupon.isUsed())
+				throw new CustomException(ErrorCode.ALREADY_USE_COUPON);
+			couponDiscountPrice = couponDiscountPolicy.calculateDiscount(productVariant.getPrice() * request.getQuantity(), null, memberCoupon.getCoupon());
+		}
+		memberDiscountPrice = memberDiscountPolicy.calculateDiscount(productVariant.getPrice() * request.getQuantity(), member.getGrade(), null);
+
+		OrderItem orderItem = OrderItem.createByProduct(order, productVariant, memberCoupon.getCoupon(), request, couponDiscountPrice, memberDiscountPrice);
+		memberCoupon.use();
 		Delivery delivery = Delivery.create(orderItem, productVariant.getProduct().getStore());
 		orderItem.setDelivery(delivery);
 
@@ -61,13 +82,25 @@ public class OrderServiceImpl implements OrderService {
 		Address address = addressQueryService.getAddress(request.getAddressId());
 		Order order = Order.createByCart(request, member, address);
 
-		for (Long cartItemId : request.getCartItemIds()) {
-			CartItem cartItem = cartItemRepository.findByIdWithStore(cartItemId)
+		for (CreateOrderByCartRequest.CartItemRequest cartItemRequest : request.getCartItems()) {
+			CartItem cartItem = cartItemRepository.findByIdWithStore(cartItemRequest.getCartItemId())
 				.orElseThrow(() -> new CustomException(ErrorCode.CART_ITEM_NOT_FOUND));
 
 			verifyStatusAndReduceStock(cartItem.getProductVariant(), cartItem.getQuantity());
 
-			OrderItem orderItem = OrderItem.createByCartItem(order, cartItem);
+			int couponDiscountPrice = 0;
+			int memberDiscountPrice;
+			MemberCoupon memberCoupon = null;
+			if (cartItemRequest.getCouponId() != null){
+				memberCoupon = memberCouponRepository.findByMemberIdAndCouponId(member.getId(), cartItemRequest.getCouponId())
+					.orElseThrow(() -> new CustomException(ErrorCode.COUPON_NOT_FOUND));
+				couponDiscountPrice = couponDiscountPolicy.calculateDiscount(cartItem.getProductVariant().getPrice() * cartItem.getQuantity(), null, memberCoupon.getCoupon());
+			}
+
+			memberDiscountPrice = memberDiscountPolicy.calculateDiscount(cartItem.getProductVariant().getPrice() * cartItem.getQuantity(), member.getGrade(), null);
+
+			OrderItem orderItem = OrderItem.createByCartItem(order, cartItem, memberCoupon.getCoupon(), couponDiscountPrice, memberDiscountPrice);
+			memberCoupon.use();
 			Delivery delivery = Delivery.create(orderItem, cartItem.getProductVariant().getProduct().getStore());
 			orderItem.setDelivery(delivery);
 

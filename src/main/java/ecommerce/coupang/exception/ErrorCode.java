@@ -37,6 +37,7 @@ public enum ErrorCode {
 	ALREADY_ANSWERED(400, "이미 답변이 등록된 문의 입니다."),
 	ALREADY_CANCELLED_ORDER(400, "이미 취소된 주문 입니다."),
 	ALREADY_HAS_COUPON(400, "이미 등록한 쿠폰입니다."),
+	ALREADY_USE_COUPON(400, "이미 사용한 쿠폰입니다."),
 
 	FORBIDDEN(401, "권한이 없습니다."),
 

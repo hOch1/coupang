@@ -1,6 +1,7 @@
 package ecommerce.coupang.repository.member;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +17,6 @@ public interface MemberCouponRepository extends JpaRepository<MemberCoupon, Long
 	List<MemberCoupon> findByMemberId(Long memberId);
 
 	boolean existsByCouponId(Long CouponId);
+
+	Optional<MemberCoupon> findByMemberIdAndCouponId(Long memberId, Long couponId);
 }
