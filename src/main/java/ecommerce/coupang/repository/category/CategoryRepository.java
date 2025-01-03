@@ -24,4 +24,16 @@ public interface CategoryRepository extends JpaRepository<Category, Long>, Categ
 		+ "join fetch c.parent cp "
 		+ "where c.id = :categoryId ")
 	Optional<Category> findByIdWithParent(Long categoryId);
+
+	@Query(value = """
+		with recursive subcategories as (
+			select * from category where category_id = :categoryId
+			union all
+			select c.* from category c
+			inner join subcategories sc on c.parent_id = sc.category_id
+		)
+		select * from subcategories;
+	""", nativeQuery = true)
+	List<Category> findAllByChildren(Long categoryId);
+
 }

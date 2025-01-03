@@ -93,9 +93,9 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 					.exists()
 			))
 			.from(productVariant)
-			.join(productVariant.product, product).fetchJoin()
-			.join(productVariant.product.store, store).fetchJoin()
-			.join(productVariant.product.category, category).fetchJoin()
+			.join(productVariant.product, product)
+			.join(productVariant.product.store, store)
+			.join(productVariant.product.category, category)
 			.where(builder);
 
 		searchSort(query, product, productVariant, sort);
