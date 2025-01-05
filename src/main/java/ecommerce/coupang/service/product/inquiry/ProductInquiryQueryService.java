@@ -48,15 +48,4 @@ public class ProductInquiryQueryService {
 
 		return productInquiryRepository.findByProductIdWithMember(productId);
 	}
-
-	/**
-	 * 해당 상품의 답변 조회
-	 * @param inquiryId 상품 문의 ID
-	 * @return 답변
-	 */
-	@LogAction("문의 답변 조회")
-	public Answer findAnswer(Long inquiryId) throws CustomException {
-		return answerRepository.findByInquiryId(inquiryId)
-			.orElseThrow(() -> new CustomException(ErrorCode.ANSWER_NOT_FOUND));
-	}
 }

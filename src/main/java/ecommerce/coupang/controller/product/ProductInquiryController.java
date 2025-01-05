@@ -52,18 +52,6 @@ public class ProductInquiryController {
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
-	@PostMapping("/{inquiryId}/answer/{storeId}")
-	@Operation(summary = "상품 문의의 답변 등록 API", description = "상품 문의에 대한 답변을 등록합니다.")
-	public ResponseEntity<Void> createAnswer(
-		@PathVariable Long inquiryId,
-		@PathVariable Long storeId,
-		@RequestBody @Valid CreateAnswerRequest request,
-		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
-
-		productInquiryService.createAnswer(inquiryId, storeId, request, userDetails.getMember());
-		return ResponseEntity.status(HttpStatus.CREATED).build();
-	}
-
 	@GetMapping("/me")
 	@Operation(summary = "내가 등록한 문의 조회 API", description = "내가 등록한 상품 문의 목록을 조회합니다.")
 	public ResponseEntity<Result<List<InquiryResponse>>> findMyInquiries(
@@ -88,14 +76,6 @@ public class ProductInquiryController {
 		return ResponseEntity.ok(new Result<>(responses, responses.size()));
 	}
 
-	@GetMapping("/{inquiryId}/answer")
-	@Operation(summary = "답변 조회 API", description = "해당 상품 문의 답변을 조회합니다")
-	public ResponseEntity<Result<AnswerResponse>> findInquiry(
-		@PathVariable Long inquiryId) throws CustomException {
-
-		Answer answer = productInquiryQueryService.findAnswer(inquiryId);
-		return ResponseEntity.ok(new Result<>(AnswerResponse.from(answer)));
-	}
 
 	@PatchMapping("/{inquiryId}")
 	@Operation(summary = "문의 수정 API", description = "해당 문의를 수정합니다")
@@ -108,16 +88,6 @@ public class ProductInquiryController {
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 
-	@PatchMapping("/{answerId}")
-	@Operation(summary = "답변 수정 API", description = "해당 답변을 수정합니다")
-	public ResponseEntity<Void> updateInquiry(
-		@PathVariable Long answerId,
-		@RequestBody UpdateAnswerRequest request,
-		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
-
-		productInquiryService.updateAnswer(answerId, request, userDetails.getMember());
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-	}
 
 	@DeleteMapping("/{inquiryId}")
 	@Operation(summary = "문의 삭제 API", description = "해당 문의를 삭제합니다")
@@ -126,16 +96,6 @@ public class ProductInquiryController {
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		productInquiryService.deleteInquiry(inquiryId, userDetails.getMember());
-		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-	}
-
-	@DeleteMapping("/{answerId}")
-	@Operation(summary = "답변 삭제 API", description = "해당 답변을 삭제합니다")
-	public ResponseEntity<Void> deleteAnswer(
-		@PathVariable Long answerId,
-		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
-
-		productInquiryService.deleteAnswer(answerId, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 }

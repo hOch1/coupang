@@ -48,6 +48,7 @@ public class ProductServiceImpl implements ProductService {
 		Product product = Product.create(request, store, category);
 
 		addCategoryOptionsToProduct(request, product);
+
 		for (CreateProductVariantRequest variantRequest : request.getVariants()) {
 			ProductVariant productVariant = ProductVariant.create(variantRequest, product);
 
