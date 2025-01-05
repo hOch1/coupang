@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-import ecommerce.coupang.aop.log.LogLevel;
+import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.repository.product.custom.ReviewCustomRepository;
 

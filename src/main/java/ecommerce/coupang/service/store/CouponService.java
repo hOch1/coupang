@@ -1,11 +1,11 @@
 package ecommerce.coupang.service.store;
 
-import ecommerce.coupang.aop.log.LogAction;
-import ecommerce.coupang.aop.log.LogLevel;
+import ecommerce.coupang.common.aop.log.LogAction;
+import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.store.Coupon;
 import ecommerce.coupang.dto.request.store.coupon.CreateCouponRequest;
-import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.common.exception.CustomException;
 
 @LogLevel("CouponService")
 public interface CouponService {

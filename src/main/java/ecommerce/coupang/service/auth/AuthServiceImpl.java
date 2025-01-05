@@ -9,11 +9,11 @@ import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.dto.request.auth.LoginRequest;
 import ecommerce.coupang.dto.request.auth.SignupRequest;
 import ecommerce.coupang.dto.response.auth.LoginResponse;
-import ecommerce.coupang.exception.CustomException;
-import ecommerce.coupang.exception.ErrorCode;
+import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.cart.CartRepository;
 import ecommerce.coupang.repository.member.MemberRepository;
-import ecommerce.coupang.security.JwtProvider;
+import ecommerce.coupang.common.security.JwtProvider;
 import lombok.RequiredArgsConstructor;
 
 @Service

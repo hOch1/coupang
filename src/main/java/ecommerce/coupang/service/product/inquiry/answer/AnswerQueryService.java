@@ -1,9 +1,9 @@
-package ecommerce.coupang.service.product.inquiry;
+package ecommerce.coupang.service.product.inquiry.answer;
 
-import ecommerce.coupang.aop.log.LogAction;
+import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.domain.product.inquiry.Answer;
-import ecommerce.coupang.exception.CustomException;
-import ecommerce.coupang.exception.ErrorCode;
+import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.product.inquiry.AnswerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

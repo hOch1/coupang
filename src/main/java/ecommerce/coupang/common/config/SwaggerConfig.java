@@ -1,4 +1,4 @@
-package ecommerce.coupang.config;
+package ecommerce.coupang.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

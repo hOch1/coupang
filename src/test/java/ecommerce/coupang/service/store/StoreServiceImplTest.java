@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,8 +19,8 @@ import ecommerce.coupang.domain.member.MemberRole;
 import ecommerce.coupang.domain.store.Store;
 import ecommerce.coupang.dto.request.store.CreateStoreRequest;
 import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
-import ecommerce.coupang.exception.CustomException;
-import ecommerce.coupang.exception.ErrorCode;
+import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.store.StoreRepository;
 import ecommerce.coupang.service.store.impl.StoreServiceImpl;
 

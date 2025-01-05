@@ -2,11 +2,11 @@ package ecommerce.coupang.service.category;
 
 import java.util.List;
 
-import ecommerce.coupang.aop.log.LogAction;
-import ecommerce.coupang.aop.log.LogLevel;
+import ecommerce.coupang.common.aop.log.LogAction;
+import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.dto.response.option.AllOptionResponse;
-import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.common.exception.CustomException;
 
 @LogLevel("CategoryService")
 public interface CategoryService {

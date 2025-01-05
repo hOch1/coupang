@@ -1,4 +1,4 @@
-package ecommerce.coupang.security;
+package ecommerce.coupang.common.security;
 
 import java.io.IOException;
 

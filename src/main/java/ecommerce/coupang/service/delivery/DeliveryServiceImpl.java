@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.order.Delivery;
 import ecommerce.coupang.dto.request.delivery.UpdateDeliveryRequest;
-import ecommerce.coupang.exception.CustomException;
-import ecommerce.coupang.exception.ErrorCode;
+import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.order.DeliveryRepository;
 import lombok.RequiredArgsConstructor;
 

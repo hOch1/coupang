@@ -5,11 +5,12 @@ import ecommerce.coupang.dto.request.product.inquiry.CreateAnswerRequest;
 import ecommerce.coupang.dto.request.product.inquiry.UpdateAnswerRequest;
 import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.product.inquiry.AnswerResponse;
-import ecommerce.coupang.exception.CustomException;
-import ecommerce.coupang.security.CustomUserDetails;
-import ecommerce.coupang.service.product.inquiry.AnswerQueryService;
-import ecommerce.coupang.service.product.inquiry.AnswerService;
+import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.common.security.CustomUserDetails;
+import ecommerce.coupang.service.product.inquiry.answer.AnswerQueryService;
+import ecommerce.coupang.service.product.inquiry.answer.AnswerService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/answers")
 @RequiredArgsConstructor
+@Tag(name = "상품 답변 API V1", description = "상품 답변관련 API")
 public class AnswerController {
 
     private final AnswerService answerService;

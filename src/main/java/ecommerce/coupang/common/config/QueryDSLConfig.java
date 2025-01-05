@@ -1,4 +1,4 @@
-package ecommerce.coupang.config;
+package ecommerce.coupang.common.config;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

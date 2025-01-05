@@ -1,4 +1,4 @@
-package ecommerce.coupang.exception;
+package ecommerce.coupang.common.exception;
 
 import java.util.Map;
 

@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import ecommerce.coupang.aop.log.LogLevel;
+import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Address;
 
 @LogLevel("AddressRepository")

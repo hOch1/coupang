@@ -7,7 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ecommerce.coupang.aop.log.LogAction;
+import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.dto.request.product.review.ReviewSort;

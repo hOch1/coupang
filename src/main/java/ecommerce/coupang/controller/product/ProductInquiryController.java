@@ -1,10 +1,7 @@
 package ecommerce.coupang.controller.product;
 
-import ecommerce.coupang.domain.product.inquiry.Answer;
 import ecommerce.coupang.domain.product.inquiry.ProductInquiry;
-import ecommerce.coupang.dto.request.product.inquiry.UpdateAnswerRequest;
 import ecommerce.coupang.dto.request.product.inquiry.UpdateInquiryRequest;
-import ecommerce.coupang.dto.response.product.inquiry.AnswerResponse;
 import ecommerce.coupang.dto.response.product.inquiry.InquiryResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import ecommerce.coupang.dto.request.product.inquiry.CreateAnswerRequest;
 import ecommerce.coupang.dto.request.product.inquiry.CreateInquiryRequest;
 import ecommerce.coupang.dto.response.Result;
-import ecommerce.coupang.exception.CustomException;
-import ecommerce.coupang.security.CustomUserDetails;
+import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.common.security.CustomUserDetails;
 import ecommerce.coupang.service.product.inquiry.ProductInquiryService;
 import ecommerce.coupang.service.product.inquiry.ProductInquiryQueryService;
 import io.swagger.v3.oas.annotations.Operation;

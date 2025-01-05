@@ -18,8 +18,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.store.Store;
-import ecommerce.coupang.exception.CustomException;
-import ecommerce.coupang.exception.ErrorCode;
+import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.store.StoreRepository;
 import ecommerce.coupang.service.store.query.StoreQueryService;
 

@@ -1,24 +1,17 @@
 package ecommerce.coupang.service.product;
 
-import java.util.List;
-
-import org.springframework.data.domain.Page;
-
-import ecommerce.coupang.aop.log.LogAction;
-import ecommerce.coupang.aop.log.LogLevel;
+import ecommerce.coupang.common.aop.log.LogAction;
+import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.product.CreateProductRequest;
 import ecommerce.coupang.dto.request.product.CreateProductVariantRequest;
-import ecommerce.coupang.dto.request.product.ProductSort;
 import ecommerce.coupang.dto.request.product.UpdateProductRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
-import ecommerce.coupang.dto.response.product.ProductDetailResponse;
-import ecommerce.coupang.dto.response.product.ProductResponse;
-import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.common.exception.CustomException;
 
 @LogLevel("ProductService")
 public interface ProductService {

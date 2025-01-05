@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.dto.request.delivery.UpdateDeliveryRequest;
-import ecommerce.coupang.exception.CustomException;
-import ecommerce.coupang.security.CustomUserDetails;
+import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.common.security.CustomUserDetails;
 import ecommerce.coupang.service.delivery.DeliveryService;
 import lombok.RequiredArgsConstructor;
 

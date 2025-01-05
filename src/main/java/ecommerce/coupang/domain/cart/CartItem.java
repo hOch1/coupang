@@ -2,8 +2,8 @@ package ecommerce.coupang.domain.cart;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
-import ecommerce.coupang.exception.CustomException;
-import ecommerce.coupang.exception.ErrorCode;
+import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.common.exception.ErrorCode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

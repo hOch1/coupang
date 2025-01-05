@@ -1,4 +1,4 @@
-package ecommerce.coupang.security;
+package ecommerce.coupang.common.security;
 
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

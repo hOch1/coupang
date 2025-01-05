@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.member.MemberResponse;
-import ecommerce.coupang.exception.CustomException;
-import ecommerce.coupang.security.CustomUserDetails;
+import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.common.security.CustomUserDetails;
 import ecommerce.coupang.service.member.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

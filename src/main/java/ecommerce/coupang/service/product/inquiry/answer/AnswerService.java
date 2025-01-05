@@ -1,11 +1,11 @@
-package ecommerce.coupang.service.product.inquiry;
+package ecommerce.coupang.service.product.inquiry.answer;
 
-import ecommerce.coupang.aop.log.LogAction;
+import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.inquiry.Answer;
 import ecommerce.coupang.dto.request.product.inquiry.CreateAnswerRequest;
 import ecommerce.coupang.dto.request.product.inquiry.UpdateAnswerRequest;
-import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.common.exception.CustomException;
 
 public interface AnswerService {
 

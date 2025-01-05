@@ -1,12 +1,12 @@
 package ecommerce.coupang.service.auth;
 
-import ecommerce.coupang.aop.log.LogAction;
-import ecommerce.coupang.aop.log.LogLevel;
+import ecommerce.coupang.common.aop.log.LogAction;
+import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.dto.request.auth.LoginRequest;
 import ecommerce.coupang.dto.request.auth.SignupRequest;
 import ecommerce.coupang.dto.response.auth.LoginResponse;
-import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.common.exception.CustomException;
 
 @LogLevel("AuthService")
 public interface AuthService {

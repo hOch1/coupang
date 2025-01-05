@@ -2,7 +2,7 @@ package ecommerce.coupang.repository.product.inquiry;
 
 import java.util.Optional;
 
-import ecommerce.coupang.aop.log.LogLevel;
+import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.domain.product.inquiry.Answer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

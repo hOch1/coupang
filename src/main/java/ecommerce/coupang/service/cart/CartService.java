@@ -1,13 +1,13 @@
 package ecommerce.coupang.service.cart;
 
-import ecommerce.coupang.aop.log.LogAction;
-import ecommerce.coupang.aop.log.LogLevel;
+import ecommerce.coupang.common.aop.log.LogAction;
+import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.domain.cart.Cart;
 import ecommerce.coupang.domain.cart.CartItem;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.dto.request.cart.AddCartRequest;
 import ecommerce.coupang.dto.response.cart.CartResponse;
-import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.common.exception.CustomException;
 
 @LogLevel("CartService")
 public interface CartService {

@@ -1,12 +1,12 @@
 package ecommerce.coupang.service.product.review;
 
-import ecommerce.coupang.aop.log.LogAction;
-import ecommerce.coupang.aop.log.LogLevel;
+import ecommerce.coupang.common.aop.log.LogAction;
+import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.dto.request.product.review.CreateReviewRequest;
 import ecommerce.coupang.dto.request.product.review.UpdateReviewRequest;
-import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.common.exception.CustomException;
 
 @LogLevel("ProductReviewService")
 public interface ProductReviewService {

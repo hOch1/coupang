@@ -1,12 +1,12 @@
 package ecommerce.coupang.service.product.inquiry;
 
-import ecommerce.coupang.aop.log.LogAction;
-import ecommerce.coupang.aop.log.LogLevel;
+import ecommerce.coupang.common.aop.log.LogAction;
+import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.inquiry.ProductInquiry;
 import ecommerce.coupang.dto.request.product.inquiry.CreateInquiryRequest;
 import ecommerce.coupang.dto.request.product.inquiry.UpdateInquiryRequest;
-import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.common.exception.CustomException;
 
 @LogLevel("ProductInquiryService")
 public interface ProductInquiryService {

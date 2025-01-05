@@ -2,11 +2,11 @@ package ecommerce.coupang.service.delivery;
 
 import java.util.List;
 
-import ecommerce.coupang.aop.log.LogLevel;
+import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.order.Delivery;
 import ecommerce.coupang.dto.request.delivery.UpdateDeliveryRequest;
-import ecommerce.coupang.exception.CustomException;
+import ecommerce.coupang.common.exception.CustomException;
 
 @LogLevel("DeliveryService")
 public interface DeliveryService {

@@ -1,4 +1,4 @@
-package ecommerce.coupang.aop.log;
+package ecommerce.coupang.common.aop.log;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

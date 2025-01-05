@@ -1,4 +1,4 @@
-package ecommerce.coupang.aop.log;
+package ecommerce.coupang.common.aop.log;
 
 import java.lang.reflect.Method;
 
@@ -12,8 +12,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import ecommerce.coupang.domain.member.Member;
-import ecommerce.coupang.exception.CustomException;
-import ecommerce.coupang.security.CustomUserDetails;
+import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.common.security.CustomUserDetails;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
