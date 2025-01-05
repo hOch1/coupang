@@ -101,6 +101,7 @@ public class Product extends BaseTimeEntity {
 		this.productVariants.add(productVariant);
 	}
 
+	/* 리뷰 추가 */
 	public void addProductReviews(ProductReview productReview) {
 		this.productReviews.add(productReview);
 
@@ -108,14 +109,17 @@ public class Product extends BaseTimeEntity {
 		updateStarAvg();
 	}
 
+	/* 쿠폰 추가 */
 	public void addCouponProducts(CouponProduct couponProduct) {
 		this.couponProducts.add(couponProduct);
 	}
 
+	/* 리뷰 수 증가 */
 	public void increaseReviewCount() {
 		this.reviewCount++;
 	}
 
+	/* 리뷰 수 감소 */
 	public void decreaseReviewCount() {
 		this.reviewCount--;
 	}

@@ -22,6 +22,7 @@ public class VariantOptionService {
                 .orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
     }
 
+    // VariantOptionId로 ProductVariantOption 생성
     public ProductVariantOption createProductVariantOption(Long variantOptionValueId, ProductVariant productVariant) throws CustomException {
         VariantOptionValue variantOptionValue = getVariantOptionValue(variantOptionValueId);
 

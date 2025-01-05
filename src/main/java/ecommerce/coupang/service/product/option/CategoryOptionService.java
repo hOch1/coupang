@@ -23,6 +23,7 @@ public class CategoryOptionService {
                 .orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
     }
 
+    // CategoryOptionValueId로 ProductCategoryOption 생성
     public ProductCategoryOption createProductCategoryOption(Long optionValueId, Product product) throws CustomException {
         CategoryOptionValue categoryOptionValue = getCategoryOptionValue(optionValueId);
 

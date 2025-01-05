@@ -3,6 +3,7 @@ package ecommerce.coupang.service.product;
 import java.util.ArrayList;
 import java.util.List;
 
+import ecommerce.coupang.domain.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,6 @@ public class ProductQueryService {
 	private final CategoryService categoryService;
 	private final DiscountPolicy memberDiscountPolicy;
 
-
 	/**
 	 * 상품 상세 조회
 	 * @param productVariantId 조회할 상품 ID
@@ -73,8 +73,7 @@ public class ProductQueryService {
 	 * @param page 현재 페이지
 	 * @param pageSize 페이지당 개수
 	 * @return 조회 상품 리스트
-	 * @throws CustomException
-	 */
+     */
 	@LogAction("상품 목록 조회")
 	public Page<ProductResponse> search(Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, int page, int pageSize, MemberGrade memberGrade) throws CustomException{
 		List<Category> categories = new ArrayList<>();
@@ -84,7 +83,8 @@ public class ProductQueryService {
 
 		Page<ProductResponse> responses = productRepository.searchProducts(categories, storeId, categoryOptions, variantOptions, sort, PageRequest.of(page, pageSize));
 
-		responses.forEach(productResponse -> productResponse.setMemberDiscountPrice(memberDiscountPolicy.calculateDiscount(productResponse.getPrice(), memberGrade, null)));
+		responses.forEach(productResponse ->
+				productResponse.setMemberDiscountPrice(memberDiscountPolicy.calculateDiscount(productResponse.getPrice(), memberGrade, null)));
 		return responses;
 	}
 }

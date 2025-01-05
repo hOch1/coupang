@@ -57,6 +57,7 @@ public class CouponQueryService {
 		Pageable pageable = PageRequest.of(page, pageSize);
 		return couponRepository.findCouponsByStore(storeId, pageable, sort);
 	}
+
 	/**
 	 * 상품 쿠폰 조회
 	 * @param productId 상품 ID
@@ -70,12 +71,12 @@ public class CouponQueryService {
 		Pageable pageable = PageRequest.of(page, pageSize);
 		return couponRepository.finCouponsByProduct(productId, pageable, sort);
 	}
+
 	/**
 	 * 쿠폰 상세 조회
 	 * @param couponId 쿠폰 ID
 	 * @return 쿠폰 상세 정보
-	 * @throws CustomException
-	 */
+     */
 	@LogAction("쿠폰 상세 조회")
 	public CouponDetailResponse findCoupon(Long couponId) throws CustomException {
 		Coupon coupon = couponRepository.findById(couponId)

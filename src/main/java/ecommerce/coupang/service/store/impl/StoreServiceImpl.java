@@ -2,6 +2,7 @@ package ecommerce.coupang.service.store.impl;
 
 
 import ecommerce.coupang.service.store.StoreUtils;
+import ecommerce.coupang.service.store.query.StoreQueryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 public class StoreServiceImpl implements StoreService {
 
 	private final StoreRepository storeRepository;
+	private final StoreQueryService storeQueryService;
 
 	@Override
 	public Store createStore(CreateStoreRequest request, Member member) throws CustomException {
@@ -37,7 +39,7 @@ public class StoreServiceImpl implements StoreService {
 
 	@Override
 	public Store updateStore(Long storeId, UpdateStoreRequest request, Member member) throws CustomException {
-		Store store = findStoreWithMember(storeId);
+		Store store = storeQueryService.findStore(storeId);
 		StoreUtils.validateStoreOwner(store, member);
 
 		store.update(request);
@@ -47,7 +49,7 @@ public class StoreServiceImpl implements StoreService {
 
 	@Override
 	public Store deleteStore(Long storeId, Member member) throws CustomException {
-		Store store = findStoreWithMember(storeId);
+		Store store = storeQueryService.findStore(storeId);
 		StoreUtils.validateStoreOwner(store, member);
 
 		store.delete();

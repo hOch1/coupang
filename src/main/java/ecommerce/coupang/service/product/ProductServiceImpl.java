@@ -11,6 +11,8 @@ import ecommerce.coupang.repository.product.ProductVariantRepository;
 
 import ecommerce.coupang.service.product.option.CategoryOptionService;
 import ecommerce.coupang.service.product.option.VariantOptionService;
+import ecommerce.coupang.service.store.StoreUtils;
+import ecommerce.coupang.service.store.query.StoreQueryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +26,6 @@ import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.service.category.CategoryService;
-import ecommerce.coupang.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -34,7 +35,7 @@ public class ProductServiceImpl implements ProductService {
 
 	private final ProductRepository productRepository;
 	private final ProductVariantRepository productVariantRepository;
-	private final StoreService storeService;
+	private final StoreQueryService storeQueryService;
 	private final CategoryService categoryService;
 	private final CategoryOptionService categoryOptionService;
 	private final VariantOptionService variantOptionService;
@@ -43,7 +44,8 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public Product createProduct(CreateProductRequest request, Long storeId, Member member) throws CustomException {
 		Category category = categoryService.findBottomCategory(request.getCategoryId());
-		Store store = storeService.validateStoreMember(storeId, member);
+		Store store = storeQueryService.findStore(storeId);
+		StoreUtils.validateStoreOwner(store, member);
 
 		Product product = Product.create(request, store, category);
 
@@ -78,7 +80,7 @@ public class ProductServiceImpl implements ProductService {
 	public Product updateProduct(UpdateProductRequest request, Member member) throws CustomException {
 		Product product = productRepository.findByIdWithMemberAndCategory(request.getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-		storeService.validateStoreMember(product.getStore().getId(), member);
+		StoreUtils.validateStoreOwner(product.getStore(), member);
 
 		product.update(request);
 
@@ -100,7 +102,7 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public ProductVariant updateProductVariant(UpdateProductVariantRequest request, Member member) throws CustomException {
 		ProductVariant productVariant = getProductVariantWithMember(request.getId());
-		storeService.validateStoreMember(productVariant.getProduct().getStore().getId(), member);
+		StoreUtils.validateStoreOwner(productVariant.getProduct().getStore(), member);
 
 		productVariant.update(request);
 
@@ -122,7 +124,7 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public ProductVariant updateDefaultProduct(Long productVariantId, Member member) throws CustomException {
 		ProductVariant productVariant = getProductVariantWithMember(productVariantId);
-		storeService.validateStoreMember(productVariant.getProduct().getStore().getId(), member);
+		StoreUtils.validateStoreOwner(productVariant.getProduct().getStore(), member);
 
 		ProductVariant defaultProductVariant = productVariantRepository.findByProductIdAndDefault(productVariant.getProduct().getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -140,7 +142,7 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public ProductVariant updateProductStock(Long productVariantId, UpdateProductStockRequest request, Member member) throws CustomException {
 		ProductVariant productVariant = getProductVariantWithMember(productVariantId);
-		storeService.validateStoreMember(productVariant.getProduct().getStore().getId(), member);
+		StoreUtils.validateStoreOwner(productVariant.getProduct().getStore(), member);
 
 		productVariant.changeStock(request.getStockQuantity());
 
@@ -151,7 +153,7 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public ProductVariant updateProductStatus(Long productVariantId, UpdateProductStatusRequest request, Member member) throws CustomException {
 		ProductVariant productVariant = getProductVariantWithMember(productVariantId);
-		storeService.validateStoreMember(productVariant.getProduct().getStore().getId(), member);
+		StoreUtils.validateStoreOwner(productVariant.getProduct().getStore(), member);
 
 		productVariant.changeStatus(request.getStatus());
 
@@ -163,7 +165,7 @@ public class ProductServiceImpl implements ProductService {
 	public Product deleteProduct(Long productId, Member member) throws CustomException {
 		Product product = productRepository.findByIdWithMemberAndCategory(productId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-		storeService.validateStoreMember(product.getStore().getId(), member);
+		StoreUtils.validateStoreOwner(product.getStore(), member);
 
 		product.delete();
 		return product;
@@ -173,7 +175,7 @@ public class ProductServiceImpl implements ProductService {
 	@Transactional
 	public ProductVariant deleteProductVariant(Long productVariantId, Member member) throws CustomException {
 		ProductVariant productVariant = getProductVariantWithMember(productVariantId);
-		storeService.validateStoreMember(productVariant.getProduct().getStore().getId(), member);
+		StoreUtils.validateStoreOwner(productVariant.getProduct().getStore(), member);
 
 		productVariant.delete();
 		return productVariant;
@@ -184,6 +186,7 @@ public class ProductServiceImpl implements ProductService {
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 	}
 
+	// ProductVariantOption -> ProductVariant 추가 -> Product 추가
 	private void addVariantToProduct(ProductVariant productVariant, CreateProductVariantRequest request, Product product) throws CustomException {
 		for (CreateProductVariantRequest.VariantOptionRequest o : request.getVariantOptions()) {
 			ProductVariantOption productVariantOption = variantOptionService.createProductVariantOption(o.getOptionValueId(), productVariant);
@@ -194,6 +197,7 @@ public class ProductServiceImpl implements ProductService {
 		product.addProductVariants(productVariant);
 	}
 
+	// ProductOption -> Product 추가
 	private void addCategoryOptionsToProduct(CreateProductRequest request, Product product) throws CustomException {
 		for (CreateProductRequest.CategoryOptionsRequest c : request.getCategoryOptions()) {
 			ProductCategoryOption productCategoryOption = categoryOptionService.createProductCategoryOption(c.getOptionValueId(), product);

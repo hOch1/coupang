@@ -1,5 +1,7 @@
 package ecommerce.coupang.service.store.impl;
 
+import ecommerce.coupang.service.store.StoreUtils;
+import ecommerce.coupang.service.store.query.StoreQueryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +17,6 @@ import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.member.MemberCouponRepository;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.repository.store.CouponRepository;
-import ecommerce.coupang.repository.store.StoreRepository;
 import ecommerce.coupang.service.store.CouponService;
 import lombok.RequiredArgsConstructor;
 
@@ -25,17 +26,14 @@ import lombok.RequiredArgsConstructor;
 public class CouponServiceImpl implements CouponService {
 
 	private final CouponRepository couponRepository;
-	private final StoreRepository storeRepository;
+	private final StoreQueryService storeQueryService;
 	private final MemberCouponRepository memberCouponRepository;
 	private final ProductRepository productRepository;
 
 	@Override
 	public Coupon createCoupon(Long storeId, CreateCouponRequest request, Member member) throws CustomException {
-		Store store = storeRepository.findByIdWithMember(storeId)
-			.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
-
-		if (!store.getMember().equals(member))
-			throw new CustomException(ErrorCode.FORBIDDEN);
+		Store store = storeQueryService.findStore(storeId);
+		StoreUtils.validateStoreOwner(store, member);
 
 		Coupon coupon = Coupon.create(request, store);
 

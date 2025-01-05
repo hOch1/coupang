@@ -26,7 +26,7 @@ public class StoreQueryService {
 	 * @return 상점 정보
 	 * @throws CustomException
 	 */
-	@LogAction("상점 상세 조회")
+	@LogAction("상점 조회")
 	public Store findStore(Long storeId) throws CustomException {
 		return storeRepository.findByIdWithMember(storeId).orElseThrow(() ->
 			new CustomException(ErrorCode.STORE_NOT_FOUND));
