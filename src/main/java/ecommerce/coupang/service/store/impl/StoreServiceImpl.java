@@ -1,6 +1,7 @@
 package ecommerce.coupang.service.store.impl;
 
 
+import ecommerce.coupang.service.store.StoreUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +37,8 @@ public class StoreServiceImpl implements StoreService {
 
 	@Override
 	public Store updateStore(Long storeId, UpdateStoreRequest request, Member member) throws CustomException {
-		Store store = validateStoreMember(storeId, member);
+		Store store = findStoreWithMember(storeId);
+		StoreUtils.validateStoreOwner(store, member);
 
 		store.update(request);
 
@@ -45,22 +47,16 @@ public class StoreServiceImpl implements StoreService {
 
 	@Override
 	public Store deleteStore(Long storeId, Member member) throws CustomException {
-		Store store = validateStoreMember(storeId, member);
+		Store store = findStoreWithMember(storeId);
+		StoreUtils.validateStoreOwner(store, member);
 
 		store.delete();
 
 		return store;
 	}
 
-	@Override
-	@Transactional(readOnly = true)
-	public Store validateStoreMember(Long storeId, Member member) throws CustomException {
-		Store store = storeRepository.findByIdWithMember(storeId)
-			.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
-
-		if (!store.getMember().equals(member))
-			throw new CustomException(ErrorCode.FORBIDDEN);
-
-		return store;
+	private Store findStoreWithMember(Long storeId) throws CustomException {
+		return storeRepository.findByIdWithMember(storeId)
+				.orElseThrow(() -> new CustomException(ErrorCode.STORE_NOT_FOUND));
 	}
 }

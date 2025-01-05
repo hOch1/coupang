@@ -41,12 +41,4 @@ public interface StoreService {
 	 */
 	@LogAction("상점 삭제")
 	Store deleteStore(Long storeId, Member member) throws CustomException;
-
-	/**
-	 * 회원이 해당 상점의 주인인지 확인후 반환
-	 * @param storeId 상점 ID
-	 * @param member 회원
-	 * @return 상점
-	 */
-	Store validateStoreMember(Long storeId, Member member) throws CustomException;
 }
