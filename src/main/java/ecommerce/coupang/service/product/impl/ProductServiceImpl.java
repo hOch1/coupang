@@ -199,8 +199,8 @@ public class ProductServiceImpl implements ProductService {
 		product.addProductVariants(productVariant);
 	}
 
-	private VariantOptionValue getVariantOptionValue(Long o) throws CustomException {
-		return variantOptionValueRepository.findById(o)
+	private VariantOptionValue getVariantOptionValue(Long optionValueId) throws CustomException {
+		return variantOptionValueRepository.findById(optionValueId)
 			.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
 	}
 
@@ -213,8 +213,8 @@ public class ProductServiceImpl implements ProductService {
 		}
 	}
 
-	private CategoryOptionValue getCategoryOptionValue(Long c) throws CustomException {
-		return categoryOptionValueRepository.findById(c)
+	private CategoryOptionValue getCategoryOptionValue(Long optionValueId) throws CustomException {
+		return categoryOptionValueRepository.findById(optionValueId)
 			.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
 	}
 }

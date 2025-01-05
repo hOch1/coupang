@@ -158,10 +158,9 @@ public class LoggingAspect {
 
 	private Member getPrincipal() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails))
+		if (authentication == null || !(authentication.getPrincipal() instanceof CustomUserDetails userDetails))
 			return null;
 
-		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-		return userDetails.getMember();
+        return userDetails.getMember();
 	}
 }

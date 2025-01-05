@@ -54,15 +54,10 @@ public class OrderServiceImpl implements OrderService {
 
 		verifyStatusAndReduceStock(productVariant, request.getQuantity());
 
-		int couponDiscountPrice = 0;
-		MemberCoupon memberCoupon = null;
-		if (request.getCouponId() != null) {
-			memberCoupon = memberCouponRepository.findByMemberIdAndCouponId(member.getId(), request.getCouponId())
-				.orElseThrow(() -> new CustomException(ErrorCode.COUPON_NOT_FOUND));
-			couponDiscountPrice = couponDiscount(memberCoupon, productVariant.getPrice() * request.getQuantity());
-		}
-
-		int memberDiscountPrice = memberDiscount(member.getGrade(), productVariant.getPrice() * request.getQuantity());
+		int totalPrice = productVariant.getPrice() * request.getQuantity();
+		MemberCoupon memberCoupon = getMemberCouponIfPresent(member, request.getCouponId());
+		int couponDiscountPrice = couponDiscount(memberCoupon, totalPrice);
+		int memberDiscountPrice = memberDiscount(member.getGrade(), totalPrice);
 
 		OrderItem orderItem = OrderItem.createByProduct(order, productVariant, memberCoupon, request, couponDiscountPrice, memberDiscountPrice);
 		Delivery delivery = Delivery.create(orderItem, productVariant.getProduct().getStore());
@@ -74,6 +69,7 @@ public class OrderServiceImpl implements OrderService {
 
 		return order;
 	}
+
 
 	@Override
 	@Transactional
@@ -87,15 +83,10 @@ public class OrderServiceImpl implements OrderService {
 
 			verifyStatusAndReduceStock(cartItem.getProductVariant(), cartItem.getQuantity());
 
-			int couponDiscountPrice = 0;
-			MemberCoupon memberCoupon = null;
-			if (cartItemRequest.getCouponId() != null) {
-				memberCoupon = memberCouponRepository.findByMemberIdAndCouponId(member.getId(), cartItemRequest.getCouponId())
-					.orElseThrow(() -> new CustomException(ErrorCode.COUPON_NOT_FOUND));
-				couponDiscountPrice = couponDiscount(memberCoupon, cartItem.getProductVariant().getPrice() * cartItem.getQuantity());
-			}
-
-			int memberDiscountPrice = memberDiscount(member.getGrade(), cartItem.getProductVariant().getPrice() * cartItem.getQuantity());
+			int totalPrice = cartItem.getProductVariant().getPrice() * cartItem.getQuantity();
+			MemberCoupon memberCoupon = getMemberCouponIfPresent(member, cartItemRequest.getCouponId());
+			int couponDiscountPrice = couponDiscount(memberCoupon, totalPrice);
+			int memberDiscountPrice = memberDiscount(member.getGrade(), totalPrice);
 
 			OrderItem orderItem = OrderItem.createByCartItem(order, cartItem, memberCoupon, couponDiscountPrice, memberDiscountPrice);
 			Delivery delivery = Delivery.create(orderItem, cartItem.getProductVariant().getProduct().getStore());
@@ -107,18 +98,6 @@ public class OrderServiceImpl implements OrderService {
 
 		orderRepository.save(order);
 		return order;
-	}
-
-	private int couponDiscount(MemberCoupon memberCoupon, int price) throws CustomException {
-		if (memberCoupon.isUsed())
-			throw new CustomException(ErrorCode.ALREADY_USE_COUPON);
-
-		memberCoupon.use();
-		return couponDiscountPolicy.calculateDiscount(price, null, memberCoupon.getCoupon());
-	}
-
-	private int memberDiscount(MemberGrade memberGrade, int price) {
-		return memberDiscountPolicy.calculateDiscount(price, memberGrade, null);
 	}
 
 	@Override
@@ -142,5 +121,27 @@ public class OrderServiceImpl implements OrderService {
 			throw new CustomException(ErrorCode.PRODUCT_STATUS_NOT_ACTIVE);
 
 		productVariant.reduceStock(quantity);
+	}
+
+	private MemberCoupon getMemberCouponIfPresent(Member member, Long couponId) throws CustomException {
+		if (couponId == null)
+			return null;
+
+		return memberCouponRepository.findByMemberIdAndCouponId(member.getId(), couponId)
+				.orElseThrow(() -> new CustomException(ErrorCode.COUPON_NOT_FOUND));
+	}
+
+	private int couponDiscount(MemberCoupon memberCoupon, int price) throws CustomException {
+		if (memberCoupon == null)
+			return 0;
+		if (memberCoupon.isUsed())
+			throw new CustomException(ErrorCode.ALREADY_USE_COUPON);
+
+		memberCoupon.use();
+		return couponDiscountPolicy.calculateDiscount(price, null, memberCoupon.getCoupon());
+	}
+
+	private int memberDiscount(MemberGrade memberGrade, int price) {
+		return memberDiscountPolicy.calculateDiscount(price, memberGrade, null);
 	}
 }
