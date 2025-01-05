@@ -1,4 +1,4 @@
-package ecommerce.coupang.service.product.query;
+package ecommerce.coupang.service.product.review;
 
 import java.util.List;
 

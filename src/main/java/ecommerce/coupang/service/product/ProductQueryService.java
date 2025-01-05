@@ -1,4 +1,4 @@
-package ecommerce.coupang.service.product.query;
+package ecommerce.coupang.service.product;
 
 import java.util.ArrayList;
 import java.util.List;

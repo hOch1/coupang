@@ -1,4 +1,4 @@
-package ecommerce.coupang.service.product.impl;
+package ecommerce.coupang.service.product.review;
 
 import java.util.Optional;
 
@@ -16,7 +16,6 @@ import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.repository.product.review.ProductReviewRepository;
 import ecommerce.coupang.repository.product.review.ReviewLikeRepository;
-import ecommerce.coupang.service.product.ProductReviewService;
 import lombok.RequiredArgsConstructor;
 
 @Service

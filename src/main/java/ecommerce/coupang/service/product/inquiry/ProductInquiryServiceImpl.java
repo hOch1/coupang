@@ -1,4 +1,4 @@
-package ecommerce.coupang.service.product.impl;
+package ecommerce.coupang.service.product.inquiry;
 
 import ecommerce.coupang.domain.product.inquiry.Answer;
 import ecommerce.coupang.domain.store.Store;
@@ -18,7 +18,6 @@ import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.repository.product.inquiry.ProductInquiryRepository;
-import ecommerce.coupang.service.product.ProductInquiryService;
 import lombok.RequiredArgsConstructor;
 
 @Service

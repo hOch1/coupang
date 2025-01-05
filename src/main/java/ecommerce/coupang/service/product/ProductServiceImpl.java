@@ -1,19 +1,16 @@
-package ecommerce.coupang.service.product.impl;
+package ecommerce.coupang.service.product;
 
-
-import ecommerce.coupang.domain.category.CategoryOptionValue;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
-import ecommerce.coupang.domain.product.variant.VariantOptionValue;
 import ecommerce.coupang.dto.request.product.CreateProductVariantRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
 import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
-import ecommerce.coupang.repository.category.CategoryOptionValueRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
-import ecommerce.coupang.repository.product.VariantOptionValueRepository;
 
+import ecommerce.coupang.service.product.option.CategoryOptionService;
+import ecommerce.coupang.service.product.option.VariantOptionService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +24,6 @@ import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.exception.ErrorCode;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.service.category.CategoryService;
-import ecommerce.coupang.service.product.ProductService;
 import ecommerce.coupang.service.store.StoreService;
 import lombok.RequiredArgsConstructor;
 
@@ -38,10 +34,10 @@ public class ProductServiceImpl implements ProductService {
 
 	private final ProductRepository productRepository;
 	private final ProductVariantRepository productVariantRepository;
-	private final VariantOptionValueRepository variantOptionValueRepository;
-	private final CategoryOptionValueRepository categoryOptionValueRepository;
 	private final StoreService storeService;
 	private final CategoryService categoryService;
+	private final CategoryOptionService categoryOptionService;
+	private final VariantOptionService variantOptionService;
 
 	@Override
 	@Transactional
@@ -54,6 +50,7 @@ public class ProductServiceImpl implements ProductService {
 		addCategoryOptionsToProduct(request, product);
 		for (CreateProductVariantRequest variantRequest : request.getVariants()) {
 			ProductVariant productVariant = ProductVariant.create(variantRequest, product);
+
 			addVariantToProduct(productVariant, variantRequest, product);
 		}
 
@@ -89,9 +86,8 @@ public class ProductServiceImpl implements ProductService {
 			product.getProductOptions().clear();
 
 			for (UpdateProductRequest.UpdateCategoryOptionsRequest c : request.getCategoryOptions()) {
-				CategoryOptionValue categoryOptionValue = getCategoryOptionValue(c.getOptionValueId());
+				ProductCategoryOption productCategoryOption = categoryOptionService.createProductCategoryOption(c.getOptionValueId(), product);
 
-				ProductCategoryOption productCategoryOption = ProductCategoryOption.create(product, categoryOptionValue);
 				product.addProductOptions(productCategoryOption);
 			}
 		}
@@ -112,9 +108,8 @@ public class ProductServiceImpl implements ProductService {
 			productVariant.getProductVariantOptions().clear();
 
 			for (UpdateProductVariantRequest.UpdateVariantOption o : request.getVariantOptions()) {
-				VariantOptionValue variantOptionValue = getVariantOptionValue(o.getOptionValueId());
+				ProductVariantOption productVariantOption = variantOptionService.createProductVariantOption(o.getOptionValueId(), productVariant);
 
-				ProductVariantOption productVariantOption = ProductVariantOption.create(productVariant, variantOptionValue);
 				productVariant.addProductVariantOptions(productVariantOption);
 			}
 		}
@@ -190,32 +185,20 @@ public class ProductServiceImpl implements ProductService {
 
 	private void addVariantToProduct(ProductVariant productVariant, CreateProductVariantRequest request, Product product) throws CustomException {
 		for (CreateProductVariantRequest.VariantOptionRequest o : request.getVariantOptions()) {
-			VariantOptionValue variantOptionValue = getVariantOptionValue(o.getOptionValueId());
+			ProductVariantOption productVariantOption = variantOptionService.createProductVariantOption(o.getOptionValueId(), productVariant);
 
-			ProductVariantOption productVariantOption = ProductVariantOption.create(productVariant, variantOptionValue);
 			productVariant.addProductVariantOptions(productVariantOption);
 		}
 
 		product.addProductVariants(productVariant);
 	}
 
-	private VariantOptionValue getVariantOptionValue(Long optionValueId) throws CustomException {
-		return variantOptionValueRepository.findById(optionValueId)
-			.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
-	}
-
 	private void addCategoryOptionsToProduct(CreateProductRequest request, Product product) throws CustomException {
 		for (CreateProductRequest.CategoryOptionsRequest c : request.getCategoryOptions()) {
-			CategoryOptionValue categoryOptionValue = getCategoryOptionValue(c.getOptionValueId());
+			ProductCategoryOption productCategoryOption = categoryOptionService.createProductCategoryOption(c.getOptionValueId(), product);
 
-			ProductCategoryOption productCategoryOption = ProductCategoryOption.create(product, categoryOptionValue);
 			product.addProductOptions(productCategoryOption);
 		}
-	}
-
-	private CategoryOptionValue getCategoryOptionValue(Long optionValueId) throws CustomException {
-		return categoryOptionValueRepository.findById(optionValueId)
-			.orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
 	}
 }
 

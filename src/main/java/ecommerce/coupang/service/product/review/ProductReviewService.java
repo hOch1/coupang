@@ -1,15 +1,10 @@
-package ecommerce.coupang.service.product;
-
-import java.util.List;
-
-import org.springframework.data.domain.Page;
+package ecommerce.coupang.service.product.review;
 
 import ecommerce.coupang.aop.log.LogAction;
 import ecommerce.coupang.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.dto.request.product.review.CreateReviewRequest;
-import ecommerce.coupang.dto.request.product.review.ReviewSort;
 import ecommerce.coupang.dto.request.product.review.UpdateReviewRequest;
 import ecommerce.coupang.exception.CustomException;
 

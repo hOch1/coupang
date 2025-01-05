@@ -30,7 +30,7 @@ import ecommerce.coupang.dto.response.product.ProductResponse;
 import ecommerce.coupang.exception.CustomException;
 import ecommerce.coupang.security.CustomUserDetails;
 import ecommerce.coupang.service.product.ProductService;
-import ecommerce.coupang.service.product.query.ProductQueryService;
+import ecommerce.coupang.service.product.ProductQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
