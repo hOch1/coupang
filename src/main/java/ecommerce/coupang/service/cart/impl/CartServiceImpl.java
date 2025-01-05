@@ -22,53 +22,39 @@ import lombok.RequiredArgsConstructor;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
 	private final CartRepository cartRepository;
 	private final CartItemRepository cartItemRepository;
 	private final ProductVariantRepository productVariantRepository;
-	private final ProductVariantOptionRepository productVariantOptionRepository;
 
 	@Override
-	@Transactional
 	public Cart addCart(AddCartRequest request, Member member) throws CustomException {
 		Cart cart = getCartWithMember(member);
 
 		ProductVariant productVariant = productVariantRepository.findById(request.getProductVariantId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
+		/*
+		장바구니에 해당 상품이 없을시 새로 생성 후 저장
+		존재할시 하단 조건문에서 수량추가
+		 */
 		CartItem cartItem = cartItemRepository.findByCartIdAndProductVariantId(cart.getId(), productVariant.getId())
-			.orElseGet(() -> CartItem.create(cart, productVariant, request.getQuantity()));
+			.orElseGet(() -> {
+				CartItem newCartItem = CartItem.create(cart, productVariant, request.getQuantity());
+				cart.addItem(newCartItem);
+				return newCartItem;
+			});
 
 		if (cartItem.getId() != null)
 			cartItem.addQuantity(request.getQuantity());
-		else
-			cart.addItem(cartItem);
 
 		return cart;
 	}
 
 	@Override
-	public CartResponse findMyCart(Member member) throws CustomException {
-		Cart cart = getCartWithMember(member);
-
-		List<CartItem> cartItems = cartItemRepository.findByMemberIdWithProductStore(member.getId());
-
-		CartResponse response = CartResponse.from(cart);
-
-		for (CartItem cartItem : cartItems) {
-			List<ProductVariantOption> productVariantOptions = productVariantOptionRepository.findByProductVariantId(cartItem.getProductVariant().getId());
-			CartResponse.CartItemResponse cartItemResponse = CartResponse.CartItemResponse.from(cartItem, productVariantOptions);
-			response.addItems(cartItemResponse);
-		}
-
-		return response;
-	}
-
-	@Override
-	@Transactional
 	public CartItem updateItemQuantity(Long cartItemId, int quantity, Member member) throws CustomException {
 		CartItem cartItem = cartItemRepository.findByIdWithMember(cartItemId)
 			.orElseThrow(() -> new CustomException(ErrorCode.CART_ITEM_NOT_FOUND));
@@ -82,7 +68,6 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
-	@Transactional
 	public CartItem removeItem(Long cartItemId, Member member) throws CustomException {
 		Cart cart = getCartWithMember(member);
 
@@ -96,16 +81,17 @@ public class CartServiceImpl implements CartService {
 	}
 
 	@Override
-	@Transactional
-	public void clearCart(Member member) throws CustomException {
+	public void clearCart(Member member) {
 		Cart cart = getCartWithMember(member);
 
 		cartItemRepository.deleteAll(cart.getCartItems());
 		cart.getCartItems().clear();
 	}
 
-	private Cart getCartWithMember(Member member) throws CustomException {
-		return cartRepository.findByMemberId(member.getId())
-			.orElseThrow(() -> new CustomException(ErrorCode.CART_NOT_FOUND));
+	private Cart getCartWithMember(Member member) {
+		return cartRepository.findByMemberId(member.getId()).orElseGet(() -> {
+				Cart newCart = Cart.create(member);
+				return cartRepository.save(newCart);
+		});
 	}
 }

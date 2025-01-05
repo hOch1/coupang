@@ -1,5 +1,6 @@
 package ecommerce.coupang.controller.cart;
 
+import ecommerce.coupang.service.cart.CartQueryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,6 +32,7 @@ import lombok.RequiredArgsConstructor;
 public class CartController {
 
 	private final CartService cartService;
+	private final CartQueryService cartQueryService;
 
 	@PostMapping("/item")
 	@Operation(summary = "장바구니 상품 추가 API", description = "장바구니에 상품을 추가합니다.")
@@ -48,7 +50,7 @@ public class CartController {
 	public ResponseEntity<Result<CartResponse>> findMyCart(
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		CartResponse response = cartService.findMyCart(userDetails.getMember());
+		CartResponse response = cartQueryService.findMyCart(userDetails.getMember());
 
 		return ResponseEntity.ok(new Result<>(response));
 	}

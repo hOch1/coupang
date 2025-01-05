@@ -22,14 +22,6 @@ public interface CartService {
 	Cart addCart(AddCartRequest request, Member member) throws CustomException;
 
 	/**
-	 * 내 장바구니 조회
-	 * @param member 요청한 회원
-	 * @return 장바구니 목록
-	 */
-	@LogAction("장바구니 조회")
-	CartResponse findMyCart(Member member) throws CustomException;
-
-	/**
 	 * 장바구니 상푼 수량 변경
 	 * @param cartItemId 장바구니 상품 ID
 	 * @param quantity 변경할 수량
