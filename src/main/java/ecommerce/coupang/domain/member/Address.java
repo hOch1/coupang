@@ -56,6 +56,7 @@ public class Address extends BaseTimeEntity {
 		return new Address(request.getAddress(), request.getType(), member, isDefault);
 	}
 
+	/* 주소 수정 */
 	public void update(UpdateAddressRequest request) {
 		if (request.getAddress() != null && !request.getAddress().trim().isEmpty())
 			this.address = request.getAddress().trim();
@@ -63,10 +64,12 @@ public class Address extends BaseTimeEntity {
 			this.type = request.getType();
 	}
 
+	/* 기본 주소 해제 */
 	public void unsetAsDefault() {
 		this.isDefault = false;
 	}
 
+	/* 기본 주소 설정 */
 	public void setAsDefault() {
 		this.isDefault = true;
 	}

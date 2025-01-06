@@ -73,6 +73,7 @@ public class Order extends BaseTimeEntity {
 		this.orderMessage = orderMessage;
 	}
 
+	/* 상품 주문 */
 	public static Order createByProduct(CreateOrderByProductRequest request, Member member, Address address) {
 		return new Order(
 			member,
@@ -83,6 +84,7 @@ public class Order extends BaseTimeEntity {
 		);
 	}
 
+	/* 장바구니 주문 */
 	public static Order createByCart(CreateOrderByCartRequest request, Member member, Address address) {
 		return new Order(
 			member,
@@ -93,13 +95,16 @@ public class Order extends BaseTimeEntity {
 		);
 	}
 
+	/* 주문 상품 추가 */
 	public void addOrderItem(OrderItem orderItem) {
 		this.orderItems.add(orderItem);
 		this.totalPrice += orderItem.getDiscountTotalPrice();
 	}
 
+	/* 주문 취소 */
 	public void cancel() throws CustomException {
 		for (OrderItem orderItem : this.orderItems) {
+			// 배송 대기중이 아닐경우 예외
 			if (!orderItem.getDelivery().getDeliveryStatus().equals(DeliveryStatus.PENDING))
 				throw new CustomException(ErrorCode.ALREADY_DELIVERY_START);
 

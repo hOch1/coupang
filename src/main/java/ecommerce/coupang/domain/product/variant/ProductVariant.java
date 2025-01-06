@@ -78,31 +78,38 @@ public class ProductVariant {
 		this.productVariantOptions.add(productVariantOption);
 	}
 
+	/* 재고 감소 */
 	public void reduceStock(int quantity) throws CustomException {
 		validateStockQuantity(quantity);
 		this.stockQuantity -= quantity;
 	}
 
+	/* 재고 추가 */
 	public void addStock(int quantity) {
 		this.stockQuantity += quantity;
 	}
 
+	/* 대표 상품 변경 */
 	public void changeDefault(boolean change) {
 		this.isDefault = change;
 	}
 
+	/* 판매량 증가 */
 	public void increaseSalesCount(int quantity) {
 		this.salesCount += quantity;
 	}
 
+	/* 판매량 감소 */
 	public void decreaseSalesCount(int quantity) {
 		this.salesCount -= quantity;
 	}
 
+	/* 상품 재고 변경 */
 	public void changeStock(int quantity) throws CustomException {
-		if (quantity < 0)
+		if (quantity < 0) // 음수 예외
 			throw new CustomException(ErrorCode.INVALID_STOCK_QUANTITY);
 
+		/* 재고 0 으로 수정시 status 재고없음으로 수정 */
 		if (quantity == 0) {
 			this.status = ProductStatus.NO_STOCK;
 			this.stockQuantity = 0;
@@ -110,7 +117,9 @@ public class ProductVariant {
 			this.stockQuantity = quantity;
 	}
 
+	/* 상품 상태 변경 */
 	public void changeStatus(ProductStatus status) {
+		/* 재고 없음으로 변경시 상품 재고 0으로 수정 */
 		if (status.equals(ProductStatus.NO_STOCK)) {
 			this.stockQuantity = 0;
 			this.status = ProductStatus.NO_STOCK;
@@ -118,10 +127,12 @@ public class ProductVariant {
 			this.status = status;
 	}
 
+	/* 상품 변형 수정 */
 	public void update(UpdateProductVariantRequest request) {
 		this.price = request.getPrice() != null ? request.getPrice().intValue() : this.price;
 	}
 
+	/* 상품 변형 삭제 */
 	public void delete() {
 		this.isActive = false;
 	}

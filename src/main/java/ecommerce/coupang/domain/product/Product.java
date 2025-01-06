@@ -88,15 +88,12 @@ public class Product extends BaseTimeEntity {
 		);
 	}
 
-	public void update(UpdateProductRequest request) {
-		this.name = request.getName() != null ? request.getName() : this.name;
-		this.description = request.getDescription() != null ? request.getDescription() : this.description;
-	}
-
+	/* 상품 옵션 추가 */
 	public void addProductOptions(ProductCategoryOption productCategoryOption) {
 		this.productOptions.add(productCategoryOption);
 	}
 
+	/* 상품 변형 추가 */
 	public void addProductVariants(ProductVariant productVariant) {
 		this.productVariants.add(productVariant);
 	}
@@ -114,6 +111,12 @@ public class Product extends BaseTimeEntity {
 		this.couponProducts.add(couponProduct);
 	}
 
+	/* 상품 수정 */
+	public void update(UpdateProductRequest request) {
+		this.name = request.getName() != null ? request.getName() : this.name;
+		this.description = request.getDescription() != null ? request.getDescription() : this.description;
+	}
+
 	/* 리뷰 수 증가 */
 	public void increaseReviewCount() {
 		this.reviewCount++;
@@ -124,6 +127,7 @@ public class Product extends BaseTimeEntity {
 		this.reviewCount--;
 	}
 
+	/* 별점 평균 변경 */
 	public void updateStarAvg() {
 		if (this.productReviews.isEmpty())
 			this.starAvg = 0.0;
@@ -135,8 +139,9 @@ public class Product extends BaseTimeEntity {
 		}
 	}
 
+	/* 상품 삭제 */
 	public void delete() {
-		productVariants.forEach(ProductVariant::delete);
+		productVariants.forEach(ProductVariant::delete); // 연관된 상품 변형도 Soft 삭제
 		this.isActive = false;
 	}
 }

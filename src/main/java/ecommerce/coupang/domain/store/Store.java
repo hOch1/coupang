@@ -69,13 +69,15 @@ public class Store extends BaseTimeEntity {
 		);
 	}
 
+	/* 상점 수정 */
 	public void update(UpdateStoreRequest request) {
 		this.name = request.getName() != null ? request.getName() : this.name;
 		this.description = request.getDescription() != null ? request.getDescription() : this.description;
 	}
 
+	/* 상점 삭제 */
 	public void delete() {
-		products.forEach(Product::delete);
+		products.forEach(Product::delete); // 등록된 상품도 Soft 삭제
 		this.isActive = false;
 	}
 }

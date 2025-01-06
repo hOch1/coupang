@@ -82,7 +82,7 @@ public class StoreController {
 	}
 
 	@DeleteMapping("/{storeId}")
-	@Operation(summary = "상점 삭제 API", description = "상점을 Soft하게 삭제합니다")
+	@Operation(summary = "상점 삭제 API", description = "상점을 Soft 하게 삭제합니다")
 	public ResponseEntity<Void> deleteStore(
 		@PathVariable Long storeId,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {

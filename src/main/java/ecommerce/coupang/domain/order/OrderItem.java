@@ -96,6 +96,7 @@ public class OrderItem {
 		);
 	}
 
+	/* 주문 상품 취소 */
 	public void cancel() {
 		productVariant.addStock(quantity);
 		productVariant.decreaseSalesCount(quantity);
