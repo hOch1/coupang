@@ -21,11 +21,13 @@ public interface ProductInquiryRepository extends JpaRepository<ProductInquiry, 
 
     @Query("select pi from ProductInquiry pi " +
             "join fetch pi.product p " +
+            "join fetch pi.answer a " +     // OneToOne N+1 문제
             "where pi.member.id = :memberId")
     List<ProductInquiry> findByMemberId(Long memberId);
 
     @Query("select pi from ProductInquiry pi " +
             "join fetch pi.product p " +
+            "join fetch pi.answer a " +     // OneToOne N+1 문제
             "where p.id = :productId")
     List<ProductInquiry> findByProductIdWithMember(Long productId);
 }

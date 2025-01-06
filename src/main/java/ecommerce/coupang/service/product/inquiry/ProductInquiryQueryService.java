@@ -45,7 +45,8 @@ public class ProductInquiryQueryService {
 		Product product = productRepository.findById(productId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
-		/* 해당 상품 비활성 상태일때 예외
+		/*
+		해당 상품 비활성 상태일때 예외
 		TODO 예외처리 고민
 		 */
 		if (!product.isActive())
