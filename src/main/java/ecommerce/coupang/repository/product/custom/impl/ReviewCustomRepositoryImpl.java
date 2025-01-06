@@ -31,10 +31,7 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
 		QMember member = QMember.member;
 		QProduct product = QProduct.product;
 
-		BooleanBuilder builder = new BooleanBuilder(product.id.eq(productId));
-
-		if (star != null)
-			builder.and(productReview.star.eq(star));
+		BooleanBuilder builder = reviewFilter(productId, star, product, productReview);
 
 		JPAQuery<ProductReview> query = queryFactory.selectDistinct(productReview)
 			.from(productReview)
@@ -53,6 +50,16 @@ public class ReviewCustomRepositoryImpl implements ReviewCustomRepository {
 			.where(builder);
 
 		return PageableExecutionUtils.getPage(result, pageable, countQuery::fetchOne);
+	}
+
+	private static BooleanBuilder reviewFilter(Long productId, Integer star, QProduct product, QProductReview productReview) {
+		BooleanBuilder builder = new BooleanBuilder();
+		builder.and(product.id.eq(productId));
+
+		if (star != null)
+			builder.and(productReview.star.eq(star));
+
+		return builder;
 	}
 
 	private void sortReview(JPAQuery<ProductReview> query, ReviewSort sort, QProductReview productReview) {
