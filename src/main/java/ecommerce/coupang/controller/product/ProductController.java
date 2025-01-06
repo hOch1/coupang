@@ -2,28 +2,15 @@ package ecommerce.coupang.controller.product;
 
 import java.util.List;
 
+import ecommerce.coupang.dto.request.PagingRequest;
+import ecommerce.coupang.dto.request.product.*;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import ecommerce.coupang.domain.member.MemberGrade;
-import ecommerce.coupang.dto.request.product.CreateProductRequest;
-import ecommerce.coupang.dto.request.product.CreateProductVariantRequest;
-import ecommerce.coupang.dto.request.product.ProductSort;
-import ecommerce.coupang.dto.request.product.UpdateProductRequest;
-import ecommerce.coupang.dto.request.product.UpdateProductStatusRequest;
-import ecommerce.coupang.dto.request.product.UpdateProductStockRequest;
-import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
 import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.product.ProductDetailResponse;
 import ecommerce.coupang.dto.response.product.ProductResponse;
@@ -70,19 +57,14 @@ public class ProductController {
 	@GetMapping("/search")
 	@Operation(summary = "상품 조회 API", description = "상점, 카테고리, 옵션별로 상품을 조회합니다.")
 	public ResponseEntity<Result<List<ProductResponse>>> searchProducts(
-		@RequestParam(required = false) String keyword,
-		@RequestParam(required = false) Long categoryId,
-		@RequestParam(required = false) Long storeId,
-		@RequestParam(required = false) List<Long> categoryOptions,
-		@RequestParam(required = false) List<Long> variantOptions,
+		@ModelAttribute ProductSearchRequest request,
+		@ModelAttribute PagingRequest pagingRequest,
 		@RequestParam(required = false, defaultValue = "LATEST") ProductSort sort,
-		@RequestParam(required = false, defaultValue = "0") int page,
-		@RequestParam(required = false, defaultValue = "20") int pageSize,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		MemberGrade memberGrade = getMemberGrade(userDetails);
 
-		Page<ProductResponse> responses = productQueryService.search(keyword, categoryId, storeId, categoryOptions, variantOptions, sort, page, pageSize, memberGrade);
+		Page<ProductResponse> responses = productQueryService.search(request, sort, pagingRequest, memberGrade);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),
 			responses.getContent().size(),
@@ -92,8 +74,6 @@ public class ProductController {
 			responses.getTotalElements()
 		));
 	}
-
-
 
 	@GetMapping("/{productVariantId}")
 	@Operation(summary = "상품 상세 조회 API", description = "해당 상품을 상세 조회합니다.")

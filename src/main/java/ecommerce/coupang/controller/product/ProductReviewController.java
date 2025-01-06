@@ -2,19 +2,12 @@ package ecommerce.coupang.controller.product;
 
 import java.util.List;
 
+import ecommerce.coupang.dto.request.PagingRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import ecommerce.coupang.domain.product.review.ProductReview;
 import ecommerce.coupang.dto.request.product.review.CreateReviewRequest;
@@ -77,18 +70,17 @@ public class ProductReviewController {
 	@Operation(summary = "상품 리뷰 조회 API", description = "해당 상품의 리뷰를 조회합니다")
 	public ResponseEntity<Result<List<ReviewResponse>>> getReviewsByProduct(
 		@PathVariable Long productId,
+		@ModelAttribute PagingRequest pagingRequest,
 		@RequestParam(required = false) Integer star,
-		@RequestParam(required = false, defaultValue = "LATEST") ReviewSort sort,
-		@RequestParam(required = false, defaultValue = "0") int page,
-		@RequestParam(required = false, defaultValue = "20") int pageSize) {
+		@RequestParam(required = false, defaultValue = "LATEST") ReviewSort sort) {
 
-		Page<ProductReview> productReviews = productReviewQueryService.findReviewsByProduct(productId, star, sort, page, pageSize);
+		Page<ProductReview> productReviews = productReviewQueryService.findReviewsByProduct(productId, star, sort, pagingRequest);
 		Page<ReviewResponse> responses = productReviews.map(ReviewResponse::from);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),
 			responses.getContent().size(),
-			page,
-			pageSize,
+			responses.getNumber(),
+			responses.getSize(),
 			responses.getTotalPages(),
 			responses.getTotalElements()
 		));

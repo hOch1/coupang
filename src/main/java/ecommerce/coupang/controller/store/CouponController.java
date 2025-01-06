@@ -3,17 +3,12 @@ package ecommerce.coupang.controller.store;
 
 import java.util.List;
 
+import ecommerce.coupang.dto.request.PagingRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import ecommerce.coupang.domain.member.MemberCoupon;
 import ecommerce.coupang.domain.store.Coupon;
@@ -66,12 +61,11 @@ public class CouponController {
 	@GetMapping("/me")
 	@Operation(summary = "나의 쿠폰 조회 API", description = "나의 쿠폰을 조회합니다")
 	public ResponseEntity<Result<List<MemberCouponResponse>>> getMyCoupons(
-		@AuthenticationPrincipal CustomUserDetails userDetails,
+		@ModelAttribute PagingRequest pagingRequest,
 		@RequestParam(required = false, defaultValue = "LATEST") CouponSort sort,
-		@RequestParam(required = false, defaultValue = "0") int page,
-		@RequestParam(required = false, defaultValue = "10") int pageSize) {
+		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-		Page<MemberCoupon> coupons = couponQueryService.findMyCoupons(userDetails.getMember(), page, pageSize, sort);
+		Page<MemberCoupon> coupons = couponQueryService.findMyCoupons(userDetails.getMember(), pagingRequest, sort);
 		Page<MemberCouponResponse> responses = coupons.map(MemberCouponResponse::from);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),
@@ -96,11 +90,10 @@ public class CouponController {
 	@Operation(summary = "상점 쿠폰 조회 API", description = "상점에서 발행한 쿠폰목록을 조회합니다")
 	public ResponseEntity<Result<List<CouponResponse>>> getCouponsByStore(
 		@PathVariable Long storeId,
-		@RequestParam(required = false, defaultValue = "LATEST") CouponSort sort,
-		@RequestParam(required = false, defaultValue = "0") int page,
-		@RequestParam(required = false, defaultValue = "10") int pageSize) {
+		@ModelAttribute PagingRequest pagingRequest,
+		@RequestParam(required = false, defaultValue = "LATEST") CouponSort sort) {
 
-		Page<Coupon> coupons = couponQueryService.findCouponsByStore(storeId, page, pageSize, sort);
+		Page<Coupon> coupons = couponQueryService.findCouponsByStore(storeId, pagingRequest, sort);
 		Page<CouponResponse> responses = coupons.map(CouponResponse::from);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),
@@ -116,11 +109,10 @@ public class CouponController {
 	@Operation(summary = "상품 쿠폰 조회 API", description = "해당 상품의 쿠폰목록 조회")
 	public ResponseEntity<Result<List<CouponResponse>>> getCouponByProduct(
 		@PathVariable Long productId,
-		@RequestParam(required = false, defaultValue = "LATEST") CouponSort sort,
-		@RequestParam(required = false, defaultValue = "0") int page,
-		@RequestParam(required = false, defaultValue = "10") int pageSize) {
+		@ModelAttribute PagingRequest pagingRequest,
+		@RequestParam(required = false, defaultValue = "LATEST") CouponSort sort) {
 
-		Page<CouponProduct> coupons = couponQueryService.findCouponsByProduct(productId, page, pageSize, sort);
+		Page<CouponProduct> coupons = couponQueryService.findCouponsByProduct(productId, pagingRequest, sort);
 		Page<CouponResponse> responses = coupons.map(CouponResponse::from);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),

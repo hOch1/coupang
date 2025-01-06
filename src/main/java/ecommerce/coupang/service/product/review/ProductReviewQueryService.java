@@ -2,6 +2,7 @@ package ecommerce.coupang.service.product.review;
 
 import java.util.List;
 
+import ecommerce.coupang.dto.request.PagingRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class ProductReviewQueryService {
 	 * @return 리뷰 리스트
 	 */
 	@LogAction("상품 리뷰 조회")
-	public Page<ProductReview> findReviewsByProduct(Long productId, Integer star, ReviewSort sort, int page, int pageSize) {
-		return productReviewRepository.findByProductId(productId, star, sort, PageRequest.of(page, pageSize));
+	public Page<ProductReview> findReviewsByProduct(Long productId, Integer star, ReviewSort sort, PagingRequest pagingRequest) {
+		return productReviewRepository.findByProductId(productId, star, sort, PageRequest.of(pagingRequest.getPage(), pagingRequest.getPageSize()));
 	}
 }

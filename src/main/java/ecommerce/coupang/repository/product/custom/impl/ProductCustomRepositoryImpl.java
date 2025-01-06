@@ -18,6 +18,7 @@ import ecommerce.coupang.domain.product.variant.QProductVariant;
 import ecommerce.coupang.domain.product.variant.QProductVariantOption;
 import ecommerce.coupang.domain.store.QCouponProduct;
 import ecommerce.coupang.domain.store.QStore;
+import ecommerce.coupang.dto.request.product.ProductSearchRequest;
 import ecommerce.coupang.dto.request.product.ProductSort;
 import ecommerce.coupang.dto.response.category.CategoryResponse;
 import ecommerce.coupang.dto.response.product.ProductResponse;
@@ -61,7 +62,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 	}
 
 	@Override
-	public Page<ProductResponse> searchProducts(String keyword, List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, Pageable pageable) {
+	public Page<ProductResponse> searchProducts(ProductSearchRequest searchRequest, List<Category> categories, ProductSort sort, Pageable pageable) {
 		QProduct product = QProduct.product;
 		QProductVariant productVariant = QProductVariant.productVariant;
 		QProductCategoryOption productCategoryOption = QProductCategoryOption.productCategoryOption;
@@ -70,7 +71,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 		QStore store = QStore.store;
 		QCouponProduct couponProduct = QCouponProduct.couponProduct;
 
-		BooleanBuilder builder = searchFilter(productVariant, keyword, categories, storeId, categoryOptions, variantOptions, product, productCategoryOption, productVariantOption);
+		BooleanBuilder builder = searchFilter(productVariant, searchRequest, categories, product, productCategoryOption, productVariantOption);
 
 		JPAQuery<ProductResponse> query = queryFactory
 			.select(Projections.constructor(
@@ -129,23 +130,23 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 		}
 	}
 
-	private BooleanBuilder searchFilter(QProductVariant productVariant, String keyword, List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, QProduct product, QProductCategoryOption productCategoryOption, QProductVariantOption productVariantOption) {
+	private BooleanBuilder searchFilter(QProductVariant productVariant, ProductSearchRequest request, List<Category> categories, QProduct product, QProductCategoryOption productCategoryOption, QProductVariantOption productVariantOption) {
 		BooleanBuilder builder = new BooleanBuilder();
 
 		/* 대표상품과 활성화된 상품만 찾음 */
 		builder.and(productVariant.isDefault.isTrue());
 		builder.and(product.isActive.isTrue());
 
-		if (StringUtils.hasText(keyword))
-			builder.and(product.name.likeIgnoreCase(keyword));
+		if (StringUtils.hasText(request.getKeyword()))
+			builder.and(product.name.likeIgnoreCase("%" + request.getKeyword() + "%"));
 		if (!categories.isEmpty())
 			builder.and(product.category.in(categories));
-		if (storeId != null)
-			builder.and(product.store.id.eq(storeId));
-		if (categoryOptions != null && !categoryOptions.isEmpty())
-			builder.and(productCategoryOption.categoryOptionValue.id.in(categoryOptions));
-		if (variantOptions != null && !variantOptions.isEmpty())
-			builder.and(productVariantOption.variantOptionValue.id.in(variantOptions));
+		if (request.getStoreId() != null)
+			builder.and(product.store.id.eq(request.getStoreId()));
+		if (request.getCategoryOptions() != null && !request.getVariantOptions().isEmpty())
+			builder.and(productCategoryOption.categoryOptionValue.id.in(request.getCategoryOptions()));
+		if (request.getVariantOptions() != null && !request.getVariantOptions().isEmpty())
+			builder.and(productVariantOption.variantOptionValue.id.in(request.getVariantOptions()));
 
 		return builder;
 	}
