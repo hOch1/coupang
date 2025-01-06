@@ -70,6 +70,7 @@ public class ProductController {
 	@GetMapping("/search")
 	@Operation(summary = "상품 조회 API", description = "상점, 카테고리, 옵션별로 상품을 조회합니다.")
 	public ResponseEntity<Result<List<ProductResponse>>> searchProducts(
+		@RequestParam(required = false) String keyword,
 		@RequestParam(required = false) Long categoryId,
 		@RequestParam(required = false) Long storeId,
 		@RequestParam(required = false) List<Long> categoryOptions,
@@ -81,7 +82,7 @@ public class ProductController {
 
 		MemberGrade memberGrade = getMemberGrade(userDetails);
 
-		Page<ProductResponse> responses = productQueryService.search(categoryId, storeId, categoryOptions, variantOptions, sort, page, pageSize, memberGrade);
+		Page<ProductResponse> responses = productQueryService.search(keyword, categoryId, storeId, categoryOptions, variantOptions, sort, page, pageSize, memberGrade);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),
 			responses.getContent().size(),

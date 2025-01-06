@@ -16,6 +16,7 @@ import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.cart.CartItemRepository;
 import ecommerce.coupang.repository.cart.CartRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
+import ecommerce.coupang.service.cart.CartQueryService;
 import ecommerce.coupang.service.cart.CartService;
 import lombok.RequiredArgsConstructor;
 
@@ -26,13 +27,13 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CartServiceImpl implements CartService {
 
-	private final CartRepository cartRepository;
+	private final CartQueryService cartQueryService;
 	private final CartItemRepository cartItemRepository;
 	private final ProductVariantRepository productVariantRepository;
 
 	@Override
 	public Cart addCart(AddCartRequest request, Member member) throws CustomException {
-		Cart cart = getCartWithMember(member);
+		Cart cart = cartQueryService.getCartWithMember(member);
 
 		ProductVariant productVariant = productVariantRepository.findById(request.getProductVariantId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -69,29 +70,20 @@ public class CartServiceImpl implements CartService {
 
 	@Override
 	public CartItem removeItem(Long cartItemId, Member member) throws CustomException {
-		Cart cart = getCartWithMember(member);
+		Cart cart = cartQueryService.getCartWithMember(member);
 
 		CartItem cartItem = cartItemRepository.findById(cartItemId)
 			.orElseThrow(() -> new CustomException(ErrorCode.CART_ITEM_NOT_FOUND));
 
 		cart.getCartItems().remove(cartItem);
-		cartItemRepository.delete(cartItem);
 
 		return cartItem;
 	}
 
 	@Override
 	public void clearCart(Member member) {
-		Cart cart = getCartWithMember(member);
+		Cart cart = cartQueryService.getCartWithMember(member);
 
-		cartItemRepository.deleteAll(cart.getCartItems());
 		cart.getCartItems().clear();
-	}
-
-	private Cart getCartWithMember(Member member) {
-		return cartRepository.findByMemberId(member.getId()).orElseGet(() -> {
-				Cart newCart = Cart.create(member);
-				return cartRepository.save(newCart);
-		});
 	}
 }

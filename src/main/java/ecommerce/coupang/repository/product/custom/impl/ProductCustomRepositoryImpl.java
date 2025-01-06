@@ -2,13 +2,13 @@ package ecommerce.coupang.repository.product.custom.impl;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.domain.category.QCategory;
-import ecommerce.coupang.domain.member.MemberGrade;
 import ecommerce.coupang.domain.member.QMember;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.QProduct;
@@ -59,7 +59,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 	}
 
 	@Override
-	public Page<ProductResponse> searchProducts(List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, Pageable pageable) {
+	public Page<ProductResponse> searchProducts(String keyword, List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, Pageable pageable) {
 		QProduct product = QProduct.product;
 		QProductVariant productVariant = QProductVariant.productVariant;
 		QProductCategoryOption productCategoryOption = QProductCategoryOption.productCategoryOption;
@@ -68,7 +68,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 		QStore store = QStore.store;
 		QCouponProduct couponProduct = QCouponProduct.couponProduct;
 
-		BooleanBuilder builder = searchFilter(productVariant, categories, storeId, categoryOptions, variantOptions, product, productCategoryOption, productVariantOption);
+		BooleanBuilder builder = searchFilter(productVariant, keyword, categories, storeId, categoryOptions, variantOptions, product, productCategoryOption, productVariantOption);
 
 		JPAQuery<ProductResponse> query = queryFactory
 			.select(Projections.constructor(
@@ -88,15 +88,19 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 					category.id,
 					category.name
 				),
-				JPAExpressions.selectOne()
-					.from(couponProduct)
-					.where(couponProduct.product.id.eq(product.id))
-					.exists()
+				/* 쿠폰 상품 left join 후 존재하면 true */
+				Expressions.asBoolean(
+					new CaseBuilder()
+						.when(couponProduct.id.isNotNull())
+						.then(true)
+						.otherwise(false)
+				)
 			))
 			.from(productVariant)
 			.join(productVariant.product, product)
 			.join(productVariant.product.store, store)
 			.join(productVariant.product.category, category)
+			.leftJoin(couponProduct).on(couponProduct.product.eq(product))
 			.where(builder);
 
 		searchSort(query, product, productVariant, sort);
@@ -120,15 +124,20 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 			case RATING -> query.orderBy(product.starAvg.desc());
 			case PRICE_HIGH -> query.orderBy(productVariant.price.desc());
 			case PRICE_LOW -> query.orderBy(productVariant.price.asc());
-			case SALES -> query.orderBy(productVariant.salesCount.desc());
+			case SALES_HIGH -> query.orderBy(productVariant.salesCount.desc());
+			case SALES_LOW -> query.orderBy(productVariant.salesCount.asc());
 		}
 	}
 
-	private BooleanBuilder searchFilter(QProductVariant productVariant, List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, QProduct product, QProductCategoryOption productCategoryOption, QProductVariantOption productVariantOption) {
-
+	private BooleanBuilder searchFilter(QProductVariant productVariant, String keyword, List<Category> categories, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, QProduct product, QProductCategoryOption productCategoryOption, QProductVariantOption productVariantOption) {
 		BooleanBuilder builder = new BooleanBuilder();
-		builder.and(productVariant.isDefault.isTrue());
 
+		/* 대표상품과 활성화된 상품만 찾음 */
+		builder.and(productVariant.isDefault.isTrue());
+		builder.and(product.isActive.isTrue());
+
+		if (keyword != null && !keyword.isBlank())
+			builder.and(product.name.likeIgnoreCase(keyword));
 		if (!categories.isEmpty())
 			builder.and(product.category.in(categories));
 		if (storeId != null)

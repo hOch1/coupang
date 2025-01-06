@@ -3,7 +3,6 @@ package ecommerce.coupang.service.product;
 import java.util.ArrayList;
 import java.util.List;
 
-import ecommerce.coupang.domain.product.Product;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,7 @@ import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.repository.store.CouponProductRepository;
 import ecommerce.coupang.service.category.CategoryService;
-import ecommerce.coupang.service.discount.DiscountPolicy;
+import ecommerce.coupang.service.discount.DiscountService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -41,7 +40,7 @@ public class ProductQueryService {
 	private final ProductVariantOptionRepository productVariantOptionRepository;
 	private final CouponProductRepository couponProductRepository;
 	private final CategoryService categoryService;
-	private final DiscountPolicy memberDiscountPolicy;
+	private final DiscountService discountService;
 
 	/**
 	 * 상품 상세 조회
@@ -58,7 +57,7 @@ public class ProductQueryService {
 		List<CouponProduct> couponProducts = couponProductRepository.findByProductId(productVariant.getProduct().getId());
 		Category category = categoryService.findCategoryWithRoot(productVariant.getProduct().getCategory().getId());
 
-		int discountPrice = memberDiscountPolicy.calculateDiscount(productVariant.getPrice(), memberGrade, null);
+		int discountPrice = discountService.calculateMemberDiscount(memberGrade, productVariant.getPrice());
 
 		return ProductDetailResponse.from(productVariant, discountPrice, category, productCategoryOptions, productVariantOptions, couponProducts);
 	}
@@ -75,16 +74,16 @@ public class ProductQueryService {
 	 * @return 조회 상품 리스트
      */
 	@LogAction("상품 목록 조회")
-	public Page<ProductResponse> search(Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, int page, int pageSize, MemberGrade memberGrade) throws CustomException{
+	public Page<ProductResponse> search(String keyword, Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, int page, int pageSize, MemberGrade memberGrade) throws CustomException{
 		List<Category> categories = new ArrayList<>();
 
 		if (categoryId != null)
 			categories = categoryService.findAllSubCategories(categoryId);
 
-		Page<ProductResponse> responses = productRepository.searchProducts(categories, storeId, categoryOptions, variantOptions, sort, PageRequest.of(page, pageSize));
+		Page<ProductResponse> responses = productRepository.searchProducts(keyword, categories, storeId, categoryOptions, variantOptions, sort, PageRequest.of(page, pageSize));
 
 		responses.forEach(productResponse ->
-				productResponse.setMemberDiscountPrice(memberDiscountPolicy.calculateDiscount(productResponse.getPrice(), memberGrade, null)));
+				productResponse.setMemberDiscountPrice(discountService.calculateMemberDiscount(memberGrade, productResponse.getPrice())));
 		return responses;
 	}
 }

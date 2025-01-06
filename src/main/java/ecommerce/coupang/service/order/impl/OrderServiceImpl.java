@@ -93,6 +93,7 @@ public class OrderServiceImpl implements OrderService {
 		return order;
 	}
 
+	/* OrderItem 생성 */
 	private OrderItem createOrderItem(Order order, ProductVariant productVariant, Member member, int quantity, Long couponId) throws CustomException {
 		int totalPrice = productVariant.getPrice() * quantity;
 
@@ -101,8 +102,8 @@ public class OrderServiceImpl implements OrderService {
 		int couponDiscountPrice = discountService.calculateCouponDiscount(memberCoupon, totalPrice);
 		int memberDiscountPrice = discountService.calculateMemberDiscount(member.getGrade(), totalPrice);
 
-		// 주문 상품 생성
 		OrderItem orderItem = OrderItem.create(order, productVariant, memberCoupon, quantity, couponDiscountPrice, memberDiscountPrice);
+		/* 배송 연결 */
 		Delivery delivery = Delivery.create(orderItem, productVariant.getProduct().getStore());
 		orderItem.setDelivery(delivery);
 

@@ -19,7 +19,7 @@ import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.order.OrderItemRepository;
 import ecommerce.coupang.repository.order.OrderRepository;
-import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
+import ecommerce.coupang.service.product.option.VariantOptionService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -29,7 +29,7 @@ public class OrderQueryService {
 
 	private final OrderRepository orderRepository;
 	private final OrderItemRepository orderItemRepository;
-	private final ProductVariantOptionRepository productVariantOptionRepository;
+	private final VariantOptionService variantOptionService;
 
 	/**
 	 * 주문 목록 조회
@@ -60,8 +60,7 @@ public class OrderQueryService {
 		OrderDetailResponse response = from(order);
 
 		for (OrderItem orderItem : orderItems) {
-			List<ProductVariantOption> productVariantOptions = productVariantOptionRepository.findByProductVariantId(
-				orderItem.getProductVariant().getId());
+			List<ProductVariantOption> productVariantOptions = variantOptionService.getProductVariantOptionByProductVariantId(orderItem.getProductVariant().getId());
 
 			OrderItemResponse orderItemResponse = OrderItemResponse.from(orderItem, productVariantOptions);
 

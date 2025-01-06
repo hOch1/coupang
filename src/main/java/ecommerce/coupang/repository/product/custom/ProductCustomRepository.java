@@ -4,6 +4,7 @@ import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.domain.member.MemberGrade;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.dto.request.product.ProductSort;
+import ecommerce.coupang.dto.response.product.ProductDetailResponse;
 import ecommerce.coupang.dto.response.product.ProductResponse;
 
 import java.util.List;
@@ -15,15 +16,17 @@ import org.springframework.data.domain.Pageable;
 public interface ProductCustomRepository {
 
 	/**
-	 * 옵션별 상품 조회 (대표상품)
+	 * 상품 검색
 	 *
-	 * @param categories      포함된 카테고리
-	 * @param storeId         상점 ID
-	 * @param categoryOptions 포함된 카테고리 옵션
-	 * @param variantOptions  포함된 변형 옵션
+	 * @param keyword 			검색 키워드
+	 * @param categories     	포함된 카테고리
+	 * @param storeId         	상점 ID
+	 * @param categoryOptions 	포함된 카테고리 옵션
+	 * @param variantOptions  	포함된 변형 옵션
 	 * @return 상품 목록 (대표상품)
 	 */
 	Page<ProductResponse> searchProducts(
+		String keyword,
 		List<Category> categories,
 		Long storeId,
 		List<Long> categoryOptions,

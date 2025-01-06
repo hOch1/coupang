@@ -24,8 +24,7 @@ public class CartQueryService {
     private final ProductVariantOptionRepository productVariantOptionRepository;
 
     public CartResponse findMyCart(Member member) {
-        Cart cart = cartRepository.findByMemberId(member.getId())
-                .orElse(null);
+        Cart cart = getCartWithMember(member);
 
         List<CartItem> cartItems = cartItemRepository.findByMemberIdWithProductStore(member.getId());
 
@@ -38,5 +37,12 @@ public class CartQueryService {
         }
 
         return response;
+    }
+
+    public Cart getCartWithMember(Member member) {
+        return cartRepository.findByMemberId(member.getId()).orElseGet(() -> {
+            Cart newCart = Cart.create(member);
+            return cartRepository.save(newCart);
+        });
     }
 }

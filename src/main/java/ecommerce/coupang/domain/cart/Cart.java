@@ -31,12 +31,12 @@ public class Cart {
 	@Column(name = "cart_id")
 	private Long id;
 
-	@OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<CartItem> cartItems = new ArrayList<>();
-
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
+
+	@OneToMany(mappedBy = "cart", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<CartItem> cartItems = new ArrayList<>();
 
 	public Cart(Member member) {
 		this.member = member;

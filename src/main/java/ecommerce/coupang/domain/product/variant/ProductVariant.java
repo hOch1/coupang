@@ -18,6 +18,11 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
+@Table(indexes = {
+	@Index(name = "idx_product_variant_default", columnList = "is_default, product_id"),
+	@Index(name = "idx_product_variant_price", columnList = "is_default, price"),
+	@Index(name = "idx_product_variant_sales", columnList = "is_default, sales_count")
+})
 public class ProductVariant {
 
 	@Id
