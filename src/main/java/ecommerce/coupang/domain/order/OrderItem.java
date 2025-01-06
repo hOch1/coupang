@@ -2,11 +2,9 @@ package ecommerce.coupang.domain.order;
 
 import java.util.Objects;
 
-import ecommerce.coupang.domain.cart.CartItem;
 import ecommerce.coupang.domain.member.MemberCoupon;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.store.Coupon;
-import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -80,35 +78,21 @@ public class OrderItem {
 		this.discountTotalPrice = discountTotalPrice;
 	}
 
-	public static OrderItem createByProduct(Order order, ProductVariant productVariant, MemberCoupon memberCoupon, CreateOrderByProductRequest request, int couponDiscountPrice, int memberDiscountPrice) {
-		productVariant.increaseSalesCount(request.getQuantity());
+	public static OrderItem create(Order order, ProductVariant productVariant, MemberCoupon memberCoupon, int quantity,
+		int couponDiscountPrice, int memberDiscountPrice) {
+
+		productVariant.increaseSalesCount(quantity);
 		Coupon coupon = memberCoupon != null ? memberCoupon.getCoupon() : null;
-		return new OrderItem(
-			order,
+
+		return new OrderItem(order,
 			productVariant,
 			coupon,
 			productVariant.getPrice(),
-			request.getQuantity(),
+			quantity,
 			couponDiscountPrice,
 			memberDiscountPrice,
-			productVariant.getPrice() * request.getQuantity(),
-			productVariant.getPrice() * request.getQuantity() - couponDiscountPrice - memberDiscountPrice
-		);
-	}
-
-	public static OrderItem createByCartItem(Order order, CartItem cartItem, MemberCoupon memberCoupon, int couponDiscountPrice, int memberDiscountPrice) {
-		cartItem.getProductVariant().increaseSalesCount(cartItem.getQuantity());
-		Coupon coupon = memberCoupon != null ? memberCoupon.getCoupon() : null;
-		return new OrderItem(
-			order,
-			cartItem.getProductVariant(),
-			coupon,
-			cartItem.getProductVariant().getPrice(),
-			cartItem.getQuantity(),
-			couponDiscountPrice,
-			memberDiscountPrice,
-			cartItem.getProductVariant().getPrice() * cartItem.getQuantity(),
-			cartItem.getProductVariant().getPrice() * cartItem.getQuantity() - couponDiscountPrice - memberDiscountPrice
+			productVariant.getPrice() * quantity,
+			productVariant.getPrice() * quantity - couponDiscountPrice - memberDiscountPrice
 		);
 	}
 

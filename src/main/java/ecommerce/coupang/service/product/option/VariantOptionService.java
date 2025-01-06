@@ -17,15 +17,16 @@ public class VariantOptionService {
 
     private final VariantOptionValueRepository variantOptionValueRepository;
 
-    private VariantOptionValue getVariantOptionValue(Long optionValueId) throws CustomException {
-        return variantOptionValueRepository.findById(optionValueId)
-                .orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
-    }
-
-    // VariantOptionId로 ProductVariantOption 생성
+    /* VariantOptionId로 ProductVariantOption 생성 */
     public ProductVariantOption createProductVariantOption(Long variantOptionValueId, ProductVariant productVariant) throws CustomException {
         VariantOptionValue variantOptionValue = getVariantOptionValue(variantOptionValueId);
 
         return ProductVariantOption.create(productVariant, variantOptionValue);
     }
+
+    private VariantOptionValue getVariantOptionValue(Long optionValueId) throws CustomException {
+        return variantOptionValueRepository.findById(optionValueId)
+            .orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
+    }
+
 }

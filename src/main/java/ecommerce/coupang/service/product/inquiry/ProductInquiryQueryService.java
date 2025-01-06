@@ -23,7 +23,6 @@ public class ProductInquiryQueryService {
 
 	private final ProductInquiryRepository productInquiryRepository;
 	private final ProductRepository productRepository;
-	private final AnswerRepository answerRepository;
 
 	/**
 	 * 내가 등록한 문의 목록 조회
@@ -44,6 +43,12 @@ public class ProductInquiryQueryService {
 	public List<ProductInquiry> getInquiryByProduct(Long productId) throws CustomException {
 		Product product = productRepository.findById(productId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
+
+		/* 해당 상품 비활성상태일때 예외
+		TODO 예외처리 고민
+		 */
+		if (!product.isActive())
+			throw new CustomException(ErrorCode.PRODUCT_NOT_FOUND);
 
 		return productInquiryRepository.findByProductIdWithMember(productId);
 	}

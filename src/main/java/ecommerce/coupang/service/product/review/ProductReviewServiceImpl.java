@@ -16,6 +16,7 @@ import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.repository.product.review.ProductReviewRepository;
 import ecommerce.coupang.repository.product.review.ReviewLikeRepository;
+import ecommerce.coupang.service.product.ProductQueryService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -43,16 +44,14 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 		*/
 
 		ProductReview productReview = ProductReview.create(request, product, member);
-
 		product.addProductReviews(productReview);
 
-		return productReviewRepository.save(productReview);
+		return productReview;
 	}
 
 	@Override
 	public ProductReview likeReview(Long reviewId, Member member) throws CustomException {
-		ProductReview productReview = productReviewRepository.findByIdWithMember(reviewId)
-			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+		ProductReview productReview = getProductReview(reviewId);
 
 		/*
 		 TODO 자기 리뷰엔 좋아요 제한 (테스트시 해제)
@@ -65,10 +64,8 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 		if (findLike.isEmpty()) {
 			ReviewLike reviewLike = ReviewLike.create(productReview, member);
 			productReview.addLikes(reviewLike);
-			reviewLikeRepository.save(reviewLike);
 		} else {
 			ReviewLike reviewLike = findLike.get();
-			reviewLikeRepository.delete(reviewLike);
 			productReview.getLikes().remove(reviewLike);
 			productReview.decreaseLikeCount();
 		}
@@ -79,27 +76,25 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 
 	@Override
 	public ProductReview updateReview(Long reviewId, UpdateReviewRequest request, Member member) throws CustomException {
-		ProductReview productReview = productReviewRepository.findByIdWithMember(reviewId)
-			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+		ProductReview productReview = getProductReview(reviewId);
 
-		if (!productReview.getMember().equals(member))
-			throw new CustomException(ErrorCode.FORBIDDEN);
+		validateReviewOwner(member, productReview);
 
 		productReview.update(request);
+
 		Product product = productReview.getProduct();
 		product.updateStarAvg();
 
 		productRepository.save(product);
+
 		return productReview;
 	}
 
 	@Override
 	public ProductReview deleteReview(Long reviewId, Member member) throws CustomException {
-		ProductReview productReview = productReviewRepository.findByIdWithMember(reviewId)
-			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
+		ProductReview productReview = getProductReview(reviewId);
 
-		if (!productReview.getMember().equals(member))
-			throw new CustomException(ErrorCode.FORBIDDEN);
+		validateReviewOwner(member, productReview);
 
 		Product product = productReview.getProduct();
 		product.getProductReviews().remove(productReview);
@@ -108,5 +103,17 @@ public class ProductReviewServiceImpl implements ProductReviewService {
 
 		productRepository.save(product);
 		return productReview;
+	}
+
+	/* 해당 리뷰 작성자가 member 인지 검증 */
+	private static void validateReviewOwner(Member member, ProductReview productReview) throws CustomException {
+		if (!productReview.getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
+	}
+
+	/* 상품 리뷰 가져오기 */
+	private ProductReview getProductReview(Long reviewId) throws CustomException {
+		return productReviewRepository.findByIdWithMember(reviewId)
+			.orElseThrow(() -> new CustomException(ErrorCode.REVIEW_NOT_FOUND));
 	}
 }

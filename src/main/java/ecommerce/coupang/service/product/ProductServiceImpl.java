@@ -11,7 +11,7 @@ import ecommerce.coupang.repository.product.ProductVariantRepository;
 
 import ecommerce.coupang.service.product.option.CategoryOptionService;
 import ecommerce.coupang.service.product.option.VariantOptionService;
-import ecommerce.coupang.service.store.StoreUtils;
+import ecommerce.coupang.common.utils.StoreUtils;
 import ecommerce.coupang.service.store.query.StoreQueryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -129,6 +129,7 @@ public class ProductServiceImpl implements ProductService {
 		ProductVariant defaultProductVariant = productVariantRepository.findByProductIdAndDefault(productVariant.getProduct().getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
+		/* 대표상품과 변경 요청한 상품이같을 시 예외 */
 		if (defaultProductVariant.equals(productVariant))
 			throw new CustomException(ErrorCode.ALREADY_DEFAULT_PRODUCT);
 
@@ -181,12 +182,13 @@ public class ProductServiceImpl implements ProductService {
 		return productVariant;
 	}
 
+	/* 상품 변형 가져오기 */
 	private ProductVariant getProductVariantWithMember(Long productVariantId) throws CustomException {
 		return productVariantRepository.findByIdWithMember(productVariantId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 	}
 
-	// ProductVariantOption -> ProductVariant 추가 -> Product 추가
+	/* ProductVariantOption -> ProductVariant 추가 -> Product 추가 */
 	private void addVariantToProduct(ProductVariant productVariant, CreateProductVariantRequest request, Product product) throws CustomException {
 		for (CreateProductVariantRequest.VariantOptionRequest o : request.getVariantOptions()) {
 			ProductVariantOption productVariantOption = variantOptionService.createProductVariantOption(o.getOptionValueId(), productVariant);
@@ -197,7 +199,7 @@ public class ProductServiceImpl implements ProductService {
 		product.addProductVariants(productVariant);
 	}
 
-	// ProductOption -> Product 추가
+	/* ProductOption -> Product 추가 */
 	private void addCategoryOptionsToProduct(CreateProductRequest request, Product product) throws CustomException {
 		for (CreateProductRequest.CategoryOptionsRequest c : request.getCategoryOptions()) {
 			ProductCategoryOption productCategoryOption = categoryOptionService.createProductCategoryOption(c.getOptionValueId(), product);

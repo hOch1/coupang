@@ -41,11 +41,9 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
 
 	@Override
 	public ProductInquiry updateInquiry(Long inquiryId, UpdateInquiryRequest request, Member member) throws CustomException {
-		ProductInquiry productInquiry = productInquiryRepository.findByIdWithMember(inquiryId)
-			.orElseThrow(() -> new CustomException(ErrorCode.INQUIRY_NOT_FOUND));
+		ProductInquiry productInquiry = getProductInquiry(inquiryId);
 
-		if (!productInquiry.getMember().equals(member))
-			throw new CustomException(ErrorCode.FORBIDDEN);
+		validateInquiryOwner(member, productInquiry);
 
 		productInquiry.update(request);
 		return productInquiry;
@@ -53,13 +51,23 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
 
 	@Override
 	public ProductInquiry deleteInquiry(Long inquiryId, Member member) throws CustomException {
-		ProductInquiry productInquiry = productInquiryRepository.findByIdWithMember(inquiryId)
-			.orElseThrow(() -> new CustomException(ErrorCode.INQUIRY_NOT_FOUND));
+		ProductInquiry productInquiry = getProductInquiry(inquiryId);
 
-		if (!productInquiry.getMember().equals(member))
-			throw new CustomException(ErrorCode.FORBIDDEN);
+		validateInquiryOwner(member, productInquiry);
 
 		productInquiryRepository.delete(productInquiry);
 		return productInquiry;
+	}
+
+	/* 해당 문의 작성자가 member 가 맞는지 검증 */
+	private static void validateInquiryOwner(Member member, ProductInquiry productInquiry) throws CustomException {
+		if (!productInquiry.getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
+	}
+
+	/* 문의 가져오기 */
+	private ProductInquiry getProductInquiry(Long inquiryId) throws CustomException {
+		return productInquiryRepository.findByIdWithMember(inquiryId)
+			.orElseThrow(() -> new CustomException(ErrorCode.INQUIRY_NOT_FOUND));
 	}
 }

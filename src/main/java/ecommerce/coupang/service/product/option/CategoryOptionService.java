@@ -13,20 +13,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-
 public class CategoryOptionService {
 
     private final CategoryOptionValueRepository categoryOptionValueRepository;
 
-    private CategoryOptionValue getCategoryOptionValue(Long optionValueId) throws CustomException {
-        return categoryOptionValueRepository.findById(optionValueId)
-                .orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
-    }
-
-    // CategoryOptionValueId로 ProductCategoryOption 생성
+    /* CategoryOptionValueId로 ProductCategoryOption 생성 */
     public ProductCategoryOption createProductCategoryOption(Long optionValueId, Product product) throws CustomException {
         CategoryOptionValue categoryOptionValue = getCategoryOptionValue(optionValueId);
 
         return ProductCategoryOption.create(product, categoryOptionValue);
+    }
+
+    private CategoryOptionValue getCategoryOptionValue(Long optionValueId) throws CustomException {
+        return categoryOptionValueRepository.findById(optionValueId)
+            .orElseThrow(() -> new CustomException(ErrorCode.OPTION_VALUE_NOT_FOUND));
     }
 }

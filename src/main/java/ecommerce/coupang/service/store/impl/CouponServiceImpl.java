@@ -1,6 +1,6 @@
 package ecommerce.coupang.service.store.impl;
 
-import ecommerce.coupang.service.store.StoreUtils;
+import ecommerce.coupang.common.utils.StoreUtils;
 import ecommerce.coupang.service.store.query.StoreQueryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

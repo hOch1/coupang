@@ -1,8 +1,7 @@
 package ecommerce.coupang.service.order.impl;
 
-
+import ecommerce.coupang.common.utils.ProductUtils;
 import ecommerce.coupang.domain.member.MemberCoupon;
-import ecommerce.coupang.domain.member.MemberGrade;
 import ecommerce.coupang.domain.order.OrderStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,17 +12,15 @@ import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.order.Delivery;
 import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.domain.order.OrderItem;
-import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
 import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.cart.CartItemRepository;
-import ecommerce.coupang.repository.member.MemberCouponRepository;
 import ecommerce.coupang.repository.order.OrderRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
-import ecommerce.coupang.service.discount.DiscountPolicy;
+import ecommerce.coupang.service.discount.DiscountService;
 import ecommerce.coupang.service.member.query.AddressQueryService;
 import ecommerce.coupang.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -37,9 +34,7 @@ public class OrderServiceImpl implements OrderService {
 	private final ProductVariantRepository productVariantRepository;
 	private final CartItemRepository cartItemRepository;
 	private final AddressQueryService addressQueryService;
-	private final MemberCouponRepository memberCouponRepository;
-	private final DiscountPolicy couponDiscountPolicy;
-	private final DiscountPolicy memberDiscountPolicy;
+	private final DiscountService discountService;
 
 	@Override
 	@Transactional
@@ -50,16 +45,8 @@ public class OrderServiceImpl implements OrderService {
 		ProductVariant productVariant = productVariantRepository.findByIdWithStore(request.getProductVariantId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
-		verifyStatusAndReduceStock(productVariant, request.getQuantity());
-
-		int totalPrice = productVariant.getPrice() * request.getQuantity();
-		MemberCoupon memberCoupon = getMemberCouponIfPresent(member, request.getCouponId());
-		int couponDiscountPrice = couponDiscount(memberCoupon, totalPrice);
-		int memberDiscountPrice = memberDiscount(member.getGrade(), totalPrice);
-
-		OrderItem orderItem = OrderItem.createByProduct(order, productVariant, memberCoupon, request, couponDiscountPrice, memberDiscountPrice);
-		Delivery delivery = Delivery.create(orderItem, productVariant.getProduct().getStore());
-		orderItem.setDelivery(delivery);
+		ProductUtils.verifyStatusAndReduceStock(productVariant, request.getQuantity());
+		OrderItem orderItem = createOrderItem(order, productVariant, member, request.getQuantity(), request.getCouponId());
 
 		order.addOrderItem(orderItem);
 
@@ -79,16 +66,8 @@ public class OrderServiceImpl implements OrderService {
 			CartItem cartItem = cartItemRepository.findByIdWithStore(cartItemRequest.getCartItemId())
 				.orElseThrow(() -> new CustomException(ErrorCode.CART_ITEM_NOT_FOUND));
 
-			verifyStatusAndReduceStock(cartItem.getProductVariant(), cartItem.getQuantity());
-
-			int totalPrice = cartItem.getProductVariant().getPrice() * cartItem.getQuantity();
-			MemberCoupon memberCoupon = getMemberCouponIfPresent(member, cartItemRequest.getCouponId());
-			int couponDiscountPrice = couponDiscount(memberCoupon, totalPrice);
-			int memberDiscountPrice = memberDiscount(member.getGrade(), totalPrice);
-
-			OrderItem orderItem = OrderItem.createByCartItem(order, cartItem, memberCoupon, couponDiscountPrice, memberDiscountPrice);
-			Delivery delivery = Delivery.create(orderItem, cartItem.getProductVariant().getProduct().getStore());
-			orderItem.setDelivery(delivery);
+			ProductUtils.verifyStatusAndReduceStock(cartItem.getProductVariant(), cartItem.getQuantity());
+			OrderItem orderItem = createOrderItem(order, cartItem.getProductVariant(), member, cartItem.getQuantity(), cartItemRequest.getCouponId());
 
 			order.addOrderItem(orderItem);
 			cartItemRepository.delete(cartItem);
@@ -114,32 +93,19 @@ public class OrderServiceImpl implements OrderService {
 		return order;
 	}
 
-	private void verifyStatusAndReduceStock(ProductVariant productVariant, int quantity) throws CustomException {
-		if (!productVariant.getStatus().equals(ProductStatus.ACTIVE))
-			throw new CustomException(ErrorCode.PRODUCT_STATUS_NOT_ACTIVE);
+	private OrderItem createOrderItem(Order order, ProductVariant productVariant, Member member, int quantity, Long couponId) throws CustomException {
+		int totalPrice = productVariant.getPrice() * quantity;
 
-		productVariant.reduceStock(quantity);
-	}
+		// 할인 계산
+		MemberCoupon memberCoupon = discountService.getMemberCouponIfPresent(member, couponId);
+		int couponDiscountPrice = discountService.calculateCouponDiscount(memberCoupon, totalPrice);
+		int memberDiscountPrice = discountService.calculateMemberDiscount(member.getGrade(), totalPrice);
 
-	private MemberCoupon getMemberCouponIfPresent(Member member, Long couponId) throws CustomException {
-		if (couponId == null)
-			return null;
+		// 주문 상품 생성
+		OrderItem orderItem = OrderItem.create(order, productVariant, memberCoupon, quantity, couponDiscountPrice, memberDiscountPrice);
+		Delivery delivery = Delivery.create(orderItem, productVariant.getProduct().getStore());
+		orderItem.setDelivery(delivery);
 
-		return memberCouponRepository.findByMemberIdAndCouponId(member.getId(), couponId)
-				.orElseThrow(() -> new CustomException(ErrorCode.COUPON_NOT_FOUND));
-	}
-
-	private int couponDiscount(MemberCoupon memberCoupon, int price) throws CustomException {
-		if (memberCoupon == null)
-			return 0;
-		if (memberCoupon.isUsed())
-			throw new CustomException(ErrorCode.ALREADY_USE_COUPON);
-
-		memberCoupon.use();
-		return couponDiscountPolicy.calculateDiscount(price, null, memberCoupon.getCoupon());
-	}
-
-	private int memberDiscount(MemberGrade memberGrade, int price) {
-		return memberDiscountPolicy.calculateDiscount(price, memberGrade, null);
+		return orderItem;
 	}
 }

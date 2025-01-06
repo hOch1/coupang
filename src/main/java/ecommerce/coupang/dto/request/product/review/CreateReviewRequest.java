@@ -13,7 +13,6 @@ public class CreateReviewRequest {
 	@NotBlank(message = "내용을 입력해주세요.")
 	private final String content;
 
-	// TODO 1~5까지 Valid
 	@Min(value = 1, message = "별점은 최소 1 이상이어야 합니다.")
 	@Max(value = 5, message = "별점은 최대 5 이하이어야 합니다.")
 	private final int star;
