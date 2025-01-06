@@ -93,11 +93,7 @@ public class ProductController {
 		));
 	}
 
-	private static MemberGrade getMemberGrade(CustomUserDetails userDetails) {
-		return (userDetails == null || userDetails.getMember() == null)
-			? MemberGrade.NORMAL
-			: userDetails.getMember().getGrade();
-	}
+
 
 	@GetMapping("/{productVariantId}")
 	@Operation(summary = "상품 상세 조회 API", description = "해당 상품을 상세 조회합니다.")
@@ -182,4 +178,11 @@ public class ProductController {
 		productService.deleteProductVariant(productVariantId, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
+
+	private static MemberGrade getMemberGrade(CustomUserDetails userDetails) {
+		return (userDetails == null || userDetails.getMember() == null)
+				? MemberGrade.NORMAL
+				: userDetails.getMember().getGrade();
+	}
+
 }

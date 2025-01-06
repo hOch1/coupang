@@ -4,6 +4,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -28,6 +29,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -88,19 +90,17 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 					category.id,
 					category.name
 				),
-				/* 쿠폰 상품 left join 후 존재하면 true */
-				Expressions.asBoolean(
-					new CaseBuilder()
-						.when(couponProduct.id.isNotNull())
-						.then(true)
-						.otherwise(false)
-				)
+				/* 쿠폰 있는지 확인 서브쿼리 */
+				JPAExpressions
+					.selectOne()
+					.from(couponProduct)
+					.where(couponProduct.product.eq(product))
+					.exists()
 			))
 			.from(productVariant)
 			.join(productVariant.product, product)
 			.join(productVariant.product.store, store)
 			.join(productVariant.product.category, category)
-			.leftJoin(couponProduct).on(couponProduct.product.eq(product))
 			.where(builder);
 
 		searchSort(query, product, productVariant, sort);
@@ -136,7 +136,7 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 		builder.and(productVariant.isDefault.isTrue());
 		builder.and(product.isActive.isTrue());
 
-		if (keyword != null && !keyword.isBlank())
+		if (StringUtils.hasText(keyword))
 			builder.and(product.name.likeIgnoreCase(keyword));
 		if (!categories.isEmpty())
 			builder.and(product.category.in(categories));
