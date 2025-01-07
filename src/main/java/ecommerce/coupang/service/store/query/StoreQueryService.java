@@ -24,7 +24,6 @@ public class StoreQueryService {
 	 * 상점 상세 정보 조회
 	 * @param storeId 상점 ID
 	 * @return 상점 정보
-	 * @throws CustomException
 	 */
 	@LogAction("상점 조회")
 	public Store findStore(Long storeId) throws CustomException {

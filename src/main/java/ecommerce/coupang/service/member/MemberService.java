@@ -1,8 +1,12 @@
 package ecommerce.coupang.service.member;
 
-import ecommerce.coupang.common.aop.log.LogLevel;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@LogLevel("MemberService")
-public interface MemberService {
+import lombok.RequiredArgsConstructor;
 
+@Service
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+public class MemberService {
 }

@@ -30,7 +30,7 @@ import ecommerce.coupang.common.security.JwtProvider;
 class AuthServiceImplTest {
 
 	@InjectMocks
-	private AuthServiceImpl authService;
+	private AuthService authService;
 
 	@Mock
 	private PasswordEncoder passwordEncoder;

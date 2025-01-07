@@ -7,7 +7,8 @@ import static org.mockito.BDDMockito.*;
 import java.util.List;
 import java.util.Optional;
 
-import ecommerce.coupang.service.product.ProductServiceImpl;
+import ecommerce.coupang.service.category.CategoryService;
+import ecommerce.coupang.service.product.ProductService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -39,13 +40,12 @@ import ecommerce.coupang.repository.store.StoreRepository;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.repository.product.VariantOptionValueRepository;
-import ecommerce.coupang.service.category.CategoryService;
 
 @ExtendWith(MockitoExtension.class)
 class ProductServiceImplTest {
 
 	@InjectMocks
-	private ProductServiceImpl productService;
+	private ProductService productService;
 
 	@Mock
 	private CategoryService categoryService;

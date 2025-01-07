@@ -16,7 +16,6 @@ import ecommerce.coupang.domain.store.Coupon;
 import ecommerce.coupang.domain.store.CouponProduct;
 import ecommerce.coupang.dto.request.store.coupon.CouponSort;
 import ecommerce.coupang.dto.response.store.coupon.CouponDetailResponse;
-import ecommerce.coupang.dto.response.store.coupon.MemberCouponDetailResponse;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.store.CouponProductRepository;
@@ -47,8 +46,7 @@ public class CouponQueryService {
 	/**
 	 * 상점 쿠폰 목록 조회
 	 * @param storeId 상점 ID
-	 * @param page 현재 페이지
-	 * @param pageSize 페이지당 쿠폰 개수
+	 * @param pagingRequest 페이징 정보
 	 * @param sort 정렬 타입
 	 * @return 쿠폰 목록
 	 */
@@ -61,8 +59,7 @@ public class CouponQueryService {
 	/**
 	 * 상품 쿠폰 조회
 	 * @param productId 상품 ID
-	 * @param page 현재 페이지
-	 * @param pageSize 페이지당 쿠폰 개수
+	 * @param pagingRequest 페이징 정보
 	 * @param sort 정렬 타입
 	 * @return 쿠폰 목록
 	 */
@@ -85,10 +82,5 @@ public class CouponQueryService {
 		List<CouponProduct> couponProducts = couponProductRepository.findByCouponId(couponId);
 
 		return CouponDetailResponse.from(coupon, couponProducts);
-	}
-
-	public MemberCouponDetailResponse findMyCoupon(Long memberCouponId, Member member) {
-		// TODO
-		return null;
 	}
 }

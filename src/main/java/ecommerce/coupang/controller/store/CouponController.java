@@ -1,6 +1,5 @@
 package ecommerce.coupang.controller.store;
 
-
 import java.util.List;
 
 import ecommerce.coupang.dto.request.PagingRequest;
@@ -18,7 +17,6 @@ import ecommerce.coupang.dto.request.store.coupon.CreateCouponRequest;
 import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.store.coupon.CouponDetailResponse;
 import ecommerce.coupang.dto.response.store.coupon.CouponResponse;
-import ecommerce.coupang.dto.response.store.coupon.MemberCouponDetailResponse;
 import ecommerce.coupang.dto.response.store.coupon.MemberCouponResponse;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.security.CustomUserDetails;
@@ -75,15 +73,6 @@ public class CouponController {
 			responses.getTotalPages(),
 			responses.getTotalElements()
 		));
-	}
-
-	@GetMapping("/me/{memberCouponId}")
-	public ResponseEntity<MemberCouponDetailResponse> getMyCouponDetail(
-		@PathVariable Long memberCouponId,
-		@AuthenticationPrincipal CustomUserDetails userDetails) {
-
-		couponQueryService.findMyCoupon(memberCouponId, userDetails.getMember());
-		return ResponseEntity.ok().build();
 	}
 
 	@GetMapping("/{storeId}/store")

@@ -1,5 +1,7 @@
-package ecommerce.coupang.service.product.inquiry;
+package ecommerce.coupang.service.product;
 
+import ecommerce.coupang.common.aop.log.LogAction;
+import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.dto.request.product.inquiry.UpdateInquiryRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,12 +19,20 @@ import lombok.RequiredArgsConstructor;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class ProductInquiryServiceImpl implements ProductInquiryService {
+@LogLevel("ProductInquiryService")
+public class ProductInquiryService {
 
 	private final ProductInquiryRepository productInquiryRepository;
 	private final ProductRepository productRepository;
 
-	@Override
+	/**
+	 * 상품 문의 등록
+	 * @param productId 등록할 상품 ID
+	 * @param request 상품 문의 등록 요청 정보
+	 * @param member 요청한 회원
+	 * @return 상품 문의
+	 */
+	@LogAction("상품 문의 등록")
 	public ProductInquiry createInquiry(Long productId, CreateInquiryRequest request, Member member) throws CustomException {
 		Product product = productRepository.findById(productId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -39,7 +49,14 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
 		return productInquiry;
 	}
 
-	@Override
+	/**
+	 * 해당 문의 수정
+	 * @param inquiryId 문의 ID
+	 * @param request 문의 수정 요청 정보
+	 * @param member 요청한 회원
+	 * @return 문의
+	 */
+	@LogAction("문의 수정")
 	public ProductInquiry updateInquiry(Long inquiryId, UpdateInquiryRequest request, Member member) throws CustomException {
 		ProductInquiry productInquiry = getProductInquiry(inquiryId);
 
@@ -49,7 +66,13 @@ public class ProductInquiryServiceImpl implements ProductInquiryService {
 		return productInquiry;
 	}
 
-	@Override
+	/**
+	 * 해당 문의 삭제
+	 * @param inquiryId 문의 ID
+	 * @param member 요청한 회원
+	 * @return 문의
+	 */
+	@LogAction("문의 삭제")
 	public ProductInquiry deleteInquiry(Long inquiryId, Member member) throws CustomException {
 		ProductInquiry productInquiry = getProductInquiry(inquiryId);
 

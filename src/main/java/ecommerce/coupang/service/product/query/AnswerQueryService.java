@@ -1,4 +1,4 @@
-package ecommerce.coupang.service.product.inquiry.answer;
+package ecommerce.coupang.service.product.query;
 
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.domain.product.inquiry.Answer;

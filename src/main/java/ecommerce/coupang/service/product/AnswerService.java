@@ -1,5 +1,7 @@
-package ecommerce.coupang.service.product.inquiry.answer;
+package ecommerce.coupang.service.product;
 
+import ecommerce.coupang.common.aop.log.LogAction;
+import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.inquiry.Answer;
 import ecommerce.coupang.domain.product.inquiry.ProductInquiry;
@@ -19,13 +21,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class AnswerServiceImpl implements AnswerService{
+@LogLevel("AnswerService")
+public class AnswerService{
 
     private final AnswerRepository answerRepository;
     private final ProductInquiryRepository productInquiryRepository;
 
-    @Override
-    public Answer createAnswer(Long inquiryId, Long storeId, CreateAnswerRequest request, Member member) throws CustomException {
+    /**
+     * 문의 답변 등록
+     * @param inquiryId 상품 문의 ID
+     * @param request 답변 등록 요청 정보
+     * @param member 요청한 회원
+     * @return 답변
+     */
+    @LogAction("문의 답변 등록")
+    public Answer createAnswer(Long inquiryId, CreateAnswerRequest request, Member member) throws CustomException {
         ProductInquiry productInquiry = productInquiryRepository.findByIdWithMember(inquiryId)
                 .orElseThrow(() -> new CustomException(ErrorCode.INQUIRY_NOT_FOUND));
 
@@ -36,7 +46,7 @@ public class AnswerServiceImpl implements AnswerService{
         if (productInquiry.isAnswered())
             throw new CustomException(ErrorCode.ALREADY_ANSWERED);
 
-        Answer answer = Answer.create(request, store);
+        Answer answer = Answer.create(request, productInquiry, store);
         answerRepository.save(answer);
 
         productInquiry.setAnswer(answer);
@@ -44,7 +54,14 @@ public class AnswerServiceImpl implements AnswerService{
         return answer;
     }
 
-    @Override
+    /**
+     * 해당 답변 수정
+     * @param answerId 답변 ID
+     * @param request 답변 수정 요청 정보
+     * @param member 요청한 회원
+     * @return 답변
+     */
+    @LogAction("답변 수정")
     public Answer updateAnswer(Long answerId, UpdateAnswerRequest request, Member member) throws CustomException {
         Answer answer = getAnswer(answerId);
 
@@ -54,7 +71,13 @@ public class AnswerServiceImpl implements AnswerService{
         return answer;
     }
 
-    @Override
+    /**
+     * 해당 답변 삭제
+     * @param answerId 답변 ID
+     * @param member 요청한 회원
+     * @return 답변
+     */
+    @LogAction("답변 삭제")
     public Answer deleteAnswer(Long answerId, Member member) throws CustomException {
         Answer answer = getAnswer(answerId);
 

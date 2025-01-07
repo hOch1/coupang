@@ -7,8 +7,8 @@ import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.product.inquiry.AnswerResponse;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.security.CustomUserDetails;
-import ecommerce.coupang.service.product.inquiry.answer.AnswerQueryService;
-import ecommerce.coupang.service.product.inquiry.answer.AnswerService;
+import ecommerce.coupang.service.product.AnswerService;
+import ecommerce.coupang.service.product.query.AnswerQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -27,15 +27,14 @@ public class AnswerController {
     private final AnswerService answerService;
     private final AnswerQueryService answerQueryService;
 
-    @PostMapping("/{inquiryId}/store/{storeId}")
+    @PostMapping("/{inquiryId}")
     @Operation(summary = "상품 문의의 답변 등록 API", description = "상품 문의에 대한 답변을 등록합니다.")
     public ResponseEntity<Void> createAnswer(
             @PathVariable Long inquiryId,
-            @PathVariable Long storeId,
             @RequestBody @Valid CreateAnswerRequest request,
             @AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-        answerService.createAnswer(inquiryId, storeId, request, userDetails.getMember());
+        answerService.createAnswer(inquiryId, request, userDetails.getMember());
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
@@ -58,7 +57,6 @@ public class AnswerController {
         answerService.updateAnswer(answerId, request, userDetails.getMember());
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
-
 
     @DeleteMapping("/{answerId}")
     @Operation(summary = "답변 삭제 API", description = "해당 답변을 삭제합니다")
