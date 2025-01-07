@@ -2,7 +2,7 @@ package ecommerce.coupang.service.store;
 
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;
-import ecommerce.coupang.common.utils.StoreUtils;
+import ecommerce.coupang.common.utils.store.StoreUtils;
 import ecommerce.coupang.service.store.query.StoreQueryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

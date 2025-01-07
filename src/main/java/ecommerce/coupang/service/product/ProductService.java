@@ -3,16 +3,12 @@ package ecommerce.coupang.service.product;
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
-import ecommerce.coupang.domain.product.variant.ProductVariant;
-import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.dto.request.product.variant.CreateProductVariantRequest;
 import ecommerce.coupang.dto.request.product.option.CategoryOptionsRequest;
-import ecommerce.coupang.dto.request.product.option.VariantOptionRequest;
 
 import ecommerce.coupang.service.category.CategoryService;
 import ecommerce.coupang.service.product.option.ProductCategoryOptionService;
-import ecommerce.coupang.service.product.option.ProductVariantOptionService;
-import ecommerce.coupang.common.utils.StoreUtils;
+import ecommerce.coupang.common.utils.store.StoreUtils;
 import ecommerce.coupang.service.store.query.StoreQueryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +24,10 @@ import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 
+
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 @LogLevel("ProductService")
 public class ProductService {
 
@@ -38,7 +35,7 @@ public class ProductService {
 	private final StoreQueryService storeQueryService;
 	private final CategoryService categoryService;
 	private final ProductCategoryOptionService productCategoryOptionService;
-	private final ProductVariantOptionService productVariantOptionService;
+	private final ProductVariantFactory productVariantFactory;
 
 	/**
 	 * 상품 등록
@@ -47,7 +44,6 @@ public class ProductService {
 	 * @return 생성한 상품 ID
 	 */
 	@LogAction("상품 등록")
-	@Transactional
 	public Product createProduct(CreateProductRequest request, Long storeId, Member member) throws CustomException {
 		Category category = categoryService.findBottomCategory(request.getCategoryId());
 		Store store = storeQueryService.findStore(storeId);
@@ -58,14 +54,8 @@ public class ProductService {
 		for (CategoryOptionsRequest categoryOption : request.getCategoryOptions())
 			addCategoryOptionsToProduct(categoryOption.getOptionValueId(), product);
 
-		for (CreateProductVariantRequest variantRequest : request.getVariants()) {
-			ProductVariant productVariant = ProductVariant.create(variantRequest, product);
-
-			for (VariantOptionRequest variantOption : variantRequest.getVariantOptions())
-				addVariantOptionToProductVariant(productVariant, variantOption.getOptionValueId());
-
-			product.addProductVariants(productVariant);
-		}
+		for (CreateProductVariantRequest variantRequest : request.getVariants())
+			productVariantFactory.createVariantAndOptions(variantRequest, product);
 
 		productRepository.save(product);
 		return product;
@@ -78,7 +68,6 @@ public class ProductService {
 	 * @return 수정한 상품
 	 */
 	@LogAction("상품 수정")
-	@Transactional
 	public Product updateProduct(UpdateProductRequest request, Member member) throws CustomException {
 		Product product = productRepository.findByIdWithMemberAndCategory(request.getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -103,7 +92,6 @@ public class ProductService {
 	 * @return 삭제한 상품
 	 */
 	@LogAction("상품 삭제")
-	@Transactional
 	public Product deleteProduct(Long productId, Member member) throws CustomException {
 		Product product = productRepository.findByIdWithMemberAndCategory(productId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -118,13 +106,6 @@ public class ProductService {
 		ProductCategoryOption productCategoryOption = productCategoryOptionService.createProductCategoryOption(optionValueId, product);
 
 		product.addProductOptions(productCategoryOption);
-	}
-
-	/* ProductVariantOption -> ProductVariant 추가 */
-	private void addVariantOptionToProductVariant(ProductVariant productVariant, Long optionValueId) throws CustomException {
-		ProductVariantOption productVariantOption = productVariantOptionService.createProductVariantOption(optionValueId, productVariant);
-
-		productVariant.addProductVariantOptions(productVariantOption);
 	}
 }
 

@@ -2,7 +2,7 @@ package ecommerce.coupang.controller.product;
 
 import java.util.List;
 
-import ecommerce.coupang.common.utils.MemberUtils;
+import ecommerce.coupang.common.utils.member.MemberUtils;
 import ecommerce.coupang.dto.request.PagingRequest;
 import ecommerce.coupang.dto.request.product.*;
 import org.springframework.data.domain.Page;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import ecommerce.coupang.domain.member.MemberGrade;
 import ecommerce.coupang.dto.response.Result;
-import ecommerce.coupang.dto.response.product.ProductDetailResponse;
 import ecommerce.coupang.dto.response.product.ProductResponse;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.security.CustomUserDetails;

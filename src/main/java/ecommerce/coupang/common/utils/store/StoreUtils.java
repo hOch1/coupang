@@ -1,4 +1,4 @@
-package ecommerce.coupang.common.utils;
+package ecommerce.coupang.common.utils.store;
 
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
