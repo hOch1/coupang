@@ -23,6 +23,7 @@ public class AllOptionResponse {
 		this.variantOptions = variantOptions;
 	}
 
+	// TODO 분리
 	@Data
 	@AllArgsConstructor
 	public static class CategoryOptionResponse {

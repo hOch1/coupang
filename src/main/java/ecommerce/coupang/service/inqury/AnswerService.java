@@ -12,7 +12,7 @@ import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.product.inquiry.AnswerRepository;
 import ecommerce.coupang.repository.product.inquiry.ProductInquiryRepository;
-import ecommerce.coupang.common.utils.store.StoreUtils;
+import ecommerce.coupang.utils.store.StoreUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

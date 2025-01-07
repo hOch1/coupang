@@ -1,13 +1,15 @@
 package ecommerce.coupang.service.product;
 
 import ecommerce.coupang.common.aop.log.LogLevel;
+import ecommerce.coupang.domain.product.variant.ProductVariantOption;
+import ecommerce.coupang.dto.request.product.option.VariantOptionRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
-import ecommerce.coupang.common.utils.store.StoreUtils;
+import ecommerce.coupang.utils.store.StoreUtils;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
@@ -19,6 +21,11 @@ import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +35,7 @@ public class ProductVariantService {
 
 	private final ProductRepository productRepository;
 	private final ProductVariantRepository productVariantRepository;
-	private final ProductVariantFactory productVariantFactory;
+	private final ProductCreateManagement productCreateManagement;
 
 	/**
 	 * 변형 상품 추가
@@ -43,7 +50,10 @@ public class ProductVariantService {
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 		StoreUtils.validateStoreOwner(product.getStore(), member);
 
-        return productVariantFactory.createVariantAndOptions(request, product);
+		ProductVariant productVariant = productCreateManagement.createVariantAndOptions(request, product);
+
+		productVariantRepository.save(productVariant);
+		return productVariant;
 	}
 
 	/**
@@ -59,12 +69,35 @@ public class ProductVariantService {
 
 		productVariant.update(request);
 
-		if (!request.getVariantOptions().isEmpty()) {
-			// TODO 옵션 전체 삭제 후 추가 -> 변경된 옵션만 수정하도록
-			productVariant.getProductVariantOptions().clear();
+		List<ProductVariantOption> productVariantOptions = productVariant.getProductVariantOptions();
 
-			productVariantFactory.addVariantOptionToProductVariant(request.getVariantOptions(), productVariant);
-		}
+		// 기존 옵션
+		Set<Long> oldOptionIdList = productVariantOptions.stream()
+				.map(pvo -> pvo.getVariantOptionValue().getId())
+				.collect(Collectors.toSet());
+
+		// 변경할 옵션
+		Set<Long> newOptionIdList = request.getVariantOptions().stream()
+				.map(VariantOptionRequest::getOptionValueId)
+				.collect(Collectors.toSet());
+
+		// 추가할 옵션
+		Set<Long> addOptions = new HashSet<>(newOptionIdList);
+		addOptions.removeAll(oldOptionIdList);
+
+		// 제거할 옵션
+		Set<Long> removeOptions = new HashSet<>(oldOptionIdList);
+		removeOptions.removeAll(newOptionIdList);
+
+		// 제거
+		List<ProductVariantOption> removeList = productVariant.getProductVariantOptions().stream()
+				.filter(pvo -> removeOptions.contains(pvo.getVariantOptionValue().getId()))
+				.toList();
+		productVariant.getProductVariantOptions().removeAll(removeList);
+
+		// 추가
+		for (Long addOptionId : addOptions)
+			productCreateManagement.addVariantOptionToProductVariant(addOptionId, productVariant);
 
 		return productVariant;
 	}

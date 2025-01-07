@@ -2,7 +2,7 @@ package ecommerce.coupang.service.order;
 
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;
-import ecommerce.coupang.common.utils.product.ProductUtils;
+import ecommerce.coupang.utils.product.ProductUtils;
 import ecommerce.coupang.domain.member.MemberCoupon;
 import ecommerce.coupang.domain.order.OrderStatus;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package ecommerce.coupang.common.utils.member;
+package ecommerce.coupang.utils.member;
 
 import ecommerce.coupang.common.security.CustomUserDetails;
 import ecommerce.coupang.domain.member.MemberGrade;

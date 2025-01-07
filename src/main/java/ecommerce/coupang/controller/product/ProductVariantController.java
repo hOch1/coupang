@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.security.CustomUserDetails;
-import ecommerce.coupang.common.utils.member.MemberUtils;
+import ecommerce.coupang.utils.member.MemberUtils;
 import ecommerce.coupang.domain.member.MemberGrade;
 import ecommerce.coupang.dto.request.product.variant.CreateProductVariantRequest;
 import ecommerce.coupang.dto.request.product.variant.UpdateProductStatusRequest;

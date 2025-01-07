@@ -1,8 +1,7 @@
-package ecommerce.coupang.common.utils.product;
+package ecommerce.coupang.utils.product;
 
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
-import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.variant.ProductStatus;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 
@@ -17,9 +16,5 @@ public class ProductUtils {
 			throw new CustomException(ErrorCode.PRODUCT_STATUS_NOT_ACTIVE);
 
 		productVariant.reduceStock(quantity);
-	}
-
-	public static void addCategoryOptionToProduct(Long optionValueId, Product product) {
-
 	}
 }

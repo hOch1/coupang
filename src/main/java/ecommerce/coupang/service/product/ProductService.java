@@ -3,12 +3,10 @@ package ecommerce.coupang.service.product;
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
-import ecommerce.coupang.dto.request.product.variant.CreateProductVariantRequest;
 import ecommerce.coupang.dto.request.product.option.CategoryOptionsRequest;
 
 import ecommerce.coupang.service.category.CategoryService;
-import ecommerce.coupang.service.product.option.ProductCategoryOptionService;
-import ecommerce.coupang.common.utils.store.StoreUtils;
+import ecommerce.coupang.utils.store.StoreUtils;
 import ecommerce.coupang.service.store.query.StoreQueryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +22,11 @@ import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +37,7 @@ public class ProductService {
 	private final ProductRepository productRepository;
 	private final StoreQueryService storeQueryService;
 	private final CategoryService categoryService;
-	private final ProductCategoryOptionService productCategoryOptionService;
-	private final ProductVariantFactory productVariantFactory;
+	private final ProductCreateManagement productCreateManagement;
 
 	/**
 	 * 상품 등록
@@ -49,13 +51,7 @@ public class ProductService {
 		Store store = storeQueryService.findStore(storeId);
 		StoreUtils.validateStoreOwner(store, member);
 
-		Product product = Product.create(request, store, category);
-
-		for (CategoryOptionsRequest categoryOption : request.getCategoryOptions())
-			addCategoryOptionsToProduct(categoryOption.getOptionValueId(), product);
-
-		for (CreateProductVariantRequest variantRequest : request.getVariants())
-			productVariantFactory.createVariantAndOptions(variantRequest, product);
+		Product product = productCreateManagement.createProductAndVariantAndOptions(request, store, category);
 
 		productRepository.save(product);
 		return product;
@@ -75,13 +71,36 @@ public class ProductService {
 
 		product.update(request);
 
-		if (!request.getCategoryOptions().isEmpty()) {
-			// TODO 옵션 전체 삭제 후 추가 -> 변경된 옵션만 수정하도록
-			product.getProductOptions().clear();
+		List<ProductCategoryOption> productCategoryOptions = product.getProductOptions();
 
-			for (CategoryOptionsRequest categoryOptionsRequest : request.getCategoryOptions())
-				addCategoryOptionsToProduct(categoryOptionsRequest.getOptionValueId(), product);
-		}
+		// 기존 옵션
+		Set<Long> oldOptionIdList = productCategoryOptions.stream()
+				.map(pco -> pco.getCategoryOptionValue().getId())
+				.collect(Collectors.toSet());
+
+		// 변경할 옵션
+		Set<Long> newOptionIdList = request.getCategoryOptions().stream()
+				.map(CategoryOptionsRequest::getOptionValueId)
+				.collect(Collectors.toSet());
+
+		// 추가할 옵션
+		Set<Long> addOptions = new HashSet<>(newOptionIdList);
+		addOptions.removeAll(oldOptionIdList);
+
+		// 제거할 옵션
+		Set<Long> removeOptions = new HashSet<>(oldOptionIdList);
+		removeOptions.removeAll(newOptionIdList);
+
+		// 제거
+		List<ProductCategoryOption> removeList = product.getProductOptions().stream()
+				.filter(pco -> removeOptions.contains(pco.getCategoryOptionValue().getId()))
+				.toList();
+		product.getProductOptions().removeAll(removeList);
+
+		// 추가
+		for (Long addOptionId : addOptions)
+			productCreateManagement.addCategoryOptionsToProduct(addOptionId, product);
+
 
 		return product;
 	}
@@ -99,13 +118,6 @@ public class ProductService {
 
 		product.delete();
 		return product;
-	}
-
-	/* ProductOption -> Product 추가 */
-	private void addCategoryOptionsToProduct(Long optionValueId, Product product) throws CustomException {
-		ProductCategoryOption productCategoryOption = productCategoryOptionService.createProductCategoryOption(optionValueId, product);
-
-		product.addProductOptions(productCategoryOption);
 	}
 }
 

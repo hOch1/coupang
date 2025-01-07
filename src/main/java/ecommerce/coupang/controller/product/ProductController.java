@@ -2,7 +2,7 @@ package ecommerce.coupang.controller.product;
 
 import java.util.List;
 
-import ecommerce.coupang.common.utils.member.MemberUtils;
+import ecommerce.coupang.utils.member.MemberUtils;
 import ecommerce.coupang.dto.request.PagingRequest;
 import ecommerce.coupang.dto.request.product.*;
 import org.springframework.data.domain.Page;
