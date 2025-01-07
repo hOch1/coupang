@@ -1,4 +1,4 @@
-package ecommerce.coupang.dto.request.product;
+package ecommerce.coupang.dto.request.product.variant;
 
 import ecommerce.coupang.domain.product.variant.ProductStatus;
 import jakarta.validation.constraints.NotNull;

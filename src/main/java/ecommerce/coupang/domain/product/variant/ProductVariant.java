@@ -1,8 +1,8 @@
 package ecommerce.coupang.domain.product.variant;
 
 import ecommerce.coupang.domain.product.Product;
-import ecommerce.coupang.dto.request.product.CreateProductVariantRequest;
-import ecommerce.coupang.dto.request.product.UpdateProductVariantRequest;
+import ecommerce.coupang.dto.request.product.variant.CreateProductVariantRequest;
+import ecommerce.coupang.dto.request.product.variant.UpdateProductVariantRequest;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import jakarta.persistence.*;

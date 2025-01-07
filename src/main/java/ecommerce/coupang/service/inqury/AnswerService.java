@@ -1,4 +1,4 @@
-package ecommerce.coupang.service.product;
+package ecommerce.coupang.service.inqury;
 
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;

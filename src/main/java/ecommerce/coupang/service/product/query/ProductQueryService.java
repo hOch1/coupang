@@ -1,4 +1,4 @@
-package ecommerce.coupang.service.product;
+package ecommerce.coupang.service.product.query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,17 +66,13 @@ public class ProductQueryService {
 
 	/**
 	 * 옵션별 상품 조회
-	 * @param categoryId 카테고리 ID
-	 * @param storeId 상점 ID
-	 * @param categoryOptions 카테고리 옵션 값 ID
-	 * @param variantOptions 변형 옵션 값 ID
+	 * @param searchRequest 검색 조건
 	 * @param sort 정렬 타입
-	 * @param page 현재 페이지
-	 * @param pageSize 페이지당 개수
+	 * @param pagingRequest 페이징 정보
 	 * @return 조회 상품 리스트
      */
 	@LogAction("상품 목록 조회")
-	public Page<ProductResponse> search(ProductSearchRequest searchRequest, ProductSort sort, PagingRequest pagingRequest, MemberGrade memberGrade) throws CustomException{
+	public Page<ProductResponse> search(ProductSearchRequest searchRequest, ProductSort sort, PagingRequest pagingRequest, MemberGrade memberGrade) {
 		List<Category> categories = new ArrayList<>();
 
 		if (searchRequest.getCategoryId() != null)

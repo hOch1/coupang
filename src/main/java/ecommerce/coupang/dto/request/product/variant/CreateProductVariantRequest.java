@@ -1,8 +1,9 @@
-package ecommerce.coupang.dto.request.product;
+package ecommerce.coupang.dto.request.product.variant;
 
 import java.util.List;
 
 import ecommerce.coupang.domain.product.variant.ProductStatus;
+import ecommerce.coupang.dto.request.product.option.VariantOptionRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,12 +15,4 @@ public class CreateProductVariantRequest {
 	private final ProductStatus status;
 	private final boolean isDefault;
 	private final List<VariantOptionRequest> variantOptions;
-
-	@Getter
-	@AllArgsConstructor
-	public static class VariantOptionRequest {
-		private Long optionId;
-		private Long optionValueId;
-	}
-
 }

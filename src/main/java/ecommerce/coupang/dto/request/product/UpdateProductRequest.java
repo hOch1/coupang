@@ -2,7 +2,7 @@ package ecommerce.coupang.dto.request.product;
 
 import java.util.List;
 
-import ecommerce.coupang.domain.product.variant.ProductStatus;
+import ecommerce.coupang.dto.request.product.option.CategoryOptionsRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,12 +13,5 @@ public class UpdateProductRequest {
 	private final Long id;
 	private final String name;
 	private final String description;
-	private final List<UpdateCategoryOptionsRequest> categoryOptions;
-
-	@Getter
-	@AllArgsConstructor
-	public static class UpdateCategoryOptionsRequest {
-		private final Long optionId;
-		private final Long optionValueId;
-	}
+	private final List<CategoryOptionsRequest> categoryOptions;
 }

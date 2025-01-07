@@ -1,4 +1,4 @@
-package ecommerce.coupang.dto.request.product;
+package ecommerce.coupang.dto.request.product.variant;
 
 import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;

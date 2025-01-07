@@ -2,7 +2,8 @@ package ecommerce.coupang.dto.request.product;
 
 import java.util.List;
 
-import ecommerce.coupang.domain.product.variant.ProductStatus;
+import ecommerce.coupang.dto.request.product.option.CategoryOptionsRequest;
+import ecommerce.coupang.dto.request.product.variant.CreateProductVariantRequest;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -26,28 +27,4 @@ public class CreateProductRequest {
 
 	@NotEmpty(message = "옵션을 선택해주세요.")
 	private final List<CreateProductVariantRequest> variants;
-
-	@Getter
-	@AllArgsConstructor
-	public static class CategoryOptionsRequest {
-		private final Long optionId;
-		private final Long optionValueId;
-	}
-
-	@Getter
-	@AllArgsConstructor
-	public static class VariantRequest {
-		private final int price;
-		private final int stock;
-		private final ProductStatus status;
-		private final boolean isDefault;
-		private final List<VariantOptionRequest> variantOptions;
-
-		@Getter
-		@AllArgsConstructor
-		public static class VariantOptionRequest {
-			private Long optionId;
-			private Long optionValueId;
-		}
-	}
 }
