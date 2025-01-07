@@ -40,7 +40,7 @@ public class OrderItem {
 	@JoinColumn(name = "product_variant_id", nullable = false)
 	private ProductVariant productVariant;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "coupon_id")
 	private Coupon coupon;
 

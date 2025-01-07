@@ -3,6 +3,7 @@ package ecommerce.coupang.repository.product.custom;
 import ecommerce.coupang.domain.category.Category;
 import ecommerce.coupang.domain.member.MemberGrade;
 import ecommerce.coupang.domain.product.Product;
+import ecommerce.coupang.dto.request.product.ProductSearchRequest;
 import ecommerce.coupang.dto.request.product.ProductSort;
 import ecommerce.coupang.dto.response.product.ProductDetailResponse;
 import ecommerce.coupang.dto.response.product.ProductResponse;
@@ -26,11 +27,8 @@ public interface ProductCustomRepository {
 	 * @return 상품 목록 (대표상품)
 	 */
 	Page<ProductResponse> searchProducts(
-		String keyword,
+		ProductSearchRequest searchRequest,
 		List<Category> categories,
-		Long storeId,
-		List<Long> categoryOptions,
-		List<Long> variantOptions,
 		ProductSort sort,
 		Pageable pageable);
 

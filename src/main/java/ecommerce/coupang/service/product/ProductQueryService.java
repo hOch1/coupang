@@ -3,6 +3,8 @@ package ecommerce.coupang.service.product;
 import java.util.ArrayList;
 import java.util.List;
 
+import ecommerce.coupang.dto.request.PagingRequest;
+import ecommerce.coupang.dto.request.product.ProductSearchRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -74,13 +76,13 @@ public class ProductQueryService {
 	 * @return 조회 상품 리스트
      */
 	@LogAction("상품 목록 조회")
-	public Page<ProductResponse> search(String keyword, Long categoryId, Long storeId, List<Long> categoryOptions, List<Long> variantOptions, ProductSort sort, int page, int pageSize, MemberGrade memberGrade) throws CustomException{
+	public Page<ProductResponse> search(ProductSearchRequest searchRequest, ProductSort sort, PagingRequest pagingRequest, MemberGrade memberGrade) throws CustomException{
 		List<Category> categories = new ArrayList<>();
 
-		if (categoryId != null)
-			categories = categoryService.findAllSubCategories(categoryId);
+		if (searchRequest.getCategoryId() != null)
+			categories = categoryService.findAllSubCategories(searchRequest.getCategoryId());
 
-		Page<ProductResponse> responses = productRepository.searchProducts(keyword, categories, storeId, categoryOptions, variantOptions, sort, PageRequest.of(page, pageSize));
+		Page<ProductResponse> responses = productRepository.searchProducts(searchRequest, categories, sort, PageRequest.of(pagingRequest.getPage(), pagingRequest.getPageSize()));
 
 		responses.forEach(productResponse ->
 				productResponse.setMemberDiscountPrice(discountService.calculateMemberDiscount(memberGrade, productResponse.getPrice())));

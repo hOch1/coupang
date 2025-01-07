@@ -2,6 +2,7 @@ package ecommerce.coupang.service.store.query;
 
 import java.util.List;
 
+import ecommerce.coupang.dto.request.PagingRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,14 +34,13 @@ public class CouponQueryService {
 	/**
 	 * 나의 쿠폰 목록 조회
 	 * @param member 요청한 회원
-	 * @param page 현재 페이지
-	 * @param pageSize 페이지당 쿠폰 개수
+	 * @param pagingRequest 페이징 파라미터
 	 * @param sort 정렬타입
 	 * @return 쿠폰 목록
 	 */
 	@LogAction("나의 쿠폰 목록 조회")
-	public Page<MemberCoupon> findMyCoupons(Member member, int page, int pageSize, CouponSort sort) {
-		Pageable pageable = PageRequest.of(page, pageSize);
+	public Page<MemberCoupon> findMyCoupons(Member member, PagingRequest pagingRequest, CouponSort sort) {
+		Pageable pageable = PageRequest.of(pagingRequest.getPage(), pagingRequest.getPageSize());
 		return couponRepository.findMyCoupons(member.getId(), pageable, sort);
 	}
 
@@ -53,8 +53,8 @@ public class CouponQueryService {
 	 * @return 쿠폰 목록
 	 */
 	@LogAction("상점 쿠폰 목록 조회")
-	public Page<Coupon> findCouponsByStore(Long storeId, int page, int pageSize, CouponSort sort) {
-		Pageable pageable = PageRequest.of(page, pageSize);
+	public Page<Coupon> findCouponsByStore(Long storeId, PagingRequest pagingRequest, CouponSort sort) {
+		Pageable pageable = PageRequest.of(pagingRequest.getPage(), pagingRequest.getPageSize());
 		return couponRepository.findCouponsByStore(storeId, pageable, sort);
 	}
 
@@ -67,8 +67,8 @@ public class CouponQueryService {
 	 * @return 쿠폰 목록
 	 */
 	@LogAction("상품 쿠폰 목록 조회")
-	public Page<CouponProduct> findCouponsByProduct(Long productId, int page, int pageSize, CouponSort sort) {
-		Pageable pageable = PageRequest.of(page, pageSize);
+	public Page<CouponProduct> findCouponsByProduct(Long productId, PagingRequest pagingRequest, CouponSort sort) {
+		Pageable pageable = PageRequest.of(pagingRequest.getPage(), pagingRequest.getPageSize());
 		return couponRepository.finCouponsByProduct(productId, pageable, sort);
 	}
 
