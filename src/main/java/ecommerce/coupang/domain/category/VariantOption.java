@@ -1,9 +1,8 @@
-package ecommerce.coupang.domain.product.variant;
+package ecommerce.coupang.domain.category;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ecommerce.coupang.domain.category.Category;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -14,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class VariantOption {
+public class VariantOption implements Option{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

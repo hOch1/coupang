@@ -22,7 +22,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class CategoryOption {
+public class CategoryOption implements Option{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

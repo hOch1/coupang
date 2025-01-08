@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ecommerce.coupang.domain.category.Category;
-import ecommerce.coupang.domain.product.variant.VariantOption;
-import ecommerce.coupang.domain.product.variant.VariantOptionValue;
+import ecommerce.coupang.domain.category.VariantOption;
+import ecommerce.coupang.domain.category.VariantOptionValue;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.product.VariantOptionValueRepository;

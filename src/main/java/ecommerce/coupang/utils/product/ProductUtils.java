@@ -1,6 +1,5 @@
 package ecommerce.coupang.utils.product;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -8,21 +7,20 @@ import java.util.stream.Collectors;
 
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
+import ecommerce.coupang.domain.category.Option;
+import ecommerce.coupang.dto.request.product.option.OptionRequest;
 
 public class ProductUtils {
-
-	public static <T, R> void validateOptions(
-		List<T> needOptions,
-		Collection<R> requestOptions,
-		Function<T, Long> needOptionsIdMapper,
-		Function<R, Long> requestOptionsIdMapper) throws CustomException {
+	public static <N extends Option> void validateOptions(
+		List<N> needOptions,
+		List<OptionRequest> requestOptions) throws CustomException {
 
 		Set<Long> needOptionsIdSet = needOptions.stream()
-			.map(needOptionsIdMapper)
+			.map(Option::getId)
 			.collect(Collectors.toSet());
 
 		requestOptions.stream()
-			.map(requestOptionsIdMapper)
+			.map(OptionRequest::getOptionId)
 			.forEach(needOptionsIdSet::remove);
 
 		if (!needOptionsIdSet.isEmpty())

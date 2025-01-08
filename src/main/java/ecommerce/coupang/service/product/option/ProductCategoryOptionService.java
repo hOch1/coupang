@@ -7,7 +7,7 @@ import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.domain.category.CategoryOptionValue;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
-import ecommerce.coupang.dto.request.product.option.CategoryOptionsRequest;
+import ecommerce.coupang.dto.request.product.option.OptionRequest;
 import ecommerce.coupang.repository.product.ProductCategoryOptionRepository;
 import ecommerce.coupang.service.category.CategoryOptionService;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +33,7 @@ public class ProductCategoryOptionService {
 	}
 
 	/* 상품 옵션 변경 */
-	public void update(CategoryOptionsRequest request, Product product) throws CustomException {
+	public void update(OptionRequest request, Product product) throws CustomException {
 		ProductCategoryOption productCategoryOption = getPcoByProductIdAndCategoryOptionId(product.getId(), request.getOptionId());
 
 		CategoryOptionValue categoryOptionValue = categoryOptionService.getCategoryOptionValue(request.getOptionValueId());

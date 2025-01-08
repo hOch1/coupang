@@ -2,7 +2,7 @@ package ecommerce.coupang.dto.request.product;
 
 import java.util.List;
 
-import ecommerce.coupang.dto.request.product.option.CategoryOptionsRequest;
+import ecommerce.coupang.dto.request.product.option.OptionRequest;
 import ecommerce.coupang.dto.request.product.variant.CreateProductVariantRequest;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -23,7 +23,7 @@ public class CreateProductRequest {
 	private final Long categoryId;
 
 	@NotEmpty(message = "옵션을 선택해주세요.")
-	private final List<CategoryOptionsRequest> categoryOptions;
+	private final List<OptionRequest> categoryOptions;
 
 	@NotEmpty(message = "옵션을 선택해주세요.")
 	private final List<CreateProductVariantRequest> variants;

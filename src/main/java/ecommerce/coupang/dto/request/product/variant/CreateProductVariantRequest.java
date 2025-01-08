@@ -3,7 +3,7 @@ package ecommerce.coupang.dto.request.product.variant;
 import java.util.List;
 
 import ecommerce.coupang.domain.product.variant.ProductStatus;
-import ecommerce.coupang.dto.request.product.option.VariantOptionRequest;
+import ecommerce.coupang.dto.request.product.option.OptionRequest;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -14,5 +14,5 @@ public class CreateProductVariantRequest {
 	private final int stock;
 	private final ProductStatus status;
 	private final boolean isDefault;
-	private final List<VariantOptionRequest> variantOptions;
+	private final List<OptionRequest> variantOptions;
 }

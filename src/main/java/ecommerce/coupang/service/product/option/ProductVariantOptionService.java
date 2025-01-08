@@ -8,8 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
-import ecommerce.coupang.domain.product.variant.VariantOptionValue;
-import ecommerce.coupang.dto.request.product.option.VariantOptionRequest;
+import ecommerce.coupang.domain.category.VariantOptionValue;
+import ecommerce.coupang.dto.request.product.option.OptionRequest;
 import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
 import ecommerce.coupang.service.category.VariantOptionService;
 import lombok.RequiredArgsConstructor;
@@ -35,7 +35,7 @@ public class ProductVariantOptionService {
 	}
 
 	/* 상품 변형 옵션 변경 */
-	public void update(VariantOptionRequest request, ProductVariant productVariant) throws CustomException {
+	public void update(OptionRequest request, ProductVariant productVariant) throws CustomException {
 		ProductVariantOption productVariantOption = getPvoByProductVariantIdAndCategoryOptionId(
 			productVariant.getId(), request.getOptionId());
 

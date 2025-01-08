@@ -2,8 +2,8 @@ package ecommerce.coupang.service.product;
 
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;
-import ecommerce.coupang.dto.request.product.option.CategoryOptionsRequest;
 
+import ecommerce.coupang.dto.request.product.option.OptionRequest;
 import ecommerce.coupang.service.category.CategoryService;
 import ecommerce.coupang.service.product.option.ProductCategoryOptionService;
 import ecommerce.coupang.service.store.query.StoreQueryService;
@@ -66,7 +66,7 @@ public class ProductService {
 
 		product.update(request);
 
-		for (CategoryOptionsRequest categoryOption : request.getCategoryOptions())
+		for (OptionRequest categoryOption : request.getCategoryOptions())
 			productCategoryOptionService.update(categoryOption, product);
 
 		return product;

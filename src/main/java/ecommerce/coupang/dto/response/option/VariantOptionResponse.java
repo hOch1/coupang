@@ -2,8 +2,8 @@ package ecommerce.coupang.dto.response.option;
 
 import java.util.List;
 
-import ecommerce.coupang.domain.product.variant.VariantOption;
-import ecommerce.coupang.domain.product.variant.VariantOptionValue;
+import ecommerce.coupang.domain.category.VariantOption;
+import ecommerce.coupang.domain.category.VariantOptionValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.common.exception.CustomException;
-import ecommerce.coupang.domain.product.variant.VariantOption;
+import ecommerce.coupang.domain.category.VariantOption;
 import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.option.VariantOptionResponse;
 import ecommerce.coupang.service.category.VariantOptionService;

@@ -3,7 +3,6 @@ package ecommerce.coupang.domain.category;
 import java.util.ArrayList;
 import java.util.List;
 
-import ecommerce.coupang.domain.product.variant.VariantOption;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

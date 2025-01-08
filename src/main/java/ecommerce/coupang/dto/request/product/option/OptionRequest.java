@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CategoryOptionsRequest {
+public class OptionRequest {
 	private final Long optionId;
 	private final Long optionValueId;
 }

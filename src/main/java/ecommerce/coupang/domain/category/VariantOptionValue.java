@@ -1,4 +1,4 @@
-package ecommerce.coupang.domain.product.variant;
+package ecommerce.coupang.domain.category;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
