@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
+import ecommerce.coupang.service.category.VariantOptionService;
 import ecommerce.coupang.service.product.option.ProductVariantOptionService;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.Product;

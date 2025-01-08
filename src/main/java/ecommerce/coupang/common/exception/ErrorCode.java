@@ -38,6 +38,7 @@ public enum ErrorCode {
 	ALREADY_CANCELLED_ORDER(400, "이미 취소된 주문 입니다."),
 	ALREADY_HAS_COUPON(400, "이미 등록한 쿠폰입니다."),
 	ALREADY_USE_COUPON(400, "이미 사용한 쿠폰입니다."),
+	OPTION_NOT_CONTAINS(400, "필요한 옵션이 없습니다."),
 
 	FORBIDDEN(401, "권한이 없습니다."),
 

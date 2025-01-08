@@ -121,7 +121,7 @@ public class OrderService {
 
 		OrderItem orderItem = OrderItem.create(order, productVariant, memberCoupon, quantity, couponDiscountPrice, memberDiscountPrice);
 		/* 배송 연결 */
-		Delivery delivery = Delivery.create(orderItem, productVariant.getProduct().getStore());
+		Delivery delivery = Delivery.create(orderItem);
 		orderItem.setDelivery(delivery);
 
 		return orderItem;
