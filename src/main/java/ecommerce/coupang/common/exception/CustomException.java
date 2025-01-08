@@ -1,7 +1,9 @@
 package ecommerce.coupang.common.exception;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public class CustomException extends Exception{
 
@@ -18,9 +20,5 @@ public class CustomException extends Exception{
 
 	public String getError() {
 		return errorCode.name();
-	}
-
-	public ErrorCode getErrorCode() {
-		return errorCode;
 	}
 }
