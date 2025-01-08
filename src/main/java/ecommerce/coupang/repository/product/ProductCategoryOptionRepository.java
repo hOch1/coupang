@@ -16,4 +16,11 @@ public interface ProductCategoryOptionRepository extends JpaRepository<ProductCa
 		+ "join fetch ov.categoryOption co "
 		+ "where pco.product.id = :productId")
 	List<ProductCategoryOption> findByProductId(Long productId);
+
+	@Query("select pco from ProductCategoryOption pco "
+		+ "join fetch pco.categoryOptionValue ov "
+		+ "join fetch ov.categoryOption co "
+		+ "where pco.product.id = :productId "
+		+ "and co.id = :categoryOptionId")
+	ProductCategoryOption findByProductIdAndCategoryOptionId(Long productId, Long categoryOptionId);
 }

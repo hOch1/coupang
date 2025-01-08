@@ -75,7 +75,7 @@ public class ProductController {
 	}
 
 	@DeleteMapping("/{productId}")
-	@Operation(summary = "상품 삭제 API", description = "해당 상품을 Soft하게 삭제 합니다")
+	@Operation(summary = "상품 삭제 API", description = "해당 상품을 Soft 하게 삭제 합니다")
 	public ResponseEntity<Void> deleteProduct(
 		@PathVariable Long productId,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {

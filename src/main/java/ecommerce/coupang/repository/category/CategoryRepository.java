@@ -35,5 +35,4 @@ public interface CategoryRepository extends JpaRepository<Category, Long>, Categ
 		select * from subcategories;
 	""", nativeQuery = true)
 	List<Category> findAllByChildren(Long categoryId);
-
 }

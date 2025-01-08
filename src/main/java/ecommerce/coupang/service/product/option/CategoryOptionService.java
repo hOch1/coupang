@@ -5,7 +5,6 @@ import ecommerce.coupang.domain.category.CategoryOption;
 import ecommerce.coupang.domain.category.CategoryOptionValue;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
-import ecommerce.coupang.dto.response.option.AllOptionResponse;
 import ecommerce.coupang.repository.category.CategoryOptionValueRepository;
 import ecommerce.coupang.service.category.CategoryService;
 import lombok.RequiredArgsConstructor;

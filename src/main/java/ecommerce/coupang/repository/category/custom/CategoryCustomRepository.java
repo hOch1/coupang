@@ -7,4 +7,5 @@ import ecommerce.coupang.domain.category.Category;
 public interface CategoryCustomRepository {
 
 	Optional<Category> findCategoryWithRoot(Long categoryId);
+
 }

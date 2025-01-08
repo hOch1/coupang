@@ -44,4 +44,8 @@ public class ProductCategoryOption {
 				categoryOptionValue
 		);
 	}
+
+	public void update(CategoryOptionValue categoryOptionValue) {
+		this.categoryOptionValue = categoryOptionValue;
+	}
 }

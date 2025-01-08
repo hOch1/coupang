@@ -2,10 +2,10 @@ package ecommerce.coupang.service.product;
 
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;
-import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.dto.request.product.option.CategoryOptionsRequest;
 
 import ecommerce.coupang.service.category.CategoryService;
+import ecommerce.coupang.service.product.option.ProductCategoryOptionService;
 import ecommerce.coupang.utils.store.StoreUtils;
 import ecommerce.coupang.service.store.query.StoreQueryService;
 import org.springframework.stereotype.Service;
@@ -22,12 +22,6 @@ import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.product.ProductRepository;
 import lombok.RequiredArgsConstructor;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -38,6 +32,7 @@ public class ProductService {
 	private final StoreQueryService storeQueryService;
 	private final CategoryService categoryService;
 	private final ProductCreateManagement productCreateManagement;
+	private final ProductCategoryOptionService productCategoryOptionService;
 
 	/**
 	 * 상품 등록
@@ -71,36 +66,8 @@ public class ProductService {
 
 		product.update(request);
 
-		List<ProductCategoryOption> productCategoryOptions = product.getProductOptions();
-
-		// 기존 옵션
-		Set<Long> oldOptionIdList = productCategoryOptions.stream()
-				.map(pco -> pco.getCategoryOptionValue().getId())
-				.collect(Collectors.toSet());
-
-		// 변경할 옵션
-		Set<Long> newOptionIdList = request.getCategoryOptions().stream()
-				.map(CategoryOptionsRequest::getOptionValueId)
-				.collect(Collectors.toSet());
-
-		// 추가할 옵션
-		Set<Long> addOptions = new HashSet<>(newOptionIdList);
-		addOptions.removeAll(oldOptionIdList);
-
-		// 제거할 옵션
-		Set<Long> removeOptions = new HashSet<>(oldOptionIdList);
-		removeOptions.removeAll(newOptionIdList);
-
-		// 제거
-		List<ProductCategoryOption> removeList = product.getProductOptions().stream()
-				.filter(pco -> removeOptions.contains(pco.getCategoryOptionValue().getId()))
-				.toList();
-		product.getProductOptions().removeAll(removeList);
-
-		// 추가
-		for (Long addOptionId : addOptions)
-			productCreateManagement.addCategoryOptionsToProduct(addOptionId, product);
-
+		for (CategoryOptionsRequest categoryOption : request.getCategoryOptions())
+			productCategoryOptionService.update(categoryOption, product);
 
 		return product;
 	}

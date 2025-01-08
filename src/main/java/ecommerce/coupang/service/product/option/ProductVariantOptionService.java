@@ -6,9 +6,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.domain.product.variant.VariantOptionValue;
+import ecommerce.coupang.dto.request.product.option.VariantOptionRequest;
 import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
 import lombok.RequiredArgsConstructor;
 
@@ -30,5 +32,19 @@ public class ProductVariantOptionService {
 	/* ProductVariantOption 조회 */
 	public List<ProductVariantOption> getProductVariantOptionByProductVariantId(Long productVariantId) {
 		return productVariantOptionRepository.findByProductVariantId(productVariantId);
+	}
+
+	/* 상품 변형 옵션 변경 */
+	public void update(VariantOptionRequest request, ProductVariant productVariant) throws CustomException {
+		ProductVariantOption productVariantOption = getPvoByProductVariantIdAndCategoryOptionId(
+			productVariant.getId(), request.getOptionId());
+
+		VariantOptionValue variantOptionValue = variantOptionService.getVariantOptionValue(request.getOptionValueId());
+
+		productVariantOption.update(variantOptionValue);
+	}
+
+	private ProductVariantOption getPvoByProductVariantIdAndCategoryOptionId(Long productVariantId, Long variantOptionId) {
+		return productVariantOptionRepository.findByProductIdAndCategoryOptionId(productVariantId, variantOptionId);
 	}
 }

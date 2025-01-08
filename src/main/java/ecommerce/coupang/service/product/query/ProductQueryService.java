@@ -22,6 +22,8 @@ import ecommerce.coupang.dto.response.product.ProductDetailResponse;
 import ecommerce.coupang.dto.response.product.ProductResponse;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
+import ecommerce.coupang.repository.category.CategoryRepository;
+import ecommerce.coupang.repository.category.custom.CategoryCustomRepository;
 import ecommerce.coupang.repository.product.ProductCategoryOptionRepository;
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.repository.product.ProductVariantOptionRepository;

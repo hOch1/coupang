@@ -33,6 +33,11 @@ public class CategoryCustomRepositoryImpl implements CategoryCustomRepository {
 		QCategory current = parentCategory;
 		while (true) {
 			QCategory nextParent = new QCategory("parent_" + current.getMetadata().getName());
+
+			/*
+			부모 카테고리 fetch join
+			페이징이 불필요하기때문에 optionValue 도 fetch join
+			 */
 			query = query.leftJoin(current.parent, nextParent).fetchJoin();
 
 			// 최상위 부모를 확인
