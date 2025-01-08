@@ -57,7 +57,6 @@ public class CartItem extends BaseTimeEntity {
 	 * 장바구니 상품 수량 변경
 	 * 차감시 0 보다 작은지 체크
 	 * @param quantity 변경 수량
-	 * @throws CustomException
 	 */
 	public void changeQuantity(int quantity) throws CustomException {
 		if (this.quantity - quantity <= 0)
@@ -65,6 +64,10 @@ public class CartItem extends BaseTimeEntity {
 		this.quantity = quantity;
 	}
 
+	/**
+	 * 장바구니 상품 수량 추가
+	 * @param quantity 추가할 수량
+	 */
 	public void addQuantity(int quantity) {
 		this.quantity += quantity;
 	}

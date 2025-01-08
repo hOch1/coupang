@@ -64,13 +64,14 @@ public class ProductController {
 		));
 	}
 
-	@PatchMapping
+	@PatchMapping("/{productId}")
 	@Operation(summary = "상품 수정 API", description = "해당 상품을 수정합니다.")
 	public ResponseEntity<Void> updateProduct(
+		@PathVariable Long productId,
 		@RequestBody UpdateProductRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		productService.updateProduct(request, userDetails.getMember());
+		productService.updateProduct(productId, request, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 

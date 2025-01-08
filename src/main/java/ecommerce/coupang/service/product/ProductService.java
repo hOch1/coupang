@@ -53,13 +53,14 @@ public class ProductService {
 
 	/**
 	 * 상품 수정
+	 * @param productId 상품 ID
 	 * @param request 상품 수정 요청 정보
 	 * @param member 요청한 회원
 	 * @return 수정한 상품
 	 */
 	@LogAction("상품 수정")
-	public Product updateProduct(UpdateProductRequest request, Member member) throws CustomException {
-		Product product = productRepository.findByIdWithMemberAndCategory(request.getId())
+	public Product updateProduct(Long productId, UpdateProductRequest request, Member member) throws CustomException {
+		Product product = productRepository.findByIdWithMemberAndCategory(productId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 		product.getStore().validateOwner(member);
 

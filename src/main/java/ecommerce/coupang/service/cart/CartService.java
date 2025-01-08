@@ -42,7 +42,7 @@ public class CartService {
 
 		/*
 		장바구니에 해당 상품이 없을시 새로 생성 후 저장
-		존재할시 하단 조건문에서 수량추가
+		존재할 시 하단 조건문에서 수량추가
 		 */
 		CartItem cartItem = cartItemRepository.findByCartIdAndProductVariantId(cart.getId(), productVariant.getId())
 			.orElseGet(() -> {
