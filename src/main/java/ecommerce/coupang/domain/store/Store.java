@@ -3,6 +3,8 @@ package ecommerce.coupang.domain.store;
 import java.util.ArrayList;
 import java.util.List;
 
+import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.Product;
@@ -79,5 +81,14 @@ public class Store extends BaseTimeEntity {
 	public void delete() {
 		products.forEach(Product::delete); // 등록된 상품도 Soft 삭제
 		this.isActive = false;
+	}
+
+	/*
+	해당 상점의 주인인지 검증
+	주인이 아닐경우 예외
+	*/
+	public void validateOwner(Member member) throws CustomException {
+		if (!this.member.equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
 	}
 }

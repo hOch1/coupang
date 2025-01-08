@@ -6,7 +6,6 @@ import ecommerce.coupang.dto.request.product.option.CategoryOptionsRequest;
 
 import ecommerce.coupang.service.category.CategoryService;
 import ecommerce.coupang.service.product.option.ProductCategoryOptionService;
-import ecommerce.coupang.utils.store.StoreUtils;
 import ecommerce.coupang.service.store.query.StoreQueryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +43,7 @@ public class ProductService {
 	public Product createProduct(CreateProductRequest request, Long storeId, Member member) throws CustomException {
 		Category category = categoryService.findBottomCategory(request.getCategoryId());
 		Store store = storeQueryService.findStore(storeId);
-		StoreUtils.validateStoreOwner(store, member);
+		store.validateOwner(member);
 
 		Product product = productCreateManagement.createProductAndVariantAndOptions(request, store, category);
 
@@ -62,7 +61,7 @@ public class ProductService {
 	public Product updateProduct(UpdateProductRequest request, Member member) throws CustomException {
 		Product product = productRepository.findByIdWithMemberAndCategory(request.getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-		StoreUtils.validateStoreOwner(product.getStore(), member);
+		product.getStore().validateOwner(member);
 
 		product.update(request);
 
@@ -81,7 +80,7 @@ public class ProductService {
 	public Product deleteProduct(Long productId, Member member) throws CustomException {
 		Product product = productRepository.findByIdWithMemberAndCategory(productId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-		StoreUtils.validateStoreOwner(product.getStore(), member);
+		product.getStore().validateOwner(member);
 
 		product.delete();
 		return product;

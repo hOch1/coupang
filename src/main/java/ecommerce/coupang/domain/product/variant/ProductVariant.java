@@ -137,9 +137,17 @@ public class ProductVariant {
 		this.isActive = false;
 	}
 
+	/* 재고 검증 */
 	private void validateStockQuantity(int quantity) throws CustomException {
 		if (this.stockQuantity - quantity < 0) {
 			throw new CustomException(ErrorCode.NOT_ENOUGH_QUANTITY);
 		}
+	}
+
+	public void verifyStatusAndReduceStock(int quantity) throws CustomException {
+		if (!this.status.equals(ProductStatus.ACTIVE))
+			throw new CustomException(ErrorCode.PRODUCT_STATUS_NOT_ACTIVE);
+
+		reduceStock(quantity);
 	}
 }

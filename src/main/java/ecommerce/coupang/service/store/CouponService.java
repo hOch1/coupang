@@ -2,7 +2,6 @@ package ecommerce.coupang.service.store;
 
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;
-import ecommerce.coupang.utils.store.StoreUtils;
 import ecommerce.coupang.service.store.query.StoreQueryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,7 +41,7 @@ public class CouponService {
 	@LogAction("쿠폰 생성")
 	public Coupon createCoupon(Long storeId, CreateCouponRequest request, Member member) throws CustomException {
 		Store store = storeQueryService.findStore(storeId);
-		StoreUtils.validateStoreOwner(store, member);
+		store.validateOwner(member);
 
 		Coupon coupon = Coupon.create(request, store);
 

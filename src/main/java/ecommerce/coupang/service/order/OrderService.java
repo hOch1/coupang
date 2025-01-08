@@ -2,7 +2,6 @@ package ecommerce.coupang.service.order;
 
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;
-import ecommerce.coupang.utils.product.ProductUtils;
 import ecommerce.coupang.domain.member.MemberCoupon;
 import ecommerce.coupang.domain.order.OrderStatus;
 import org.springframework.stereotype.Service;
@@ -53,7 +52,7 @@ public class OrderService {
 		ProductVariant productVariant = productVariantRepository.findByIdWithStore(request.getProductVariantId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
-		ProductUtils.verifyStatusAndReduceStock(productVariant, request.getQuantity());
+		productVariant.verifyStatusAndReduceStock(request.getQuantity());
 		OrderItem orderItem = createOrderItem(order, productVariant, member, request.getQuantity(), request.getCouponId());
 
 		order.addOrderItem(orderItem);
@@ -62,7 +61,6 @@ public class OrderService {
 
 		return order;
 	}
-
 
 	/**
 	 * 장바구니 상품 주문
@@ -79,7 +77,7 @@ public class OrderService {
 			CartItem cartItem = cartItemRepository.findByIdWithStore(cartItemRequest.getCartItemId())
 				.orElseThrow(() -> new CustomException(ErrorCode.CART_ITEM_NOT_FOUND));
 
-			ProductUtils.verifyStatusAndReduceStock(cartItem.getProductVariant(), cartItem.getQuantity());
+			cartItem.getProductVariant().verifyStatusAndReduceStock(cartItem.getQuantity());
 			OrderItem orderItem = createOrderItem(order, cartItem.getProductVariant(), member, cartItem.getQuantity(), cartItemRequest.getCouponId());
 
 			order.addOrderItem(orderItem);

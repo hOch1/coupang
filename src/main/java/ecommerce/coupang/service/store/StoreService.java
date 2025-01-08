@@ -3,7 +3,6 @@ package ecommerce.coupang.service.store;
 
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;
-import ecommerce.coupang.utils.store.StoreUtils;
 import ecommerce.coupang.service.store.query.StoreQueryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,7 +54,7 @@ public class StoreService {
 	@LogAction("상점 수정")
 	public Store updateStore(Long storeId, UpdateStoreRequest request, Member member) throws CustomException {
 		Store store = storeQueryService.findStore(storeId);
-		StoreUtils.validateStoreOwner(store, member);
+		store.validateOwner(member);
 
 		store.update(request);
 
@@ -71,7 +70,7 @@ public class StoreService {
 	@LogAction("상점 삭제")
 	public Store deleteStore(Long storeId, Member member) throws CustomException {
 		Store store = storeQueryService.findStore(storeId);
-		StoreUtils.validateStoreOwner(store, member);
+		store.validateOwner(member);
 
 		store.delete();
 

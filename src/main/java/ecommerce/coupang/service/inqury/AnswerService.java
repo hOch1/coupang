@@ -12,7 +12,6 @@ import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.product.inquiry.AnswerRepository;
 import ecommerce.coupang.repository.product.inquiry.ProductInquiryRepository;
-import ecommerce.coupang.utils.store.StoreUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +39,7 @@ public class AnswerService{
                 .orElseThrow(() -> new CustomException(ErrorCode.INQUIRY_NOT_FOUND));
 
         Store store = productInquiry.getProduct().getStore();
-        StoreUtils.validateStoreOwner(store, member);
+        store.validateOwner(member);
 
         /* 해당 문의 이미 답변완료일 시 예외 */
         if (productInquiry.isAnswered())
@@ -64,8 +63,7 @@ public class AnswerService{
     @LogAction("답변 수정")
     public Answer updateAnswer(Long answerId, UpdateAnswerRequest request, Member member) throws CustomException {
         Answer answer = getAnswer(answerId);
-
-        StoreUtils.validateStoreOwner(answer.getStore(), member);
+        answer.getStore().validateOwner(member);
 
         answer.update(request);
         return answer;
@@ -80,8 +78,7 @@ public class AnswerService{
     @LogAction("답변 삭제")
     public Answer deleteAnswer(Long answerId, Member member) throws CustomException {
         Answer answer = getAnswer(answerId);
-
-        StoreUtils.validateStoreOwner(answer.getStore(), member);
+        answer.getStore().validateOwner(member);
 
         answerRepository.delete(answer);
         return answer;

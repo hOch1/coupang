@@ -9,7 +9,6 @@ import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.service.product.option.ProductVariantOptionService;
-import ecommerce.coupang.utils.store.StoreUtils;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
@@ -44,7 +43,7 @@ public class ProductVariantService {
 	public ProductVariant addProductVariant(Long productId, CreateProductVariantRequest request, Member member) throws CustomException {
 		Product product = productRepository.findByIdWithMemberAndCategory(productId)
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
-		StoreUtils.validateStoreOwner(product.getStore(), member);
+		product.getStore().validateOwner(member);
 
 		ProductVariant productVariant = productCreateManagement.createVariantAndOptions(request, product);
 
@@ -61,7 +60,7 @@ public class ProductVariantService {
 	@LogAction("상품 변형 수정")
 	public ProductVariant updateProductVariant(Long variantId, UpdateProductVariantRequest request, Member member) throws CustomException {
 		ProductVariant productVariant = getProductVariantWithMember(variantId);
-		StoreUtils.validateStoreOwner(productVariant.getProduct().getStore(), member);
+		productVariant.getProduct().getStore().validateOwner(member);
 
 		productVariant.update(request);
 
@@ -80,7 +79,7 @@ public class ProductVariantService {
 	@LogAction("대표 상품 변경")
 	public ProductVariant updateDefaultProduct(Long productVariantId, Member member) throws CustomException {
 		ProductVariant productVariant = getProductVariantWithMember(productVariantId);
-		StoreUtils.validateStoreOwner(productVariant.getProduct().getStore(), member);
+		productVariant.getProduct().getStore().validateOwner(member);
 
 		ProductVariant defaultProductVariant = productVariantRepository.findByProductIdAndDefault(productVariant.getProduct().getId())
 			.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
@@ -106,7 +105,7 @@ public class ProductVariantService {
 	@LogAction("상품 재고 변경")
 	public ProductVariant updateProductStock(Long productVariantId, UpdateProductStockRequest request, Member member) throws CustomException {
 		ProductVariant productVariant = getProductVariantWithMember(productVariantId);
-		StoreUtils.validateStoreOwner(productVariant.getProduct().getStore(), member);
+		productVariant.getProduct().getStore().validateOwner(member);
 
 		productVariant.changeStock(request.getStockQuantity());
 
@@ -124,7 +123,7 @@ public class ProductVariantService {
 	@LogAction("상품 상태 변경")
 	public ProductVariant updateProductStatus(Long productVariantId, UpdateProductStatusRequest request, Member member) throws CustomException {
 		ProductVariant productVariant = getProductVariantWithMember(productVariantId);
-		StoreUtils.validateStoreOwner(productVariant.getProduct().getStore(), member);
+		productVariant.getProduct().getStore().validateOwner(member);
 
 		productVariant.changeStatus(request.getStatus());
 
@@ -139,7 +138,7 @@ public class ProductVariantService {
 	@LogAction("변형 상품 삭제")
 	public ProductVariant deleteProductVariant(Long productVariantId, Member member) throws CustomException {
 		ProductVariant productVariant = getProductVariantWithMember(productVariantId);
-		StoreUtils.validateStoreOwner(productVariant.getProduct().getStore(), member);
+		productVariant.getProduct().getStore().validateOwner(member);
 
 		productVariant.delete();
 		return productVariant;

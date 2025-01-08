@@ -14,6 +14,9 @@ import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.cart.CartItemRepository;
 import ecommerce.coupang.repository.order.OrderRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
+import ecommerce.coupang.service.member.AddressService;
+import ecommerce.coupang.service.member.query.AddressQueryService;
+import ecommerce.coupang.service.order.OrderService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +37,7 @@ import static org.mockito.Mockito.*;
 class OrderServiceImplTest {
 
     @InjectMocks
-    private OrderServiceImpl orderService;
+    private OrderService orderService;
 
     @Mock
     private OrderRepository orderRepository;
@@ -46,7 +49,7 @@ class OrderServiceImplTest {
     private CartItemRepository cartItemRepository;
 
     @Mock
-    private AddressService addressService;
+    private AddressQueryService addressQueryService;
 
     private Member mockMember;
     private Address mockAddress;
@@ -73,7 +76,7 @@ class OrderServiceImplTest {
     void createOrderByProduct() throws CustomException {
         CreateOrderByProductRequest request = productRequest();
 
-        when(addressService.getAddress(request.getAddressId())).thenReturn(mockAddress);
+        when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
         when(productVariantRepository.findByIdWithStore(request.getProductVariantId())).thenReturn(Optional.of(mockProductVariant));
         when(mockProductVariant.getStatus()).thenReturn(ProductStatus.ACTIVE);
         when(mockProductVariant.getProduct()).thenReturn(mockProduct);
@@ -95,7 +98,7 @@ class OrderServiceImplTest {
     void createOrderByProductFailProductNotFound() throws CustomException {
         CreateOrderByProductRequest request = productRequest();
 
-        when(addressService.getAddress(request.getAddressId())).thenReturn(mockAddress);
+        when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
         when(productVariantRepository.findByIdWithStore(request.getProductVariantId())).thenReturn(Optional.empty());
 
         CustomException customException = assertThrows(CustomException.class, () -> orderService.createOrderByProduct(request, mockMember));
@@ -112,7 +115,7 @@ class OrderServiceImplTest {
     void createOrderByProductFailProductStatusNotActive() throws CustomException {
         CreateOrderByProductRequest request = productRequest();
 
-        when(addressService.getAddress(request.getAddressId())).thenReturn(mockAddress);
+        when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
         when(productVariantRepository.findByIdWithStore(request.getProductVariantId())).thenReturn(Optional.of(mockProductVariant));
         when(mockProductVariant.getStatus()).thenReturn(ProductStatus.INACTIVE);
 
@@ -130,7 +133,7 @@ class OrderServiceImplTest {
     void createOrderByCart() throws CustomException {
         CreateOrderByCartRequest request = cartRequest();
 
-        when(addressService.getAddress(request.getAddressId())).thenReturn(mockAddress);
+        when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
         when(cartItemRepository.findByIdWithStore(1L)).thenReturn(Optional.of(mockCartItem));
         when(mockCartItem.getProductVariant()).thenReturn(mockProductVariant);
         when(mockProductVariant.getStatus()).thenReturn(ProductStatus.ACTIVE);
@@ -153,7 +156,7 @@ class OrderServiceImplTest {
     void createOrderByCartFailCartItemNotFound() throws CustomException {
         CreateOrderByProductRequest request = productRequest();
 
-        when(addressService.getAddress(request.getAddressId())).thenReturn(mockAddress);
+        when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
         when(productVariantRepository.findByIdWithStore(request.getProductVariantId())).thenReturn(Optional.empty());
 
         CustomException customException = assertThrows(CustomException.class, () -> orderService.createOrderByProduct(request, mockMember));
@@ -170,7 +173,7 @@ class OrderServiceImplTest {
     void createOrderByCartFailProductStatusNotActive() throws CustomException {
         CreateOrderByCartRequest request = cartRequest();
 
-        when(addressService.getAddress(request.getAddressId())).thenReturn(mockAddress);
+        when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
         when(cartItemRepository.findByIdWithStore(1L)).thenReturn(Optional.of(mockCartItem));
         when(mockCartItem.getProductVariant()).thenReturn(mockProductVariant);
         when(mockProductVariant.getStatus()).thenReturn(ProductStatus.INACTIVE);
@@ -231,8 +234,12 @@ class OrderServiceImplTest {
     }
 
     private CreateOrderByCartRequest cartRequest() {
+        CreateOrderByCartRequest.CartItemRequest cartItemRequest = new CreateOrderByCartRequest.CartItemRequest(
+            1L,
+            null
+        );
         return new CreateOrderByCartRequest(
-                List.of(1L),
+                List.of(cartItemRequest),
                 1L,
                 Payment.CARD,
                 "OrderMessage"
