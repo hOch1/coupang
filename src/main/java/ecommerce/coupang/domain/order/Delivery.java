@@ -1,8 +1,7 @@
 package ecommerce.coupang.domain.order;
 
 import ecommerce.coupang.domain.BaseTimeEntity;
-import ecommerce.coupang.domain.store.Store;
-import ecommerce.coupang.dto.request.delivery.UpdateDeliveryRequest;
+import ecommerce.coupang.dto.request.delivery.AddDeliveryInfoRequest;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,7 +11,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -34,10 +32,6 @@ public class Delivery extends BaseTimeEntity {
 	@JoinColumn(name = "order_item_id", nullable = false)
 	private OrderItem orderItem;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "store_id", nullable = false)
-	private Store store;
-
 	@Enumerated(EnumType.STRING)
 	@Column(name = "delivery_status", nullable = false)
 	private DeliveryStatus deliveryStatus;
@@ -49,18 +43,21 @@ public class Delivery extends BaseTimeEntity {
 	@Column(name = "code")
 	private String code;
 
-	public Delivery(OrderItem orderItem, Store store) {
-		this.store = store;
+	public Delivery(OrderItem orderItem) {
 		this.orderItem = orderItem;
 		this.deliveryStatus = DeliveryStatus.PENDING;
 	}
 
-	public static Delivery create(OrderItem orderItem, Store store) {
-		return new Delivery(orderItem, store);
+	public static Delivery create(OrderItem orderItem) {
+		return new Delivery(orderItem);
 	}
 
-	public void setCompanyInfo(UpdateDeliveryRequest request) {
+	public void setCompanyInfo(AddDeliveryInfoRequest request) {
 		this.deliveryCompany = request.getDeliveryCompany();
 		this.code = request.getCode();
+	}
+
+	public void updateStatus(DeliveryStatus status) {
+		this.deliveryStatus = status;
 	}
 }

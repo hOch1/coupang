@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class UpdateDeliveryRequest {
+public class AddDeliveryInfoRequest {
 
 	private final DeliveryCompany deliveryCompany;
 	private final String code;
