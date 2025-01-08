@@ -5,7 +5,7 @@ import ecommerce.coupang.domain.category.CategoryOption;
 import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.option.CategoryOptionResponse;
 import ecommerce.coupang.service.category.CategoryService;
-import ecommerce.coupang.service.product.option.CategoryOptionService;
+import ecommerce.coupang.service.category.CategoryOptionService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

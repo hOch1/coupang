@@ -6,12 +6,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.common.exception.CustomException;
-import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.domain.product.variant.ProductVariantOption;
 import ecommerce.coupang.domain.product.variant.VariantOptionValue;
 import ecommerce.coupang.dto.request.product.option.VariantOptionRequest;
 import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
+import ecommerce.coupang.service.category.VariantOptionService;
 import lombok.RequiredArgsConstructor;
 
 @Service

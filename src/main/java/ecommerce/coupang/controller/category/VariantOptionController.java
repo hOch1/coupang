@@ -12,7 +12,7 @@ import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.domain.product.variant.VariantOption;
 import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.option.VariantOptionResponse;
-import ecommerce.coupang.service.product.option.VariantOptionService;
+import ecommerce.coupang.service.category.VariantOptionService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 

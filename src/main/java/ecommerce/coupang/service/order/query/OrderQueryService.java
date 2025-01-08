@@ -20,7 +20,6 @@ import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.order.OrderItemRepository;
 import ecommerce.coupang.repository.order.OrderRepository;
 import ecommerce.coupang.service.product.option.ProductVariantOptionService;
-import ecommerce.coupang.service.product.option.VariantOptionService;
 import lombok.RequiredArgsConstructor;
 
 @Service

@@ -1,4 +1,4 @@
-package ecommerce.coupang.service.product.option;
+package ecommerce.coupang.service.category;
 
 
 import java.util.ArrayList;
@@ -10,7 +10,6 @@ import ecommerce.coupang.domain.product.variant.VariantOptionValue;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.product.VariantOptionValueRepository;
-import ecommerce.coupang.service.category.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

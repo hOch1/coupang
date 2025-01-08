@@ -9,6 +9,7 @@ import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.ProductCategoryOption;
 import ecommerce.coupang.dto.request.product.option.CategoryOptionsRequest;
 import ecommerce.coupang.repository.product.ProductCategoryOptionRepository;
+import ecommerce.coupang.service.category.CategoryOptionService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -20,8 +21,7 @@ public class ProductCategoryOptionService {
 	private final ProductCategoryOptionRepository productCategoryOptionRepository;
 
 	/* CategoryOptionValueId로 ProductCategoryOption 생성 */
-	public ProductCategoryOption createProductCategoryOption(Long optionValueId, Product product) throws
-		CustomException {
+	public ProductCategoryOption createProductCategoryOption(Long optionValueId, Product product) throws CustomException {
 		CategoryOptionValue categoryOptionValue = categoryOptionService.getCategoryOptionValue(optionValueId);
 
 		return ProductCategoryOption.create(product, categoryOptionValue);

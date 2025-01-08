@@ -25,6 +25,7 @@ public class ProductCreateManagement {
 
     /* 상품 생성, 상품 변형 추가, 옵션 추가 */
     public Product createProductAndVariantAndOptions(CreateProductRequest request, Store store, Category category) throws CustomException {
+        // TODO 옵션 검증 추가
         Product product = Product.create(request, store, category);
 
         for (CategoryOptionsRequest categoryOption : request.getCategoryOptions())
@@ -38,6 +39,7 @@ public class ProductCreateManagement {
 
     /* 상품 변형 생성, 옵션 추가 */
     public ProductVariant createVariantAndOptions(CreateProductVariantRequest request, Product product) throws CustomException {
+        // TODO 옵션 검증 추가
         ProductVariant productVariant = ProductVariant.create(request, product);
 
         for (VariantOptionRequest variantOption : request.getVariantOptions()) {
@@ -54,7 +56,6 @@ public class ProductCreateManagement {
         ProductVariantOption productVariantOption = productVariantOptionService.createProductVariantOption(optionValueId, productVariant);
 
         productVariant.addProductVariantOptions(productVariantOption);
-
     }
 
     /* ProductOption -> Product 추가 */
