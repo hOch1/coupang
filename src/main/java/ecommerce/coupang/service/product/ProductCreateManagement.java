@@ -1,5 +1,6 @@
 package ecommerce.coupang.service.product;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ import ecommerce.coupang.service.category.CategoryOptionService;
 import ecommerce.coupang.service.category.VariantOptionService;
 import ecommerce.coupang.service.product.option.ProductCategoryOptionService;
 import ecommerce.coupang.service.product.option.ProductVariantOptionService;
+import ecommerce.coupang.utils.product.ProductUtils;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Component;
@@ -81,29 +83,23 @@ public class ProductCreateManagement {
     private void validateProductRequestContainsNeedOptions(CreateProductRequest request) throws CustomException {
         List<CategoryOption> categoryOptions = categoryOptionService.getCategoryOption(request.getCategoryId());
 
-        Set<Long> needOptionIdSet = categoryOptions.stream()
-            .map(CategoryOption::getId)
-            .collect(Collectors.toSet());
-
-        request.getCategoryOptions()
-            .forEach(co -> needOptionIdSet.remove(co.getOptionId()));
-
-        if (!needOptionIdSet.isEmpty())
-            throw new CustomException(ErrorCode.OPTION_NOT_CONTAINS); // TODO 예외 구체화
+        ProductUtils.validateOptions(
+            categoryOptions,
+            request.getCategoryOptions(),
+            CategoryOption::getId,
+            CategoryOptionsRequest::getOptionId
+        );
     }
 
     /* request 에 variantOption 이 누락되었는지 검증 */
     private void validateVariantRequestContainsNeedOptions(CreateProductVariantRequest request, Long categoryId) throws CustomException {
         List<VariantOption> variantOptions = variantOptionService.getVariantOption(categoryId);
 
-        Set<Long> needOptionIdSet = variantOptions.stream()
-            .map(VariantOption::getId)
-            .collect(Collectors.toSet());
-
-        request.getVariantOptions()
-            .forEach(vo -> needOptionIdSet.remove(vo.getOptionId()));
-
-        if (!needOptionIdSet.isEmpty())
-            throw new CustomException(ErrorCode.OPTION_NOT_CONTAINS); // TODO 예외 구체화
+        ProductUtils.validateOptions(
+            variantOptions,
+            request.getVariantOptions(),
+			VariantOption::getId,
+            VariantOptionRequest::getOptionId
+        );
     }
 }
