@@ -12,7 +12,7 @@ begin
                        concat('member', i),
                        concat('member', i, '@example.com'),
                        CONCAT('010-', LPAD(i, 8, '0')), -- 전화번호 형식 유지
-                       '$2a$10$TA/jDO86POe/xUZ7I6OLyOhh4uHHa73dvLsmvcgb2IMNauhy4amdi',
+                       '$2a$10$TA/jDO86POe/xUZ7I6OLyOhh4uHHa73dvLsmvcgb2IMNauhy4amdi', # user1pw -> bcrypt
                        'SELLER',
                        true,
                        now(),

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.Product;
@@ -93,6 +95,12 @@ public class ProductReview extends BaseTimeEntity {
 	public void update(UpdateReviewRequest request) {
 		this.content = request.getContent() != null ? request.getContent() : this.content;
 		this.star = request.getStar() != null ? request.getStar().intValue() : this.star;
+		this.product.updateStarAvg();
+	}
+
+	public void validateReviewOwner(Member member) throws CustomException {
+		if (!this.member.equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
 	}
 
 	@Override
@@ -109,5 +117,9 @@ public class ProductReview extends BaseTimeEntity {
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(id);
+	}
+
+	public void remove() {
+		this.product.removeReview(this);
 	}
 }

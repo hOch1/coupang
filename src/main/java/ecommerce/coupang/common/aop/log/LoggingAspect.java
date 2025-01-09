@@ -52,13 +52,15 @@ public class LoggingAspect {
 			Object result = joinPoint.proceed();
 			long endTime = System.currentTimeMillis();
 
-			log.info("[Controller-{}] {} METHOD: {} 요청 URL: {} - 정상 종료, 실행 시간: {}ms", requestUUID.getRequestId(), user, httpMethod, url, endTime - startTime);
+			log.info("[Controller-{}] {} METHOD: {} 요청 URL: {} - 정상 종료, 실행 시간: {}ms",
+					requestUUID.getRequestId(), user, httpMethod, url, endTime - startTime);
 
 			return result;
 		} catch (Throwable e) {
 			long endTime = System.currentTimeMillis();
 
-			log.info("[Controller-{}] {} METHOD: {} 요청 URL: {} - 이상 종료, 실행 시간: {}ms", requestUUID.getRequestId(), user, httpMethod, url, endTime - startTime);
+			log.info("[Controller-{}] {} METHOD: {} 요청 URL: {} - 이상 종료, 실행 시간: {}ms",
+					requestUUID.getRequestId(), user, httpMethod, url, endTime - startTime);
 			throw e;
 		}
 	}
@@ -132,16 +134,14 @@ public class LoggingAspect {
 
 	private String getLogActionName(Class<?> targetClass, Method method) {
 		LogAction logAction = null;
-		for (Class<?> iface : targetClass.getInterfaces()) {
-			try {
-				Method ifaceMethod = iface.getMethod(method.getName(), method.getParameterTypes());
-				logAction = ifaceMethod.getAnnotation(LogAction.class);
-				if (logAction != null) {
-					return logAction.value();
-				}
-			} catch (NoSuchMethodException e) {
-				// 해당 인터페이스에 해당 메서드가 없으면 무시하고 다음 인터페이스 확인
+		try {
+			Method classMethod = targetClass.getMethod(method.getName(), method.getParameterTypes());
+			logAction = classMethod.getAnnotation(LogAction.class);
+			if (logAction != null) {
+				return logAction.value();
 			}
+		} catch (NoSuchMethodException e) {
+			// 무시
 		}
 		return null;
 	}

@@ -1,5 +1,7 @@
 package ecommerce.coupang.service.discount;
 
+import ecommerce.coupang.domain.member.Member;
+import ecommerce.coupang.domain.member.MemberCoupon;
 import org.springframework.stereotype.Component;
 
 import ecommerce.coupang.domain.member.MemberGrade;
@@ -9,14 +11,19 @@ import ecommerce.coupang.domain.store.Coupon;
 public class CouponDiscountPolicy implements DiscountPolicy{
 
 	@Override
-	public int calculateDiscount(int price, MemberGrade memberGrade, Coupon coupon) {
-		if (price < coupon.getMinPrice()) return 0;
+	public int calculateDiscount(int price, Member member, MemberCoupon memberCoupon) {
+		Coupon coupon = memberCoupon.getCoupon();
 
 		int discountPrice = 0;
+
+		if (price < coupon.getMinPrice()) return discountPrice;
+
 		switch (coupon.getType()) {
 			case FIXED -> discountPrice = coupon.getDiscountValue();
 			case PERCENT -> discountPrice = (int)(price * coupon.getDiscountValue() / 100.0);
 		}
+
+		memberCoupon.use();
 
 		return Math.min(discountPrice, coupon.getDiscountValue());
 	}

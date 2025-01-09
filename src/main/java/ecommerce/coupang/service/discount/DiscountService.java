@@ -1,41 +1,34 @@
 package ecommerce.coupang.service.discount;
 
+import ecommerce.coupang.service.store.CouponService;
 import org.springframework.stereotype.Service;
 
 import ecommerce.coupang.common.exception.CustomException;
-import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.member.MemberCoupon;
-import ecommerce.coupang.domain.member.MemberGrade;
-import ecommerce.coupang.repository.member.MemberCouponRepository;
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class DiscountService {
 
-	private final MemberCouponRepository memberCouponRepository;
-	private final DiscountPolicy memberDiscountPolicy;
-	private final DiscountPolicy couponDiscountPolicy;
+	private final CouponService couponService;
+	private final List<DiscountPolicy> discountPolicies;
 
+	/**
+	 * 모든 할인 정책에 대해 할인 금액 계산
+	 */
+	public int calculateTotalDiscount(int totalPrice, Member member, MemberCoupon memberCoupon) {
+		return discountPolicies.stream()
+				.mapToInt(policy -> policy.calculateDiscount(totalPrice, member, memberCoupon))
+				.sum(); // 각 정책의 할인 금액을 합산
+	}
 
 	public MemberCoupon getMemberCouponIfPresent(Member member, Long couponId) throws CustomException {
 		if (couponId == null) return null;
 
-		return memberCouponRepository.findByMemberIdAndCouponId(member.getId(), couponId)
-			.orElseThrow(() -> new CustomException(ErrorCode.COUPON_NOT_FOUND));
-	}
-
-	public int calculateCouponDiscount(MemberCoupon memberCoupon, int price) throws CustomException {
-		if (memberCoupon == null) return 0;
-		if (memberCoupon.isUsed())
-			throw new CustomException(ErrorCode.ALREADY_USE_COUPON);
-
-		memberCoupon.use();
-		return couponDiscountPolicy.calculateDiscount(price, null, memberCoupon.getCoupon());
-	}
-
-	public int calculateMemberDiscount(MemberGrade memberGrade, int price) {
-		return memberDiscountPolicy.calculateDiscount(price, memberGrade, null);
+		return couponService.getMemberCoupon(member, couponId);
 	}
 }

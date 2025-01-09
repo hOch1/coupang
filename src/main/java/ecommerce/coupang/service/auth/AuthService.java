@@ -48,8 +48,8 @@ public class AuthService {
 	 * @param request 회원가입 요청 정보
 	 * @return 회원가입한 회원 ID
 	 */
-	@LogAction("회원가입")
 	@Transactional
+	@LogAction("회원가입")
 	public Member signup(SignupRequest request) throws CustomException {
 		validateDuplicateMember(request);
 

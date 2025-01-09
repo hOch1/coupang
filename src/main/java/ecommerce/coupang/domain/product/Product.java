@@ -144,4 +144,10 @@ public class Product extends BaseTimeEntity {
 		productVariants.forEach(ProductVariant::delete); // 연관된 상품 변형도 Soft 삭제
 		this.isActive = false;
 	}
+
+    public void removeReview(ProductReview productReview) {
+		this.productReviews.remove(productReview);
+		updateStarAvg();
+		decreaseReviewCount();
+    }
 }

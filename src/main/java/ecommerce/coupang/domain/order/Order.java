@@ -98,7 +98,7 @@ public class Order extends BaseTimeEntity {
 	/* 주문 상품 추가 */
 	public void addOrderItem(OrderItem orderItem) {
 		this.orderItems.add(orderItem);
-		this.totalPrice += orderItem.getDiscountTotalPrice();
+		this.totalPrice += orderItem.getTotalPrice();
 	}
 
 	/* 주문 취소 */
@@ -108,9 +108,26 @@ public class Order extends BaseTimeEntity {
 			if (!orderItem.getDelivery().getDeliveryStatus().equals(DeliveryStatus.PENDING))
 				throw new CustomException(ErrorCode.ALREADY_DELIVERY_START);
 
+			validateNotCancelled();
+
 			orderItem.cancel();
 		}
 
 		this.status = OrderStatus.CANCELLED;
+	}
+
+	public boolean isCancelled() {
+		return this.status.equals(OrderStatus.CANCELLED);
+	}
+
+	public void validateNotCancelled() throws CustomException {
+		if (isCancelled()) {
+			throw new CustomException(ErrorCode.ALREADY_CANCELLED_ORDER);
+		}
+	}
+
+	public void validateOrderOwner(Member member) throws CustomException {
+		if (!this.getMember().equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
 	}
 }

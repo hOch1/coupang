@@ -3,7 +3,6 @@ package ecommerce.coupang.service.order;
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.domain.member.MemberCoupon;
-import ecommerce.coupang.domain.order.OrderStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +25,7 @@ import ecommerce.coupang.service.member.query.AddressQueryService;
 import lombok.RequiredArgsConstructor;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 @RequiredArgsConstructor
 @LogLevel("OrderService")
 public class OrderService {
@@ -44,7 +43,6 @@ public class OrderService {
 	 * @return 생성한 주문
 	 */
 	@LogAction("상품 직접 주문")
-	@Transactional
 	public Order createOrderByProduct(CreateOrderByProductRequest request, Member member) throws CustomException {
 		Address address = addressQueryService.getAddress(request.getAddressId());
 		Order order = Order.createByProduct(request, member, address);
@@ -68,7 +66,6 @@ public class OrderService {
 	 * @return 생성한 주문
 	 */
 	@LogAction("장바구니 상품 주문")
-	@Transactional
 	public Order createOrderByCart(CreateOrderByCartRequest request, Member member) throws CustomException {
 		Address address = addressQueryService.getAddress(request.getAddressId());
 		Order order = Order.createByCart(request, member, address);
@@ -95,18 +92,13 @@ public class OrderService {
 	 * @return 취소한 주문 ID
 	 */
 	@LogAction("주문 취소")
-	@Transactional
 	public Order cancelOrder(Long orderId, Member member) throws CustomException {
-		Order order = orderRepository.findByIdWithMemberAndAddress(orderId).orElseThrow(() ->
-			new CustomException(ErrorCode.ORDER_NOT_FOUND));
+		Order order = orderRepository.findByIdWithMemberAndAddress(orderId)
+				.orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
 
-		if (!order.getMember().equals(member))
-			throw new CustomException(ErrorCode.FORBIDDEN);
-
-		if (order.getStatus().equals(OrderStatus.CANCELLED))
-			throw new CustomException(ErrorCode.ALREADY_CANCELLED_ORDER);
-
+		order.validateOrderOwner(member);
 		order.cancel();
+
 		return order;
 	}
 
@@ -116,10 +108,9 @@ public class OrderService {
 
 		// 할인 계산
 		MemberCoupon memberCoupon = discountService.getMemberCouponIfPresent(member, couponId);
-		int couponDiscountPrice = discountService.calculateCouponDiscount(memberCoupon, totalPrice);
-		int memberDiscountPrice = discountService.calculateMemberDiscount(member.getGrade(), totalPrice);
+		int totalDiscountPrice = discountService.calculateTotalDiscount(totalPrice, member, memberCoupon);
 
-		OrderItem orderItem = OrderItem.create(order, productVariant, memberCoupon, quantity, couponDiscountPrice, memberDiscountPrice);
+		OrderItem orderItem = OrderItem.create(order, productVariant, memberCoupon, quantity, totalDiscountPrice);
 		/* 배송 연결 */
 		Delivery delivery = Delivery.create(orderItem);
 		orderItem.setDelivery(delivery);

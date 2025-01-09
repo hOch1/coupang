@@ -101,14 +101,9 @@ public class ProductReviewService {
 	public ProductReview updateReview(Long reviewId, UpdateReviewRequest request, Member member) throws CustomException {
 		ProductReview productReview = getProductReview(reviewId);
 
-		validateReviewOwner(member, productReview);
+		productReview.validateReviewOwner(member);
 
 		productReview.update(request);
-
-		Product product = productReview.getProduct();
-		product.updateStarAvg();
-
-		productRepository.save(product);
 
 		return productReview;
 	}
@@ -123,21 +118,12 @@ public class ProductReviewService {
 	public ProductReview deleteReview(Long reviewId, Member member) throws CustomException {
 		ProductReview productReview = getProductReview(reviewId);
 
-		validateReviewOwner(member, productReview);
+		productReview.validateReviewOwner(member);
 
-		Product product = productReview.getProduct();
-		product.getProductReviews().remove(productReview);
-		product.updateStarAvg();
-		product.decreaseReviewCount();
+		productReview.remove();
 
-		productRepository.save(product);
+		productReviewRepository.delete(productReview);
 		return productReview;
-	}
-
-	/* 해당 리뷰 작성자가 member 인지 검증 */
-	private static void validateReviewOwner(Member member, ProductReview productReview) throws CustomException {
-		if (!productReview.getMember().equals(member))
-			throw new CustomException(ErrorCode.FORBIDDEN);
 	}
 
 	/* 상품 리뷰 가져오기 */

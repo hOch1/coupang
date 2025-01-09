@@ -41,8 +41,8 @@ public class OrderItem {
 	private ProductVariant productVariant;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "coupon_id")
-	private Coupon coupon;
+	@JoinColumn(name = "member_coupon_id")
+	private MemberCoupon memberCoupon;
 
 	@Column(name = "price", nullable = false)
 	private int price;
@@ -50,49 +50,37 @@ public class OrderItem {
 	@Column(name = "quantity", nullable = false)
 	private int quantity;
 
-	@Column(name = "coupon_discount_price", nullable = false)
-	private int couponDiscountPrice;
-
-	@Column(name = "memberDiscountPrice", nullable = false)
-	private int memberDiscountPrice;
+	@Column(name = "discount_price", nullable = false)
+	private int discountPrice;
 
 	@Column(name = "total_price", nullable = false)
 	private int totalPrice;
-
-	@Column(name = "discount_total_price", nullable = false)
-	private int discountTotalPrice;
 
 	@Setter
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Delivery delivery;
 
-	public OrderItem(Order order, ProductVariant productVariant, Coupon coupon, int price, int quantity, int couponDiscountPrice, int memberDiscountPrice, int totalPrice, int discountTotalPrice) {
+	public OrderItem(Order order, ProductVariant productVariant, MemberCoupon memberCoupon, int price, int quantity, int discountPrice, int totalPrice) {
 		this.order = order;
 		this.productVariant = productVariant;
-		this.coupon = coupon;
+		this.memberCoupon = memberCoupon;
 		this.price = price;
 		this.quantity = quantity;
-		this.couponDiscountPrice = couponDiscountPrice;
-		this.memberDiscountPrice = memberDiscountPrice;
+		this.discountPrice = discountPrice;
 		this.totalPrice = totalPrice;
-		this.discountTotalPrice = discountTotalPrice;
 	}
 
-	public static OrderItem create(Order order, ProductVariant productVariant, MemberCoupon memberCoupon, int quantity,
-		int couponDiscountPrice, int memberDiscountPrice) {
+	public static OrderItem create(Order order, ProductVariant productVariant, MemberCoupon memberCoupon, int quantity, int discountPrice) {
 
 		productVariant.increaseSalesCount(quantity);
-		Coupon coupon = memberCoupon != null ? memberCoupon.getCoupon() : null;
 
 		return new OrderItem(order,
 			productVariant,
-			coupon,
+			memberCoupon,
 			productVariant.getPrice(),
 			quantity,
-			couponDiscountPrice,
-			memberDiscountPrice,
-			productVariant.getPrice() * quantity,
-			productVariant.getPrice() * quantity - couponDiscountPrice - memberDiscountPrice
+			discountPrice,
+			productVariant.getPrice() * quantity - discountPrice
 		);
 	}
 
