@@ -23,6 +23,7 @@ import ecommerce.coupang.repository.order.OrderRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.service.discount.DiscountService;
 import ecommerce.coupang.service.member.query.AddressQueryService;
+import ecommerce.coupang.service.store.CouponService;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -36,6 +37,7 @@ public class OrderService {
 	private final CartItemRepository cartItemRepository;
 	private final AddressQueryService addressQueryService;
 	private final DiscountService discountService;
+	private final CouponService couponService;
 
 	/**
 	 * 상품 직접 주문
@@ -115,7 +117,7 @@ public class OrderService {
 		int totalPrice = productVariant.getPrice() * quantity;
 
 		// 할인 계산
-		MemberCoupon memberCoupon = discountService.getMemberCouponIfPresent(member, couponId);
+		MemberCoupon memberCoupon = couponService.getMemberCouponIfPresent(member, couponId);
 		int couponDiscountPrice = discountService.calculateCouponDiscount(memberCoupon, totalPrice);
 		int memberDiscountPrice = discountService.calculateMemberDiscount(member.getGrade(), totalPrice);
 

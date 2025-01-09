@@ -14,17 +14,8 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DiscountService {
 
-	private final MemberCouponRepository memberCouponRepository;
 	private final DiscountPolicy memberDiscountPolicy;
 	private final DiscountPolicy couponDiscountPolicy;
-
-
-	public MemberCoupon getMemberCouponIfPresent(Member member, Long couponId) throws CustomException {
-		if (couponId == null) return null;
-
-		return memberCouponRepository.findByMemberIdAndCouponId(member.getId(), couponId)
-			.orElseThrow(() -> new CustomException(ErrorCode.COUPON_NOT_FOUND));
-	}
 
 	public int calculateCouponDiscount(MemberCoupon memberCoupon, int price) throws CustomException {
 		if (memberCoupon == null) return 0;

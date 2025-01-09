@@ -33,10 +33,10 @@ public class ProductCategoryOptionService {
 	}
 
 	/* 상품 옵션 변경 */
-	public void update(OptionRequest request, Product product) throws CustomException {
-		ProductCategoryOption productCategoryOption = getPcoByProductIdAndCategoryOptionId(product.getId(), request.getOptionId());
+	public void update(Long optionId, Long optionValueId, Product product) throws CustomException {
+		ProductCategoryOption productCategoryOption = getPcoByProductIdAndCategoryOptionId(product.getId(), optionId);
 
-		CategoryOptionValue categoryOptionValue = categoryOptionService.getCategoryOptionValue(request.getOptionValueId());
+		CategoryOptionValue categoryOptionValue = categoryOptionService.getCategoryOptionValue(optionValueId);
 
 		productCategoryOption.update(categoryOptionValue);
 	}

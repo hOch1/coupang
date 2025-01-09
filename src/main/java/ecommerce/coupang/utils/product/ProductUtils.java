@@ -9,7 +9,7 @@ import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.domain.category.Option;
 import ecommerce.coupang.dto.request.product.option.OptionRequest;
 
-public class ProductUtils {
+public final class ProductUtils {
 	public static <N extends Option> void validateOptions(
 		List<N> needOptions,
 		List<OptionRequest> requestOptions) throws CustomException {

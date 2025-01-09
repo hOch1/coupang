@@ -1,4 +1,4 @@
-package ecommerce.coupang.service.order.impl;
+package ecommerce.coupang.service.order;
 
 import ecommerce.coupang.domain.cart.CartItem;
 import ecommerce.coupang.domain.member.Address;
@@ -14,9 +14,9 @@ import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.cart.CartItemRepository;
 import ecommerce.coupang.repository.order.OrderRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
-import ecommerce.coupang.service.member.AddressService;
+import ecommerce.coupang.service.discount.DiscountService;
 import ecommerce.coupang.service.member.query.AddressQueryService;
-import ecommerce.coupang.service.order.OrderService;
+import ecommerce.coupang.service.store.CouponService;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class OrderServiceImplTest {
+class OrderServiceTest {
 
     @InjectMocks
     private OrderService orderService;
@@ -50,6 +50,12 @@ class OrderServiceImplTest {
 
     @Mock
     private AddressQueryService addressQueryService;
+
+    @Mock
+    private CouponService couponService;
+
+    @Mock
+    private DiscountService discountService;
 
     private Member mockMember;
     private Address mockAddress;
@@ -81,6 +87,7 @@ class OrderServiceImplTest {
         when(mockProductVariant.getStatus()).thenReturn(ProductStatus.ACTIVE);
         when(mockProductVariant.getProduct()).thenReturn(mockProduct);
         when(mockProduct.getStore()).thenReturn(mockStore);
+        when(couponService.getMemberCouponIfPresent(mockMember, null));
 
         Order order = orderService.createOrderByProduct(request, mockMember);
 

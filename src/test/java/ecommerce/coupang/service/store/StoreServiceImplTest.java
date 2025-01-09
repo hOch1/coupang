@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,16 +20,19 @@ import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.store.StoreRepository;
-import ecommerce.coupang.service.store.impl.StoreServiceImpl;
+import ecommerce.coupang.service.store.query.StoreQueryService;
 
 @ExtendWith(MockitoExtension.class)
 class StoreServiceImplTest {
 
+	@InjectMocks
+	private StoreService storeService;
+
 	@Mock
 	private StoreRepository storeRepository;
 
-	@InjectMocks
-	private StoreServiceImpl storeService;
+	@Mock
+	private StoreQueryService storeQueryService;
 
 	private Member mockMember;
 	private Store mockStore;
@@ -69,17 +70,17 @@ class StoreServiceImplTest {
 		CustomException customException = assertThrows(CustomException.class,
 			() -> storeService.createStore(request, mockMember));
 
-		assertThat(customException.getError()).isEqualTo(ErrorCode.ALREADY_EXITS_STORE_NUMBER.name());
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.ALREADY_EXITS_STORE_NUMBER);
 	}
 
 	@Test
 	@DisplayName("가게 수정 테스트")
 	void updateStoreTest() throws CustomException {
-		when(mockMember.getId()).thenReturn(1L);
-		when(mockStore.getMember()).thenReturn(mockMember);
+
+		doNothing().when(mockStore).validateOwner(mockMember);
 		UpdateStoreRequest request = new UpdateStoreRequest("updateName", "updateDescription");
 
-		when(storeRepository.findByIdWithMember(1L)).thenReturn(Optional.of(mockStore));
+		when(storeQueryService.findStore(1L)).thenReturn(mockStore);
 
 		Store store = storeService.updateStore(1L, request, mockMember);
 
@@ -89,30 +90,27 @@ class StoreServiceImplTest {
 
 	@Test
 	@DisplayName("가게 수정 테스트 - 실패 (가게 없음)")
-	void updateStoreTestFailNotFound() {
+	void updateStoreTestFailNotFound() throws CustomException {
 		UpdateStoreRequest request = new UpdateStoreRequest("updateName", "updateDescription");
 
-		when(storeRepository.findByIdWithMember(1L)).thenReturn(Optional.empty());
+		when(storeQueryService.findStore(1L)).thenThrow(new CustomException(ErrorCode.STORE_NOT_FOUND));
 
 		CustomException customException = assertThrows(CustomException.class,
 			() -> storeService.updateStore(1L, request, mockMember));
 
-		assertThat(customException.getError()).isEqualTo(ErrorCode.STORE_NOT_FOUND.name());
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.STORE_NOT_FOUND);
 	}
 
 	@Test
 	@DisplayName("가게 수정 테스트 - 실패 (권한 없음)")
-	void updateStoreTestFailForbidden() {
-		when(mockMember.getId()).thenReturn(1L);
-		Member otherMember = mock(Member.class);
-		when(otherMember.getId()).thenReturn(2L);
-		when(mockStore.getMember()).thenReturn(mockMember);
+	void updateStoreTestFailForbidden() throws CustomException {
 		UpdateStoreRequest request = new UpdateStoreRequest("updateName", "updateDescription");
 
-		when(storeRepository.findByIdWithMember(1L)).thenReturn(Optional.of(mockStore));
+		doThrow(new CustomException(ErrorCode.FORBIDDEN)).when(mockStore).validateOwner(mockMember);
+		when(storeQueryService.findStore(1L)).thenReturn(mockStore);
 
 		CustomException customException = assertThrows(CustomException.class,
-			() -> storeService.updateStore(1L, request, otherMember));
+			() -> storeService.updateStore(1L, request, mockMember));
 
 		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.FORBIDDEN);
 		verify(mockStore, never()).update(request);
@@ -121,10 +119,8 @@ class StoreServiceImplTest {
 	@Test
 	@DisplayName("가게 삭제 테스트")
 	void deleteStoreTest() throws CustomException {
-		when(mockMember.getId()).thenReturn(1L);
-		when(mockStore.getMember()).thenReturn(mockMember);
-
-		when(storeRepository.findByIdWithMember(1L)).thenReturn(Optional.of(mockStore));
+		doNothing().when(mockStore).validateOwner(mockMember);
+		when(storeQueryService.findStore(1L)).thenReturn(mockStore);
 
 		Store store = storeService.deleteStore(1L, mockMember);
 
@@ -134,31 +130,28 @@ class StoreServiceImplTest {
 
 	@Test
 	@DisplayName("가게 삭제 테스트 - 실패 (가게 없음)")
-	void deleteStoreFailNotFound() {
+	void deleteStoreFailNotFound() throws CustomException {
 		Member mockMember = mock(Member.class);
 
-		when(storeRepository.findByIdWithMember(1L)).thenReturn(Optional.empty());
+		when(storeQueryService.findStore(1L)).thenThrow(new CustomException(ErrorCode.STORE_NOT_FOUND));
 
 		CustomException customException = assertThrows(CustomException.class,
 			() -> storeService.deleteStore(1L, mockMember));
 
-		assertThat(customException.getError()).isEqualTo(ErrorCode.STORE_NOT_FOUND.name());
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.STORE_NOT_FOUND);
 	}
 
 	@Test
 	@DisplayName("가게 삭제 테스트 - 실패 (권한 없음)")
-	void deleteStoreForbidden() {
-		Member otherMember = mock(Member.class);
-		when(mockMember.getId()).thenReturn(1L);
-		when(otherMember.getId()).thenReturn(2L);
-		when(mockStore.getMember()).thenReturn(mockMember);
+	void deleteStoreForbidden() throws CustomException {
 
-		when(storeRepository.findByIdWithMember(1L)).thenReturn(Optional.of(mockStore));
+		doThrow(new CustomException(ErrorCode.FORBIDDEN)).when(mockStore).validateOwner(mockMember);
+		when(storeQueryService.findStore(1L)).thenReturn(mockStore);
 
 		CustomException customException = assertThrows(CustomException.class,
-			() -> storeService.deleteStore(1L, otherMember));
+			() -> storeService.deleteStore(1L, mockMember));
 
-		assertThat(customException.getError()).isEqualTo(ErrorCode.FORBIDDEN.name());
+		assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.FORBIDDEN);
 		verify(storeRepository, never()).delete(any(Store.class));
 	}
 }

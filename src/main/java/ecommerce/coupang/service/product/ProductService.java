@@ -67,7 +67,7 @@ public class ProductService {
 		product.update(request);
 
 		for (OptionRequest categoryOption : request.getCategoryOptions())
-			productCategoryOptionService.update(categoryOption, product);
+			productCategoryOptionService.update(categoryOption.getOptionId(), categoryOption.getOptionValueId(), product);
 
 		return product;
 	}

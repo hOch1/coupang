@@ -78,4 +78,11 @@ public class CouponService {
 		coupon.reduceStock();
 		return coupon;
 	}
+
+	public MemberCoupon getMemberCouponIfPresent(Member member, Long couponId) throws CustomException {
+		if (couponId == null) return null;
+
+		return memberCouponRepository.findByMemberIdAndCouponId(member.getId(), couponId)
+			.orElseThrow(() -> new CustomException(ErrorCode.COUPON_NOT_FOUND));
+	}
 }
