@@ -42,7 +42,7 @@ class StoreQueryServiceTest {
 	}
 
 	@Test
-	@DisplayName("가게 상세 조회 테스트")
+	@DisplayName("가게 조회 테스트")
 	void getStoreTest() throws CustomException {
 		when(storeRepository.findByIdWithMember(1L)).thenReturn(Optional.of(mockStore));
 
@@ -53,7 +53,7 @@ class StoreQueryServiceTest {
 	}
 
 	@Test
-	@DisplayName("가게 상세 조회 테스트 - 실패 (가게 없음)")
+	@DisplayName("가게 조회 테스트 - 실패 (가게 없음)")
 	void getStoreFail() {
 		when(storeRepository.findByIdWithMember(anyLong())).thenReturn(Optional.empty());
 

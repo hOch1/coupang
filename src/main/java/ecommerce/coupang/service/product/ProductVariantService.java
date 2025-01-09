@@ -65,7 +65,7 @@ public class ProductVariantService {
 		productVariant.update(request);
 
 		for (OptionRequest variantOption : request.getVariantOptions())
-			productVariantOptionService.update(variantOption, productVariant);
+			productVariantOptionService.update(variantOption.getOptionId(), variantOption.getOptionValueId(), productVariant);
 
 		return productVariant;
 	}

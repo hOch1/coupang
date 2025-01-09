@@ -27,7 +27,7 @@ import ecommerce.coupang.repository.member.MemberRepository;
 import ecommerce.coupang.common.security.JwtProvider;
 
 @ExtendWith(MockitoExtension.class)
-class AuthServiceImplTest {
+class AuthServiceTest {
 
 	@InjectMocks
 	private AuthService authService;

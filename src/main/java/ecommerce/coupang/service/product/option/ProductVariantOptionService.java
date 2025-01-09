@@ -35,11 +35,11 @@ public class ProductVariantOptionService {
 	}
 
 	/* 상품 변형 옵션 변경 */
-	public void update(OptionRequest request, ProductVariant productVariant) throws CustomException {
+	public void update(Long optionId, Long optionValueId, ProductVariant productVariant) throws CustomException {
 		ProductVariantOption productVariantOption = getPvoByProductVariantIdAndCategoryOptionId(
-			productVariant.getId(), request.getOptionId());
+			productVariant.getId(), optionId);
 
-		VariantOptionValue variantOptionValue = variantOptionService.getVariantOptionValue(request.getOptionValueId());
+		VariantOptionValue variantOptionValue = variantOptionService.getVariantOptionValue(optionValueId);
 
 		productVariantOption.update(variantOptionValue);
 	}

@@ -23,13 +23,12 @@ import ecommerce.coupang.dto.request.member.UpdateAddressRequest;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.member.AddressRepository;
-import ecommerce.coupang.service.member.impl.AddressServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
-class AddressServiceImplTest {
+class AddressServiceTest {
 
 	@InjectMocks
-	private AddressServiceImpl addressService;
+	private AddressService addressService;
 
 	@Mock
 	private AddressRepository addressRepository;
