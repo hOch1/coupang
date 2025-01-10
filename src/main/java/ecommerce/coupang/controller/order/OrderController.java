@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.domain.order.OrderStatus;
-import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
-import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
+import ecommerce.coupang.dto.request.order.OrderByCartRequest;
+import ecommerce.coupang.dto.request.order.OrderByProductRequest;
 import ecommerce.coupang.dto.request.order.OrderSort;
 import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.order.OrderDetailResponse;
@@ -43,7 +43,7 @@ public class OrderController {
 	@PostMapping("/product")
 	@Operation(summary = "상품 주문 API", description = "상품을 직접 주문합니다 ")
 	public ResponseEntity<Void> createOrderByProduct(
-		@RequestBody @Valid CreateOrderByProductRequest request,
+		@RequestBody @Valid OrderByProductRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		orderService.createOrderByProduct(request, userDetails.getMember());
@@ -53,7 +53,7 @@ public class OrderController {
 	@PostMapping("/cart")
 	@Operation(summary = "장바구니 상품 주문 API", description = "장바구니에 담긴 상품을 주문합니다")
 	public ResponseEntity<Void> createOrderByCart(
-		@RequestBody @Valid CreateOrderByCartRequest request,
+		@RequestBody @Valid OrderByCartRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
 		orderService.createOrderByCart(request, userDetails.getMember());

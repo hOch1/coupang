@@ -7,8 +7,8 @@ import ecommerce.coupang.domain.store.Store;
 import ecommerce.coupang.domain.order.*;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.variant.*;
-import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
-import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
+import ecommerce.coupang.dto.request.order.OrderByCartRequest;
+import ecommerce.coupang.dto.request.order.OrderByProductRequest;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.cart.CartItemRepository;
@@ -80,7 +80,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("상품 직접 주문 테스트")
     void createOrderByProduct() throws CustomException {
-        CreateOrderByProductRequest request = productRequest();
+        OrderByProductRequest request = productRequest();
 
         when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
         when(productVariantRepository.findByIdWithStore(request.getProductVariantId())).thenReturn(Optional.of(mockProductVariant));
@@ -103,7 +103,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("상품 직접 주문 테스트 - 실패 (상품 찾을 수 없음)")
     void createOrderByProductFailProductNotFound() throws CustomException {
-        CreateOrderByProductRequest request = productRequest();
+        OrderByProductRequest request = productRequest();
 
         when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
         when(productVariantRepository.findByIdWithStore(request.getProductVariantId())).thenReturn(Optional.empty());
@@ -120,7 +120,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("상품 직접 주문 테스트 - 실패 (상품 상태 정상아님)")
     void createOrderByProductFailProductStatusNotActive() throws CustomException {
-        CreateOrderByProductRequest request = productRequest();
+        OrderByProductRequest request = productRequest();
 
         when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
         when(productVariantRepository.findByIdWithStore(request.getProductVariantId())).thenReturn(Optional.of(mockProductVariant));
@@ -138,7 +138,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("장바구니 상품 주문 테스트")
     void createOrderByCart() throws CustomException {
-        CreateOrderByCartRequest request = cartRequest();
+        OrderByCartRequest request = cartRequest();
 
         when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
         when(cartItemRepository.findByIdWithStore(1L)).thenReturn(Optional.of(mockCartItem));
@@ -161,7 +161,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("장바구니 상품 주문 테스트 - 실패 (장바구니 상품 찾을 수 없음)")
     void createOrderByCartFailCartItemNotFound() throws CustomException {
-        CreateOrderByProductRequest request = productRequest();
+        OrderByProductRequest request = productRequest();
 
         when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
         when(productVariantRepository.findByIdWithStore(request.getProductVariantId())).thenReturn(Optional.empty());
@@ -178,7 +178,7 @@ class OrderServiceTest {
     @Test
     @DisplayName("장바구니 상품 주문 테스트 - 실패 (상품 상태 정상아님)")
     void createOrderByCartFailProductStatusNotActive() throws CustomException {
-        CreateOrderByCartRequest request = cartRequest();
+        OrderByCartRequest request = cartRequest();
 
         when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
         when(cartItemRepository.findByIdWithStore(1L)).thenReturn(Optional.of(mockCartItem));
@@ -240,26 +240,26 @@ class OrderServiceTest {
         assertThat(customException.getErrorCode()).isEqualTo(ErrorCode.FORBIDDEN);
     }
 
-    private CreateOrderByCartRequest cartRequest() {
-        CreateOrderByCartRequest.CartItemRequest cartItemRequest = new CreateOrderByCartRequest.CartItemRequest(
+    private OrderByCartRequest cartRequest() {
+        OrderByCartRequest.CartItemRequest cartItemRequest = new OrderByCartRequest.CartItemRequest(
             1L,
             null
         );
-        return new CreateOrderByCartRequest(
-                List.of(cartItemRequest),
-                1L,
-                Payment.CARD,
-                "OrderMessage"
+        return new OrderByCartRequest(
+            1L,
+            Payment.CARD,
+            "OrderMessage",
+            List.of(cartItemRequest)
         );
     }
 
-    private CreateOrderByProductRequest productRequest() {
-        return new CreateOrderByProductRequest(
-                1L,
-                1L,
-                1,
-                Payment.CARD,
-                "OrderMessage",
+    private OrderByProductRequest productRequest() {
+        return new OrderByProductRequest(
+            1L,
+            Payment.CARD,
+            "OrderMessage",
+            1L,
+            1,
             1L
         );
     }

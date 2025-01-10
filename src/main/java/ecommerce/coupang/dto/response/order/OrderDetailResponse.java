@@ -47,11 +47,9 @@ public class OrderDetailResponse {
 		private final Long productVariantId;
 		private final String productName;
 		private final int price;
-		private final int memberDiscountPrice;
-		private final int couponDiscountPrice;
 		private final int quantity;
+		private final int discountPrice;
 		private final int totalPrice;
-		private final int discountTotalPrice;
 		private final List<OptionResponse> variantOptions;
 
 		public static OrderItemResponse from(OrderItem orderItem, List<ProductVariantOption> productVariantOptions) {
@@ -60,11 +58,9 @@ public class OrderDetailResponse {
 				orderItem.getProductVariant().getId(),
 				orderItem.getProductVariant().getProduct().getName(),
 				orderItem.getPrice(),
-				orderItem.getMemberDiscountPrice(),
-				orderItem.getCouponDiscountPrice(),
 				orderItem.getQuantity(),
+				orderItem.getDiscountPrice(),
 				orderItem.getTotalPrice(),
-				orderItem.getDiscountTotalPrice(),
 				productVariantOptions.stream()
 					.map(OptionResponse::productVariantFrom)
 					.toList()

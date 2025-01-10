@@ -12,9 +12,10 @@ public class CouponDiscountPolicy implements DiscountPolicy{
 
 	@Override
 	public int calculateDiscount(int price, Member member, MemberCoupon memberCoupon) {
-		Coupon coupon = memberCoupon.getCoupon();
-
 		int discountPrice = 0;
+
+		if (memberCoupon == null) return discountPrice;
+		Coupon coupon = memberCoupon.getCoupon();
 
 		if (price < coupon.getMinPrice()) return discountPrice;
 

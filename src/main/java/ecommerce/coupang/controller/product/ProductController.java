@@ -2,6 +2,7 @@ package ecommerce.coupang.controller.product;
 
 import java.util.List;
 
+import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.utils.member.MemberUtils;
 import ecommerce.coupang.dto.request.PagingRequest;
 import ecommerce.coupang.dto.request.product.*;
@@ -51,9 +52,9 @@ public class ProductController {
 		@RequestParam(required = false, defaultValue = "LATEST") ProductSort sort,
 		@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-		MemberGrade memberGrade = MemberUtils.getMemberGrade(userDetails);
+		Member member = userDetails.getMember() != null ? userDetails.getMember() : null;
 
-		Page<ProductResponse> responses = productQueryService.search(request, sort, pagingRequest, memberGrade);
+		Page<ProductResponse> responses = productQueryService.search(request, sort, pagingRequest, member);
 		return ResponseEntity.ok(new Result<>(
 			responses.getContent(),
 			responses.getContent().size(),

@@ -4,24 +4,19 @@ import java.util.List;
 
 import ecommerce.coupang.domain.order.Payment;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
-public class CreateOrderByCartRequest {
+public class OrderByCartRequest extends CreateOrderRequest{
 
 	@NotEmpty(message = "상품을 하나이상 선택해주세요.")
 	private final List<CartItemRequest> cartItems;
 
-	@NotNull(message = "주소를 선택해주세요.")
-	private final Long addressId;
-
-	@NotNull(message = "결제방법을 선택해 주세요.")
-	private final Payment payment;
-
-	private final String orderMessage;
+	public OrderByCartRequest(Long addressId, Payment payment, String orderMessage, List<CartItemRequest> cartItems) {
+		super(addressId, payment, orderMessage);
+		this.cartItems = cartItems;
+	}
 
 	@Getter
 	@AllArgsConstructor

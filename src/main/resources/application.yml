@@ -13,16 +13,16 @@ spring:
         format_sql: true
         default_batch_fetch_size: 100
     hibernate:
-      ddl-auto: none
+      ddl-auto: update
 
 #  sql:
 #    init:
 #      mode: always
 #      data-locations: classpath:data.sql
 
-#logging:
-#  level:
-#    org.hibernate.SQL: debug
+logging:
+  level:
+    org.hibernate.SQL: debug
 
 jwt:
   secret: qweqweqqweqweqweqweqeqweqweqwewqeqeqweqweqwe123

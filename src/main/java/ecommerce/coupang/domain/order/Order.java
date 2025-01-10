@@ -6,8 +6,8 @@ import java.util.List;
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Address;
 import ecommerce.coupang.domain.member.Member;
-import ecommerce.coupang.dto.request.order.CreateOrderByCartRequest;
-import ecommerce.coupang.dto.request.order.CreateOrderByProductRequest;
+import ecommerce.coupang.dto.request.order.OrderByCartRequest;
+import ecommerce.coupang.dto.request.order.OrderByProductRequest;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import jakarta.persistence.CascadeType;
@@ -74,7 +74,7 @@ public class Order extends BaseTimeEntity {
 	}
 
 	/* 상품 주문 */
-	public static Order createByProduct(CreateOrderByProductRequest request, Member member, Address address) {
+	public static Order createByProduct(OrderByProductRequest request, Member member, Address address) {
 		return new Order(
 			member,
 			address,
@@ -85,7 +85,7 @@ public class Order extends BaseTimeEntity {
 	}
 
 	/* 장바구니 주문 */
-	public static Order createByCart(CreateOrderByCartRequest request, Member member, Address address) {
+	public static Order createByCart(OrderByCartRequest request, Member member, Address address) {
 		return new Order(
 			member,
 			address,
