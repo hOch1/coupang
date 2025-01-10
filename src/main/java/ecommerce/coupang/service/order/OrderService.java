@@ -42,6 +42,7 @@ public class OrderService {
 	public Order createOrderByProduct(OrderByProductRequest request, Member member) throws CustomException {
 		Address address = addressQueryService.getAddress(request.getAddressId());
 
+		@SuppressWarnings("unchecked")
 		OrderStrategy<OrderByProductRequest> orderStrategy =
 			(OrderStrategy<OrderByProductRequest>) orderStrategyMap.get("productOrderStrategy");
 
@@ -61,6 +62,7 @@ public class OrderService {
 	public Order createOrderByCart(OrderByCartRequest request, Member member) throws CustomException {
 		Address address = addressQueryService.getAddress(request.getAddressId());
 
+		@SuppressWarnings("unchecked")
 		OrderStrategy<OrderByCartRequest> orderStrategy =
 			(OrderStrategy<OrderByCartRequest>) orderStrategyMap.get("cartOrderStrategy");
 

@@ -103,12 +103,12 @@ public class Order extends BaseTimeEntity {
 
 	/* 주문 취소 */
 	public void cancel() throws CustomException {
+		validateNotCancelled();
+
 		for (OrderItem orderItem : this.orderItems) {
 			// 배송 대기중이 아닐경우 예외
 			if (!orderItem.getDelivery().getDeliveryStatus().equals(DeliveryStatus.PENDING))
 				throw new CustomException(ErrorCode.ALREADY_DELIVERY_START);
-
-			validateNotCancelled();
 
 			orderItem.cancel();
 		}
@@ -116,16 +116,19 @@ public class Order extends BaseTimeEntity {
 		this.status = OrderStatus.CANCELLED;
 	}
 
-	public boolean isCancelled() {
+	/* 취소 상태인지 확인 */
+	private boolean isCancelled() {
 		return this.status.equals(OrderStatus.CANCELLED);
 	}
 
+	/* 취소 상태인지 검증 */
 	public void validateNotCancelled() throws CustomException {
 		if (isCancelled()) {
 			throw new CustomException(ErrorCode.ALREADY_CANCELLED_ORDER);
 		}
 	}
 
+	/* 해당 주문의 주인인지 검증 */
 	public void validateOrderOwner(Member member) throws CustomException {
 		if (!this.getMember().equals(member))
 			throw new CustomException(ErrorCode.FORBIDDEN);

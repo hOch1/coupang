@@ -4,7 +4,7 @@ import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.member.MemberCoupon;
 import org.springframework.stereotype.Component;
 
-@Component("memberDiscountPolicy")
+@Component
 public class MemberDiscountPolicy implements DiscountPolicy{
 
 	@Override

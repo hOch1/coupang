@@ -21,7 +21,7 @@ public class OrderItemFactory {
 	public OrderItem createOrderItem(Order order, ProductVariant productVariant, Member member, int quantity, Long couponId) throws CustomException {
 		int totalPrice = productVariant.getPrice() * quantity;
 
-		// 할인 계산
+		/* 할인 계산 */
 		MemberCoupon memberCoupon = discountService.getMemberCouponIfPresent(member, couponId);
 		int totalDiscountPrice = discountService.calculateTotalDiscount(totalPrice, member, memberCoupon);
 

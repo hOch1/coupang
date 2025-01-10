@@ -26,6 +26,7 @@ public class DiscountService {
 				.sum(); // 각 정책의 할인 금액을 합산
 	}
 
+	/* coupon 사용시 다운받은 쿠폰 가져오기 */
 	public MemberCoupon getMemberCouponIfPresent(Member member, Long couponId) throws CustomException {
 		if (couponId == null) return null;
 
