@@ -3,7 +3,6 @@ package ecommerce.coupang.service.order;
 import ecommerce.coupang.domain.cart.CartItem;
 import ecommerce.coupang.domain.member.Address;
 import ecommerce.coupang.domain.member.Member;
-import ecommerce.coupang.domain.store.Store;
 import ecommerce.coupang.domain.order.*;
 import ecommerce.coupang.domain.product.Product;
 import ecommerce.coupang.domain.product.variant.*;
@@ -11,12 +10,10 @@ import ecommerce.coupang.dto.request.order.OrderByCartRequest;
 import ecommerce.coupang.dto.request.order.OrderByProductRequest;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
-import ecommerce.coupang.repository.cart.CartItemRepository;
 import ecommerce.coupang.repository.order.OrderRepository;
-import ecommerce.coupang.repository.product.ProductVariantRepository;
-import ecommerce.coupang.service.discount.DiscountService;
 import ecommerce.coupang.service.member.query.AddressQueryService;
-import ecommerce.coupang.service.store.CouponService;
+import ecommerce.coupang.service.order.strategy.OrderStrategy;
+import ecommerce.coupang.service.order.strategy.ProductOrderStrategy;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -43,35 +40,26 @@ class OrderServiceTest {
     private OrderRepository orderRepository;
 
     @Mock
-    private ProductVariantRepository productVariantRepository;
-
-    @Mock
-    private CartItemRepository cartItemRepository;
-
-    @Mock
     private AddressQueryService addressQueryService;
 
     @Mock
-    private CouponService couponService;
+    private OrderStrategySelector orderStrategySelector;
 
-    @Mock
-    private DiscountService discountService;
-
+    private OrderStrategy<OrderByProductRequest> productOrderStrategy;
     private Member mockMember;
     private Address mockAddress;
     private Product mockProduct;
     private ProductVariant mockProductVariant;
-    private Store mockStore;
     private CartItem mockCartItem;
     private Order mockOrder;
 
     @BeforeEach
     public void beforeEach() {
+        productOrderStrategy = mock(OrderStrategy.class);
         mockMember = mock(Member.class);
         mockAddress = mock(Address.class);
         mockProduct = mock(Product.class);
         mockProductVariant = mock(ProductVariant.class);
-        mockStore = mock(Store.class);
         mockCartItem = mock(CartItem.class);
         mockOrder = mock(Order.class);
     }
@@ -81,23 +69,16 @@ class OrderServiceTest {
     @DisplayName("상품 직접 주문 테스트")
     void createOrderByProduct() throws CustomException {
         OrderByProductRequest request = productRequest();
+        OrderStrategy<OrderByProductRequest> orderStrategy = mock(ProductOrderStrategy.class);
 
+        // when(orderStrategySelector.getOrderStrategy(OrderType.PRODUCT)).thenReturn(orderStrategy);
         when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
-        when(productVariantRepository.findByIdWithStore(request.getProductVariantId())).thenReturn(Optional.of(mockProductVariant));
-        when(mockProductVariant.getStatus()).thenReturn(ProductStatus.ACTIVE);
-        when(mockProductVariant.getProduct()).thenReturn(mockProduct);
-        when(mockProduct.getStore()).thenReturn(mockStore);
-        when(couponService.getMemberCouponIfPresent(mockMember, null));
+        when(orderStrategy.createOrder(request, mockMember, mockAddress)).thenReturn(mockOrder);
 
         Order order = orderService.createOrderByProduct(request, mockMember);
 
-        verify(productVariantRepository).findByIdWithStore(request.getProductVariantId());
         verify(orderRepository).save(any(Order.class));
-
         assertThat(order).isNotNull();
-        assertThat(order.getAddress()).isEqualTo(mockAddress);
-        assertThat(order.getOrderItems().size()).isEqualTo(1);
-        assertThat(order.getStatus()).isEqualTo(OrderStatus.PAID);
     }
 
     @Test
@@ -106,11 +87,9 @@ class OrderServiceTest {
         OrderByProductRequest request = productRequest();
 
         when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
-        when(productVariantRepository.findByIdWithStore(request.getProductVariantId())).thenReturn(Optional.empty());
 
         CustomException customException = assertThrows(CustomException.class, () -> orderService.createOrderByProduct(request, mockMember));
 
-        verify(productVariantRepository).findByIdWithStore(request.getProductVariantId());
         verify(orderRepository, never()).save(any(Order.class));
 
         assertThat(customException).isNotNull();
@@ -123,12 +102,10 @@ class OrderServiceTest {
         OrderByProductRequest request = productRequest();
 
         when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
-        when(productVariantRepository.findByIdWithStore(request.getProductVariantId())).thenReturn(Optional.of(mockProductVariant));
         when(mockProductVariant.getStatus()).thenReturn(ProductStatus.INACTIVE);
 
         CustomException customException = assertThrows(CustomException.class, () -> orderService.createOrderByProduct(request, mockMember));
 
-        verify(productVariantRepository).findByIdWithStore(request.getProductVariantId());
         verify(orderRepository, never()).save(any(Order.class));
 
         assertThat(customException).isNotNull();
@@ -141,15 +118,12 @@ class OrderServiceTest {
         OrderByCartRequest request = cartRequest();
 
         when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
-        when(cartItemRepository.findByIdWithStore(1L)).thenReturn(Optional.of(mockCartItem));
         when(mockCartItem.getProductVariant()).thenReturn(mockProductVariant);
         when(mockProductVariant.getStatus()).thenReturn(ProductStatus.ACTIVE);
         when(mockProductVariant.getProduct()).thenReturn(mockProduct);
-        when(mockProduct.getStore()).thenReturn(mockStore);
 
         Order order = orderService.createOrderByCart(request, mockMember);
 
-        verify(cartItemRepository).findByIdWithStore(1L);
         verify(orderRepository).save(any(Order.class));
 
         assertThat(order).isNotNull();
@@ -164,11 +138,9 @@ class OrderServiceTest {
         OrderByProductRequest request = productRequest();
 
         when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
-        when(productVariantRepository.findByIdWithStore(request.getProductVariantId())).thenReturn(Optional.empty());
 
         CustomException customException = assertThrows(CustomException.class, () -> orderService.createOrderByProduct(request, mockMember));
 
-        verify(productVariantRepository).findByIdWithStore(request.getProductVariantId());
         verify(orderRepository, never()).save(any(Order.class));
 
         assertThat(customException).isNotNull();
@@ -181,13 +153,11 @@ class OrderServiceTest {
         OrderByCartRequest request = cartRequest();
 
         when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
-        when(cartItemRepository.findByIdWithStore(1L)).thenReturn(Optional.of(mockCartItem));
         when(mockCartItem.getProductVariant()).thenReturn(mockProductVariant);
         when(mockProductVariant.getStatus()).thenReturn(ProductStatus.INACTIVE);
 
         CustomException customException = assertThrows(CustomException.class, () -> orderService.createOrderByCart(request, mockMember));
 
-        verify(cartItemRepository).findByIdWithStore(1L);
         verify(orderRepository, never()).save(any(Order.class));
 
         assertThat(customException).isNotNull();
@@ -232,7 +202,8 @@ class OrderServiceTest {
         when(orderRepository.findByIdWithMemberAndAddress(orderId)).thenReturn(Optional.of(mockOrder));
         when(mockOrder.getMember()).thenReturn(mockMember);
 
-        CustomException customException = assertThrows(CustomException.class, () -> orderService.cancelOrder(orderId, otherMember));
+        CustomException customException = assertThrows(CustomException.class,
+            () -> orderService.cancelOrder(orderId, otherMember));
 
         verify(orderRepository).findByIdWithMemberAndAddress(orderId);
 

@@ -26,6 +26,7 @@ import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.security.CustomUserDetails;
 import ecommerce.coupang.service.order.OrderService;
 import ecommerce.coupang.service.order.query.OrderQueryService;
+import ecommerce.coupang.service.order.strategy.OrderType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -46,7 +47,7 @@ public class OrderController {
 		@RequestBody @Valid OrderByProductRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		orderService.createOrderByProduct(request, userDetails.getMember());
+		orderService.createOrder(request, userDetails.getMember(), OrderType.PRODUCT);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
@@ -56,7 +57,7 @@ public class OrderController {
 		@RequestBody @Valid OrderByCartRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		orderService.createOrderByCart(request, userDetails.getMember());
+		orderService.createOrder(request, userDetails.getMember(), OrderType.CART);
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
