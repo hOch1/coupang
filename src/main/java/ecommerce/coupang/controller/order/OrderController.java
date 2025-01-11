@@ -47,7 +47,7 @@ public class OrderController {
 		@RequestBody @Valid OrderByProductRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		orderService.createOrder(request, userDetails.getMember(), OrderType.PRODUCT);
+		orderService.createOrder(request, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 
@@ -57,7 +57,7 @@ public class OrderController {
 		@RequestBody @Valid OrderByCartRequest request,
 		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
 
-		orderService.createOrder(request, userDetails.getMember(), OrderType.CART);
+		orderService.createOrder(request, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.CREATED).build();
 	}
 

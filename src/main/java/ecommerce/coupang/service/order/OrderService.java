@@ -4,6 +4,7 @@ import java.util.Map;
 
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;
+import ecommerce.coupang.service.order.strategy.OrderStrategyProvider;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,24 +28,23 @@ public class OrderService {
 
 	private final OrderRepository orderRepository;
 	private final AddressQueryService addressQueryService;
-	private final Map<String, OrderStrategy<? extends CreateOrderRequest>> orderStrategyMap;
+	private final OrderStrategyProvider orderStrategyProvider;
 
 	/**
 	 * 주문 생성
 	 * @param request 주문 요청 정보
 	 * @param member 요청한 회원
-	 * @param orderType 주문 타입
 	 * @return 주문
 	 * @param <T> CreateOrderRequest 를 상속한 Request
 	 */
 	@LogAction("주문 생성")
-	public <T extends CreateOrderRequest> Order createOrder(T request, Member member, OrderType orderType) throws CustomException {
+	public <T extends CreateOrderRequest> Order createOrder(T request, Member member) throws CustomException {
 
 		@SuppressWarnings("unchecked")
-		OrderStrategy<T> orderStrategy = (OrderStrategy<T>) orderStrategyMap.get(orderType.getBeanName());
+		OrderStrategy<T> strategy = (OrderStrategy<T>) orderStrategyProvider.getStrategy(request.getClass());
 		Address address = addressQueryService.getAddress(request.getAddressId());
 
-		Order order = orderStrategy.createOrder(request, member, address);
+		Order order = strategy.createOrder(request, member, address);
 
 		orderRepository.save(order);
 
