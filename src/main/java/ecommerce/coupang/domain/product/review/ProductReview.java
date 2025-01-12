@@ -70,7 +70,7 @@ public class ProductReview extends BaseTimeEntity {
 		this.star = star;
 	}
 
-	public static ProductReview create(CreateReviewRequest request, Product product, Member member) {
+	public static ProductReview of(CreateReviewRequest request, Product product, Member member) {
 		return new ProductReview(
 			member,
 			product,

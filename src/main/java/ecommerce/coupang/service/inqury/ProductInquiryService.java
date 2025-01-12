@@ -43,7 +43,7 @@ public class ProductInquiryService {
 			throw new CustomException(ErrorCode.CAN_NOT_INQUIRY_MY_PRODUCT);
 		 */
 
-		ProductInquiry productInquiry = ProductInquiry.create(request, product, member);
+		ProductInquiry productInquiry = ProductInquiry.of(request, product, member);
 		productInquiryRepository.save(productInquiry);
 
 		return productInquiry;

@@ -23,7 +23,7 @@ public class CartOrderStrategy implements OrderStrategy<OrderByCartRequest>{
 
 	@Override
 	public Order createOrder(OrderByCartRequest request, Member member, Address address) throws CustomException {
-		Order order = Order.createByCart(request, member, address);
+		Order order = Order.of(request, member, address);
 
 		for (OrderByCartRequest.CartItemRequest cartItemRequest : request.getCartItems()) {
 			CartItem cartItem = cartItemRepository.findByIdWithStore(cartItemRequest.getCartItemId())

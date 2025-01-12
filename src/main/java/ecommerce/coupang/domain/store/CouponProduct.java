@@ -38,7 +38,7 @@ public class CouponProduct {
 		this.product = product;
 	}
 
-	public static CouponProduct create(Coupon coupon, Product product) {
+	public static CouponProduct of(Coupon coupon, Product product) {
 		return new CouponProduct(
 			coupon,
 			product

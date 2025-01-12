@@ -52,7 +52,7 @@ public class Address extends BaseTimeEntity {
 		this.member = member;
 	}
 
-	public static Address createFromRequest(AddAddressRequest request, Member member, boolean isDefault) {
+	public static Address of(AddAddressRequest request, Member member, boolean isDefault) {
 		return new Address(request.getAddress(), request.getType(), member, isDefault);
 	}
 

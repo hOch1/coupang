@@ -48,7 +48,7 @@ public class Delivery extends BaseTimeEntity {
 		this.deliveryStatus = DeliveryStatus.PENDING;
 	}
 
-	public static Delivery create(OrderItem orderItem) {
+	public static Delivery from(OrderItem orderItem) {
 		return new Delivery(orderItem);
 	}
 

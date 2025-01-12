@@ -79,7 +79,7 @@ public class Product extends BaseTimeEntity {
 		this.category = category;
 	}
 
-	public static Product create(CreateProductRequest request, Store store, Category category) {
+	public static Product of(CreateProductRequest request, Store store, Category category) {
 		return new Product(
 			request.getName(),
 			request.getDescription(),

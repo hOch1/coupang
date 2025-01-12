@@ -24,7 +24,7 @@ public class ProductCategoryOptionService {
 	public ProductCategoryOption createProductCategoryOption(Long optionValueId, Product product) throws CustomException {
 		CategoryOptionValue categoryOptionValue = categoryOptionService.getCategoryOptionValue(optionValueId);
 
-		return ProductCategoryOption.create(product, categoryOptionValue);
+		return ProductCategoryOption.of(product, categoryOptionValue);
 	}
 
 	/* ProductCategoryOption 조회 */

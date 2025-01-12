@@ -61,7 +61,7 @@ public class ProductInquiry extends BaseTimeEntity {
 		this.content = content;
 	}
 
-	public static ProductInquiry create(CreateInquiryRequest request, Product product, Member member) {
+	public static ProductInquiry of(CreateInquiryRequest request, Product product, Member member) {
 		return new ProductInquiry(
 			product,
 			member,

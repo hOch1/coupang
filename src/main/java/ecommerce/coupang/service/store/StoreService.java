@@ -40,7 +40,7 @@ public class StoreService {
 		if (storeRepository.existsByStoreNumber(request.getStoreNumber()))
 			throw new CustomException(ErrorCode.ALREADY_EXITS_STORE_NUMBER);
 
-		Store store = Store.createFromRequest(request, member);
+		Store store = Store.of(request, member);
 		return storeRepository.save(store);
 	}
 

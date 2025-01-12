@@ -45,7 +45,7 @@ public class CartItem extends BaseTimeEntity {
 		this.quantity = quantity;
 	}
 
-	public static CartItem create(Cart cart, ProductVariant productVariant, int quantity) {
+	public static CartItem of(Cart cart, ProductVariant productVariant, int quantity) {
 		return new CartItem(
 			productVariant,
 			cart,

@@ -26,7 +26,7 @@ public class ProductVariantOptionService {
 	public ProductVariantOption createProductVariantOption(Long variantOptionValueId, ProductVariant productVariant) throws CustomException {
 		VariantOptionValue variantOptionValue = variantOptionService.getVariantOptionValue(variantOptionValueId);
 
-		return ProductVariantOption.create(productVariant, variantOptionValue);
+		return ProductVariantOption.of(productVariant, variantOptionValue);
 	}
 
 	/* ProductVariantOption 조회 */

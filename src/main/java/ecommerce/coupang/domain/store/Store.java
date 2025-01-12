@@ -62,7 +62,7 @@ public class Store extends BaseTimeEntity {
 		this.member = member;
 	}
 
-	public static Store createFromRequest(CreateStoreRequest request, Member member) {
+	public static Store of(CreateStoreRequest request, Member member) {
 		return new Store(
 			request.getName(),
 			request.getDescription(),

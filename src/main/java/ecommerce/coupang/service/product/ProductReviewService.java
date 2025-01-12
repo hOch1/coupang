@@ -52,7 +52,7 @@ public class ProductReviewService {
 		 	throw new CustomException(ErrorCode.CAN_NOT_WRITE_MY_PRODUCT);
 		*/
 
-		ProductReview productReview = ProductReview.create(request, product, member);
+		ProductReview productReview = ProductReview.of(request, product, member);
 		product.addProductReviews(productReview);
 
 		return productReview;
@@ -78,7 +78,7 @@ public class ProductReviewService {
 		Optional<ReviewLike> findLike = reviewLikeRepository.findByProductReviewIdAndMemberId(productReview.getId(), member.getId());
 
 		if (findLike.isEmpty()) {
-			ReviewLike reviewLike = ReviewLike.create(productReview, member);
+			ReviewLike reviewLike = ReviewLike.of(productReview, member);
 			productReview.addLikes(reviewLike);
 		} else {
 			ReviewLike reviewLike = findLike.get();

@@ -38,7 +38,7 @@ public class ProductCategoryOption {
 		this.categoryOptionValue = categoryOptionValue;
 	}
 
-	public static ProductCategoryOption create(Product product, CategoryOptionValue categoryOptionValue) {
+	public static ProductCategoryOption of(Product product, CategoryOptionValue categoryOptionValue) {
 		return new ProductCategoryOption(
 				product,
 				categoryOptionValue

@@ -61,7 +61,7 @@ public class Member extends BaseTimeEntity {
 		this.grade = MemberGrade.NORMAL;
 	}
 
-	public static Member createFromSignupRequest(SignupRequest request, PasswordEncoder passwordEncoder) {
+	public static Member of(SignupRequest request, PasswordEncoder passwordEncoder) {
 		return new Member(
 			request.getName(),
 			request.getPhoneNumber(),

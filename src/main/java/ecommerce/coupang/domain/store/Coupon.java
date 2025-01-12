@@ -83,7 +83,7 @@ public class Coupon extends BaseTimeEntity {
 		this.limitDate = limitDate;
 	}
 
-	public static Coupon create(CreateCouponRequest request, Store store) {
+	public static Coupon of(CreateCouponRequest request, Store store) {
 		return new Coupon(
 			store,
 			request.getName(),

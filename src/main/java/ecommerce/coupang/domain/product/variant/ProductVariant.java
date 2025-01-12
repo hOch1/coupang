@@ -64,7 +64,7 @@ public class ProductVariant {
 		this.isDefault = isDefault;
 	}
 
-	public static ProductVariant create(CreateProductVariantRequest request, Product product) {
+	public static ProductVariant of(CreateProductVariantRequest request, Product product) {
 		return new ProductVariant(
 			product,
 			request.getPrice(),

@@ -42,7 +42,7 @@ public class Cart {
 		this.member = member;
 	}
 
-	public static Cart create(Member member) {
+	public static Cart from(Member member) {
 		return new Cart(member);
 	}
 

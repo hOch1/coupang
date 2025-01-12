@@ -37,12 +37,12 @@ public class AddressService {
 		Address address;
 
 		if (addressList.isEmpty())	// 처음 추가하는 주소는 강제로 기본 주소로 추가
-			address = Address.createFromRequest(request, member, true);
+			address = Address.of(request, member, true);
 		else {
 			if (request.isDefault())
 				unsetDefaultAddress(member.getId());
 
-			address = Address.createFromRequest(request, member, request.isDefault());
+			address = Address.of(request, member, request.isDefault());
 		}
 
 		return addressRepository.save(address);

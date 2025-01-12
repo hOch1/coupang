@@ -74,7 +74,7 @@ public class Order extends BaseTimeEntity {
 	}
 
 	/* 상품 주문 */
-	public static Order createByProduct(OrderByProductRequest request, Member member, Address address) {
+	public static Order of(OrderByProductRequest request, Member member, Address address) {
 		return new Order(
 			member,
 			address,
@@ -85,7 +85,7 @@ public class Order extends BaseTimeEntity {
 	}
 
 	/* 장바구니 주문 */
-	public static Order createByCart(OrderByCartRequest request, Member member, Address address) {
+	public static Order of(OrderByCartRequest request, Member member, Address address) {
 		return new Order(
 			member,
 			address,

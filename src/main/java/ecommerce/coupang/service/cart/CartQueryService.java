@@ -41,7 +41,7 @@ public class CartQueryService {
 
     public Cart getCartWithMember(Member member) {
         return cartRepository.findByMemberId(member.getId()).orElseGet(() -> {
-            Cart newCart = Cart.create(member);
+            Cart newCart = Cart.from(member);
             return cartRepository.save(newCart);
         });
     }

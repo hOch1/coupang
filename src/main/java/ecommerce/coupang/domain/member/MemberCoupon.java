@@ -47,7 +47,7 @@ public class MemberCoupon extends BaseTimeEntity {
 		this.coupon = coupon;
 	}
 
-	public static MemberCoupon create(Member member, Coupon coupon) {
+	public static MemberCoupon of(Member member, Coupon coupon) {
 		return new MemberCoupon(
 			member,
 			coupon

@@ -58,4 +58,5 @@ public class Category {
 	public boolean isBottom(){
 		return children.isEmpty();
 	}
+
 }

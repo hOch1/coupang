@@ -46,7 +46,7 @@ public class Answer extends BaseTimeEntity {
 		this.answer = answer;
 	}
 
-	public static Answer create(CreateAnswerRequest request, ProductInquiry productInquiry, Store store) {
+	public static Answer of(CreateAnswerRequest request, ProductInquiry productInquiry, Store store) {
 		return new Answer(
 				productInquiry,
 				store,

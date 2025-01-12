@@ -36,7 +36,7 @@ public class ProductCreateManagement {
     /* 상품 생성, 상품 변형 추가, 옵션 추가 */
     public Product createProductAndVariantAndOptions(CreateProductRequest request, Store store, Category category) throws CustomException {
         validateProductRequestContainsNeedOptions(request);
-        Product product = Product.create(request, store, category);
+        Product product = Product.of(request, store, category);
 
         for (OptionRequest categoryOption : request.getCategoryOptions())
             addCategoryOptionsToProduct(categoryOption.getOptionValueId(), product);
@@ -50,7 +50,7 @@ public class ProductCreateManagement {
     /* 상품 변형 생성, 옵션 추가 */
     public ProductVariant createVariantAndOptions(CreateProductVariantRequest request, Product product) throws CustomException {
         validateVariantRequestContainsNeedOptions(request, product.getCategory().getId());
-        ProductVariant productVariant = ProductVariant.create(request, product);
+        ProductVariant productVariant = ProductVariant.of(request, product);
 
         for (OptionRequest variantOption : request.getVariantOptions()) {
             addVariantOptionToProductVariant(variantOption.getOptionValueId(), productVariant);

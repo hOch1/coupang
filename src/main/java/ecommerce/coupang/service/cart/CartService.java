@@ -46,7 +46,7 @@ public class CartService {
 		 */
 		CartItem cartItem = cartItemRepository.findByCartIdAndProductVariantId(cart.getId(), productVariant.getId())
 			.orElseGet(() -> {
-				CartItem newCartItem = CartItem.create(cart, productVariant, request.getQuantity());
+				CartItem newCartItem = CartItem.of(cart, productVariant, request.getQuantity());
 				cart.addItem(newCartItem);
 				return newCartItem;
 			});

@@ -53,10 +53,10 @@ public class AuthService {
 	public Member signup(SignupRequest request) throws CustomException {
 		validateDuplicateMember(request);
 
-		Member member = Member.createFromSignupRequest(request, passwordEncoder);
+		Member member = Member.of(request, passwordEncoder);
 		memberRepository.save(member);
 
-		Cart cart = Cart.create(member);
+		Cart cart = Cart.from(member);
 		cartRepository.save(cart);
 
 		return member;

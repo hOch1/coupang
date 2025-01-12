@@ -25,9 +25,9 @@ public class OrderItemFactory {
 		MemberCoupon memberCoupon = discountService.getMemberCouponIfPresent(member, couponId);
 		int totalDiscountPrice = discountService.calculateTotalDiscount(totalPrice, member, memberCoupon);
 
-		OrderItem orderItem = OrderItem.create(order, productVariant, memberCoupon, quantity, totalDiscountPrice);
+		OrderItem orderItem = OrderItem.of(order, productVariant, memberCoupon, quantity, totalDiscountPrice);
 		/* 배송 연결 */
-		Delivery delivery = Delivery.create(orderItem);
+		Delivery delivery = Delivery.from(orderItem);
 		orderItem.setDelivery(delivery);
 
 		return orderItem;

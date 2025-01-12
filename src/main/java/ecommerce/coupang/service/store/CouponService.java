@@ -43,13 +43,13 @@ public class CouponService {
 		Store store = storeQueryService.findStore(storeId);
 		store.validateOwner(member);
 
-		Coupon coupon = Coupon.create(request, store);
+		Coupon coupon = Coupon.of(request, store);
 
 		for (Long productVariantId : request.getProductIds()) {
 			Product product = productRepository.findById(productVariantId)
 				.orElseThrow(() -> new CustomException(ErrorCode.PRODUCT_NOT_FOUND));
 
-			CouponProduct couponProduct = CouponProduct.create(coupon, product);
+			CouponProduct couponProduct = CouponProduct.of(coupon, product);
 			coupon.addCouponProducts(couponProduct);
 			product.addCouponProducts(couponProduct);
 		}
@@ -72,7 +72,7 @@ public class CouponService {
 		if (memberCouponRepository.existsByCouponId(couponId))
 			throw new CustomException(ErrorCode.ALREADY_HAS_COUPON);
 
-		MemberCoupon memberCoupon = MemberCoupon.create(member, coupon);
+		MemberCoupon memberCoupon = MemberCoupon.of(member, coupon);
 		memberCouponRepository.save(memberCoupon);
 
 		coupon.reduceStock();

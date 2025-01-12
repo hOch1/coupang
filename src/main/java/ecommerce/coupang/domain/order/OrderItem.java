@@ -70,7 +70,7 @@ public class OrderItem {
 		this.totalPrice = totalPrice;
 	}
 
-	public static OrderItem create(Order order, ProductVariant productVariant, MemberCoupon memberCoupon, int quantity, int discountPrice) {
+	public static OrderItem of(Order order, ProductVariant productVariant, MemberCoupon memberCoupon, int quantity, int discountPrice) {
 
 		productVariant.increaseSalesCount(quantity);
 

@@ -40,7 +40,7 @@ public class ReviewLike {
 		this.member = member;
 	}
 
-	public static ReviewLike create(ProductReview productReview, Member member) {
+	public static ReviewLike of(ProductReview productReview, Member member) {
 		return new ReviewLike(
 			productReview,
 			member

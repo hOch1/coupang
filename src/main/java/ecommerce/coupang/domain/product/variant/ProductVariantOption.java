@@ -38,7 +38,7 @@ public class ProductVariantOption {
 		this.variantOptionValue = variantOptionValue;
 	}
 
-	public static ProductVariantOption create(ProductVariant productVariant, VariantOptionValue variantOptionValue) {
+	public static ProductVariantOption of(ProductVariant productVariant, VariantOptionValue variantOptionValue) {
 		return new ProductVariantOption(
 				productVariant,
 				variantOptionValue

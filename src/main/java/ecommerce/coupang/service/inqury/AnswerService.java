@@ -45,7 +45,7 @@ public class AnswerService{
         if (productInquiry.isAnswered())
             throw new CustomException(ErrorCode.ALREADY_ANSWERED);
 
-        Answer answer = Answer.create(request, productInquiry, store);
+        Answer answer = Answer.of(request, productInquiry, store);
         answerRepository.save(answer);
 
         productInquiry.setAnswer(answer);
