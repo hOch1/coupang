@@ -82,8 +82,7 @@ public class ProductReviewService {
 			productReview.addLikes(reviewLike);
 		} else {
 			ReviewLike reviewLike = findLike.get();
-			productReview.getLikes().remove(reviewLike);
-			productReview.decreaseLikeCount();
+			productReview.removeLike(reviewLike);
 		}
 
 		return productReview;
@@ -102,7 +101,6 @@ public class ProductReviewService {
 		ProductReview productReview = getProductReview(reviewId);
 
 		productReview.validateReviewOwner(member);
-
 		productReview.update(request);
 
 		return productReview;
@@ -119,7 +117,6 @@ public class ProductReviewService {
 		ProductReview productReview = getProductReview(reviewId);
 
 		productReview.validateReviewOwner(member);
-
 		productReview.remove();
 
 		productReviewRepository.delete(productReview);

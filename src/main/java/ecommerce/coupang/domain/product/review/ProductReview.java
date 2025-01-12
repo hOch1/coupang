@@ -79,25 +79,41 @@ public class ProductReview extends BaseTimeEntity {
 		);
 	}
 
+	/* 리뷰 좋아요 추가 */
 	public void addLikes(ReviewLike newLike) {
 		this.likes.add(newLike);
 		increaseLikeCount();
 	}
 
+	/* 좋아요 카운트 증가 */
 	public void increaseLikeCount() {
 		this.likeCount++;
 	}
 
+	/* 좋아요 카운트 감소 */
 	public void decreaseLikeCount() {
 		this.likeCount--;
 	}
 
+	/* 리뷰 수정 */
 	public void update(UpdateReviewRequest request) {
 		this.content = request.getContent() != null ? request.getContent() : this.content;
 		this.star = request.getStar() != null ? request.getStar().intValue() : this.star;
 		this.product.updateStarAvg();
 	}
 
+	/* 리뷰 삭제 */
+	public void remove() {
+		this.product.removeReview(this);
+	}
+
+	/* 리뷰 좋아요 해제 */
+	public void removeLike(ReviewLike reviewLike) {
+		this.likes.remove(reviewLike);
+		decreaseLikeCount();
+	}
+
+	/* 리뷰 작성자 확인 */
 	public void validateReviewOwner(Member member) throws CustomException {
 		if (!this.member.equals(member))
 			throw new CustomException(ErrorCode.FORBIDDEN);
@@ -117,9 +133,5 @@ public class ProductReview extends BaseTimeEntity {
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(id);
-	}
-
-	public void remove() {
-		this.product.removeReview(this);
 	}
 }

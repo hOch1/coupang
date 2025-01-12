@@ -62,7 +62,7 @@ class OrderServiceTest {
         OrderByProductRequest request = productRequest();
         OrderStrategy<OrderByProductRequest> mockStrategy = mock(ProductOrderStrategy.class);
 
-        when(orderStrategyProvider.getStrategy(any(Class.class))).thenReturn(mockStrategy);
+        when(orderStrategyProvider.getStrategy(OrderByProductRequest.class)).thenReturn(mockStrategy);
         when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
         when(mockStrategy.createOrder(request, mockMember, mockAddress)).thenReturn(mockOrder);
 
@@ -78,7 +78,7 @@ class OrderServiceTest {
         OrderByCartRequest request = cartRequest();
         OrderStrategy<OrderByCartRequest> mockStrategy = mock(CartOrderStrategy.class);
 
-        when(orderStrategyProvider.getStrategy(any(Class.class))).thenReturn(mockStrategy);
+        when(orderStrategyProvider.getStrategy(OrderByCartRequest.class)).thenReturn(mockStrategy);
         when(addressQueryService.getAddress(request.getAddressId())).thenReturn(mockAddress);
         when(mockStrategy.createOrder(request, mockMember, mockAddress)).thenReturn(mockOrder);
 
