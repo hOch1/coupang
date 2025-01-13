@@ -1,7 +1,5 @@
 package ecommerce.coupang.service.order;
 
-import java.util.Map;
-
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.service.order.strategy.OrderStrategyProvider;
@@ -17,7 +15,6 @@ import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.order.OrderRepository;
 import ecommerce.coupang.service.member.query.AddressQueryService;
 import ecommerce.coupang.service.order.strategy.OrderStrategy;
-import ecommerce.coupang.service.order.strategy.OrderType;
 import lombok.RequiredArgsConstructor;
 
 @Service

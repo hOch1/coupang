@@ -26,7 +26,6 @@ import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.security.CustomUserDetails;
 import ecommerce.coupang.service.order.OrderService;
 import ecommerce.coupang.service.order.query.OrderQueryService;
-import ecommerce.coupang.service.order.strategy.OrderType;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

@@ -69,9 +69,9 @@ public class Coupon extends BaseTimeEntity {
 	@OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CouponProduct> couponProducts = new ArrayList<>();
 
-	public Coupon(Store store, String name, String description, CouponType type,
-		int discountValue,
+	public Coupon(Store store, String name, String description, CouponType type, int discountValue,
 		int minPrice, int limitDiscountPrice, int couponStock, LocalDateTime limitDate) {
+
 		this.store = store;
 		this.name = name;
 		this.description = description;
