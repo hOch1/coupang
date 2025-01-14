@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public abstract class CreateOrderRequest {
+public class CreateOrderRequest {
 
 	@NotNull(message = "주소를 선택해주세요.")
 	private final Long addressId;
