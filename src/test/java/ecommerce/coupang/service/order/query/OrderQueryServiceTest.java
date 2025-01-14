@@ -30,7 +30,7 @@ import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.order.OrderItemRepository;
 import ecommerce.coupang.repository.order.OrderRepository;
-import ecommerce.coupang.repository.product.ProductVariantOptionRepository;
+import ecommerce.coupang.service.product.option.ProductVariantOptionService;
 
 @ExtendWith(MockitoExtension.class)
 class OrderQueryServiceTest {
@@ -45,7 +45,7 @@ class OrderQueryServiceTest {
 	private OrderItemRepository orderItemRepository;
 
 	@Mock
-	private ProductVariantOptionRepository productVariantOptionRepository;
+	private ProductVariantOptionService productVariantOptionService;
 
 	private Member mockMember;
 	private Address mockAddress;
@@ -66,11 +66,11 @@ class OrderQueryServiceTest {
 	@DisplayName("주문 목록 조회 테스트")
 	void findOrders() {
 		when(mockMember.getId()).thenReturn(1L);
-		when(orderRepository.findByMemberIdWithAddress(mockMember.getId())).thenReturn(List.of(mockOrder));
+		when(orderRepository.findOrders(mockMember.getId(), null, null)).thenReturn(List.of(mockOrder));
 
 		List<Order> orders = orderQueryService.findOrders(mockMember, null, null);
 
-		verify(orderRepository).findByMemberIdWithAddress(mockMember.getId());
+		verify(orderRepository).findOrders(mockMember.getId(), null, null);
 
 		assertThat(orders).isNotEmpty();
 		assertThat(orders.size()).isEqualTo(1);
@@ -95,13 +95,13 @@ class OrderQueryServiceTest {
 
 		when(orderRepository.findByIdWithMemberAndAddress(orderId)).thenReturn(Optional.of(mockOrder));
 		when(orderItemRepository.findByOrderId(anyLong())).thenReturn(List.of(mockOrderItem));
-		when(productVariantOptionRepository.findByProductVariantId(anyLong())).thenReturn(List.of(mockProductVariantOption));
+		when(productVariantOptionService.getProductVariantOptionByProductVariantId(anyLong())).thenReturn(List.of(mockProductVariantOption));
 
 		OrderDetailResponse response = orderQueryService.findOrder(orderId, mockMember);
 
 		verify(orderRepository).findByIdWithMemberAndAddress(orderId);
 		verify(orderItemRepository).findByOrderId(anyLong());
-		verify(productVariantOptionRepository).findByProductVariantId(anyLong());
+		verify(productVariantOptionService).getProductVariantOptionByProductVariantId(anyLong());
 
 		assertThat(response).isNotNull();
 	}
