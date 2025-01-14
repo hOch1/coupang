@@ -99,14 +99,17 @@ public class Coupon extends BaseTimeEntity {
 		this.couponProducts.add(couponProduct);
 	}
 
+	/* 재고 감소 */
 	public void reduceStock() {
 		this.couponStock--;
 	}
 
+	/* 최소 금액 검증 */
 	public boolean validateMinPrice(int price) {
 		return price > this.minPrice;
 	}
 
+	/* 할인 금액 계산 */
 	public int calculateDiscount(int price) {
 		return switch (this.type) {
 			case FIXED -> this.discountValue;

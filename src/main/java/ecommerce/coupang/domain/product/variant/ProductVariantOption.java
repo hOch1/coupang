@@ -45,6 +45,7 @@ public class ProductVariantOption {
 		);
 	}
 
+	/* 옵션 수정 */
 	public void update(VariantOptionValue variantOptionValue) {
 		this.variantOptionValue = variantOptionValue;
 	}

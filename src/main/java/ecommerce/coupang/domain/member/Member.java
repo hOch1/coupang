@@ -70,6 +70,7 @@ public class Member extends BaseTimeEntity {
 		);
 	}
 
+	/* 판매자 전환 */
 	public void changeRoleToSeller() throws CustomException {
 		if (this.role.equals(MemberRole.SELLER))
 			throw new CustomException(ErrorCode.ALREADY_ROLE_SELLER);

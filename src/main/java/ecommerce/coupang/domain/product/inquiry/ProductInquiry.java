@@ -75,6 +75,7 @@ public class ProductInquiry extends BaseTimeEntity {
 		this.isAnswered = true;
 	}
 
+	/* 문의 수정 */
 	public void update(UpdateInquiryRequest request) {
 		this.content = request.getContent() != null ? request.getContent() : this.content;
 	}

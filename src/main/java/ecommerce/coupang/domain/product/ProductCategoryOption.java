@@ -45,6 +45,7 @@ public class ProductCategoryOption {
 		);
 	}
 
+	/* 옵션 수정 */
 	public void update(CategoryOptionValue categoryOptionValue) {
 		this.categoryOptionValue = categoryOptionValue;
 	}

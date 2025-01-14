@@ -46,8 +46,19 @@ public class Cart {
 		return new Cart(member);
 	}
 
+	/* 장바구니 상품 추가 */
 	public void addItem(CartItem cartItem) {
 		this.cartItems.add(cartItem);
+	}
+
+	/* 장바구니 상품 제거 */
+	public void removeItem(CartItem cartItem) {
+		this.cartItems.remove(cartItem);
+	}
+
+	/* 장바구니 전체 제거 */
+	public void clear() {
+		this.cartItems.clear();
 	}
 
 	@Override
@@ -61,13 +72,5 @@ public class Cart {
 	@Override
 	public int hashCode() {
 		return Objects.hashCode(id);
-	}
-
-	public void removeItem(CartItem cartItem) {
-		this.cartItems.remove(cartItem);
-	}
-
-	public void clear() {
-		this.cartItems.clear();
 	}
 }

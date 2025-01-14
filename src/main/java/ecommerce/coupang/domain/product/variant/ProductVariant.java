@@ -144,6 +144,7 @@ public class ProductVariant {
 		}
 	}
 
+	/* 상품 상태 검증 후 재고 감소 */
 	public void verifyStatusAndReduceStock(int quantity) throws CustomException {
 		if (!this.status.equals(ProductStatus.ACTIVE))
 			throw new CustomException(ErrorCode.PRODUCT_STATUS_NOT_ACTIVE);

@@ -54,6 +54,7 @@ public class MemberCoupon extends BaseTimeEntity {
 		);
 	}
 
+	/* 쿠폰 사용 */
 	public void use() {
 		this.isUsed = true;
 		this.usedAt = LocalDateTime.now();

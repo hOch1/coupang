@@ -54,6 +54,7 @@ public class Answer extends BaseTimeEntity {
 		);
 	}
 
+	/* 답변 수정 */
 	public void update(UpdateAnswerRequest request) {
 		this.answer = request.getAnswer() != null ? request.getAnswer() : this.answer;
 	}

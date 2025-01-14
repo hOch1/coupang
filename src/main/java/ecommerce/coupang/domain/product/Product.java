@@ -145,6 +145,7 @@ public class Product extends BaseTimeEntity {
 		this.isActive = false;
 	}
 
+	/* 리뷰 삭제 */
     public void removeReview(ProductReview productReview) {
 		this.productReviews.remove(productReview);
 		updateStarAvg();
