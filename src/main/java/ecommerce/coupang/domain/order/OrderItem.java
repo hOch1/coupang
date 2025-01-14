@@ -73,6 +73,7 @@ public class OrderItem {
 	public static OrderItem of(Order order, ProductVariant productVariant, MemberCoupon memberCoupon, int quantity, int discountPrice) {
 
 		productVariant.increaseSalesCount(quantity);
+		memberCoupon.use();
 
 		return new OrderItem(order,
 			productVariant,

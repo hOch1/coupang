@@ -10,6 +10,7 @@ import ecommerce.coupang.domain.order.Order;
 import ecommerce.coupang.domain.order.OrderItem;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.service.discount.DiscountService;
+import ecommerce.coupang.service.store.CouponService;
 import lombok.RequiredArgsConstructor;
 
 @Component
@@ -17,12 +18,13 @@ import lombok.RequiredArgsConstructor;
 public class OrderItemFactory {
 
 	private final DiscountService discountService;
+	private final CouponService couponService;
 
 	public OrderItem createOrderItem(Order order, ProductVariant productVariant, Member member, int quantity, Long couponId) throws CustomException {
 		int totalPrice = productVariant.getPrice() * quantity;
 
 		/* 할인 계산 */
-		MemberCoupon memberCoupon = discountService.getMemberCouponIfPresent(member, couponId);
+		MemberCoupon memberCoupon = couponId != null ? couponService.getMemberCoupon(member, couponId) : null;
 		int totalDiscountPrice = discountService.calculateTotalDiscount(totalPrice, member, memberCoupon);
 
 		OrderItem orderItem = OrderItem.of(order, productVariant, memberCoupon, quantity, totalDiscountPrice);

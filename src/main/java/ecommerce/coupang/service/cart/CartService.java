@@ -58,7 +58,7 @@ public class CartService {
 	}
 
 	/**
-	 * 장바구니 상푼 수량 변경
+	 * 장바구니 상품 수량 변경
 	 * @param cartItemId 장바구니 상품 ID
 	 * @param quantity 변경할 수량
 	 * @param member 요청한 회원
@@ -70,7 +70,7 @@ public class CartService {
 			.orElseThrow(() -> new CustomException(ErrorCode.CART_ITEM_NOT_FOUND));
 
 		if (!cartItem.getCart().getMember().equals(member))
-			throw new CustomException(ErrorCode.CART_ITEM_NOT_FOUND);
+			throw new CustomException(ErrorCode.FORBIDDEN);
 
 		cartItem.changeQuantity(quantity);
 
@@ -90,7 +90,7 @@ public class CartService {
 		CartItem cartItem = cartItemRepository.findById(cartItemId)
 			.orElseThrow(() -> new CustomException(ErrorCode.CART_ITEM_NOT_FOUND));
 
-		cart.getCartItems().remove(cartItem);
+		cart.removeItem(cartItem);
 
 		return cartItem;
 	}
@@ -103,6 +103,6 @@ public class CartService {
 	public void clearCart(Member member) {
 		Cart cart = cartQueryService.getCartWithMember(member);
 
-		cart.getCartItems().clear();
+		cart.clear();
 	}
 }

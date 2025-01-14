@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import ecommerce.coupang.common.exception.CustomException;
-import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.dto.request.store.coupon.CreateCouponRequest;
 import jakarta.persistence.CascadeType;
@@ -105,7 +103,7 @@ public class Coupon extends BaseTimeEntity {
 		this.couponStock--;
 	}
 
-	public boolean overMinPrice(int price) {
+	public boolean validateMinPrice(int price) {
 		return price > this.minPrice;
 	}
 

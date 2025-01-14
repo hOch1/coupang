@@ -62,4 +62,12 @@ public class Cart {
 	public int hashCode() {
 		return Objects.hashCode(id);
 	}
+
+	public void removeItem(CartItem cartItem) {
+		this.cartItems.remove(cartItem);
+	}
+
+	public void clear() {
+		this.cartItems.clear();
+	}
 }

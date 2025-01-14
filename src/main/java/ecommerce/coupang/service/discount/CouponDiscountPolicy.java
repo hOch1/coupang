@@ -4,7 +4,6 @@ import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.member.MemberCoupon;
 import org.springframework.stereotype.Component;
 
-import ecommerce.coupang.domain.member.MemberGrade;
 import ecommerce.coupang.domain.store.Coupon;
 
 @Component
@@ -15,11 +14,12 @@ public class CouponDiscountPolicy implements DiscountPolicy{
 		if (memberCoupon == null) return 0;
 
 		Coupon coupon = memberCoupon.getCoupon();
-		if (coupon.overMinPrice(price)) return 0;
+
+		if (coupon.validateMinPrice(price)) return 0;
 
 		int discountPrice = coupon.calculateDiscount(price);
 		memberCoupon.use();
 
-		return Math.min(discountPrice, coupon.getDiscountValue());
+		return Math.min(discountPrice, coupon.getLimitDiscountPrice());
 	}
 }

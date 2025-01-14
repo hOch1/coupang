@@ -1,4 +1,4 @@
-package ecommerce.coupang.service.store;
+package ecommerce.coupang.service.store.query;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,7 +21,6 @@ import ecommerce.coupang.domain.store.Store;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.store.StoreRepository;
-import ecommerce.coupang.service.store.query.StoreQueryService;
 
 @ExtendWith(MockitoExtension.class)
 class StoreQueryServiceTest {

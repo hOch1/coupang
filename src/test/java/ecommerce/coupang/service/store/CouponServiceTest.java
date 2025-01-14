@@ -51,7 +51,6 @@ class CouponServiceTest {
 	private Product mockProduct = mock(Product.class);
 	private Member mockMember = mock(Member.class);
 	private Coupon mockCoupon = mock(Coupon.class);
-	private MemberCoupon mockMemberCoupon = mock(MemberCoupon.class);
 
 	@Test
 	@DisplayName("쿠폰 생성 테스트")
@@ -68,6 +67,7 @@ class CouponServiceTest {
 		verify(couponRepository).save(any(Coupon.class));
 		verify(storeQueryService).findStore(storeId);
 		verify(productRepository).findById(1L);
+		verify(mockProduct).addCouponProducts(any(CouponProduct.class));
 
 		assertThat(coupon).isNotNull();
 	}
