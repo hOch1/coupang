@@ -1,5 +1,7 @@
 package ecommerce.coupang.domain.product.inquiry;
 
+import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Member;
 import ecommerce.coupang.domain.product.Product;
@@ -78,5 +80,10 @@ public class ProductInquiry extends BaseTimeEntity {
 	/* 문의 수정 */
 	public void update(UpdateInquiryRequest request) {
 		this.content = request.getContent() != null ? request.getContent() : this.content;
+	}
+
+	public void validateInquiryOwner(Member member) throws CustomException {
+		if (!this.member.equals(member))
+			throw new CustomException(ErrorCode.FORBIDDEN);
 	}
 }

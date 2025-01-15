@@ -60,7 +60,7 @@ public class ProductInquiryService {
 	public ProductInquiry updateInquiry(Long inquiryId, UpdateInquiryRequest request, Member member) throws CustomException {
 		ProductInquiry productInquiry = getProductInquiry(inquiryId);
 
-		validateInquiryOwner(member, productInquiry);
+		productInquiry.validateInquiryOwner(member);
 
 		productInquiry.update(request);
 		return productInquiry;
@@ -76,16 +76,10 @@ public class ProductInquiryService {
 	public ProductInquiry deleteInquiry(Long inquiryId, Member member) throws CustomException {
 		ProductInquiry productInquiry = getProductInquiry(inquiryId);
 
-		validateInquiryOwner(member, productInquiry);
+		productInquiry.validateInquiryOwner(member);
 
 		productInquiryRepository.delete(productInquiry);
 		return productInquiry;
-	}
-
-	/* 해당 문의 작성자가 member 가 맞는지 검증 */
-	private static void validateInquiryOwner(Member member, ProductInquiry productInquiry) throws CustomException {
-		if (!productInquiry.getMember().equals(member))
-			throw new CustomException(ErrorCode.FORBIDDEN);
 	}
 
 	/* 문의 가져오기 */
