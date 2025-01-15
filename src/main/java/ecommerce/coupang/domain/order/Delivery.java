@@ -1,5 +1,7 @@
 package ecommerce.coupang.domain.order;
 
+import ecommerce.coupang.common.exception.CustomException;
+import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.dto.request.delivery.AddDeliveryInfoRequest;
 import jakarta.persistence.Column;
@@ -59,5 +61,10 @@ public class Delivery extends BaseTimeEntity {
 
 	public void updateStatus(DeliveryStatus status) {
 		this.deliveryStatus = status;
+	}
+
+	public void cancel() throws CustomException {
+		if (!deliveryStatus.equals(DeliveryStatus.PENDING))
+			throw new CustomException(ErrorCode.ALREADY_DELIVERY_START);
 	}
 }

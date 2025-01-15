@@ -71,6 +71,11 @@ public class Store extends BaseTimeEntity {
 		);
 	}
 
+	/* 상품 추가 */
+	public void addProducts(Product product) {
+		this.products.add(product);
+	}
+
 	/* 상점 수정 */
 	public void update(UpdateStoreRequest request) {
 		this.name = request.getName() != null ? request.getName() : this.name;

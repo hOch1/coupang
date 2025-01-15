@@ -47,6 +47,7 @@ public class ProductService {
 
 		Product product = productCreateManagement.createProductAndVariantAndOptions(request, store, category);
 
+		store.addProducts(product);
 		productRepository.save(product);
 		return product;
 	}

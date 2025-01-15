@@ -2,9 +2,9 @@ package ecommerce.coupang.domain.order;
 
 import java.util.Objects;
 
+import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.domain.member.MemberCoupon;
 import ecommerce.coupang.domain.product.variant.ProductVariant;
-import ecommerce.coupang.domain.store.Coupon;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -84,9 +84,10 @@ public class OrderItem {
 	}
 
 	/* 주문 상품 취소 */
-	public void cancel() {
-		productVariant.addStock(quantity);
-		productVariant.decreaseSalesCount(quantity);
+	public void cancel() throws CustomException {
+		this.delivery.cancel();
+		this.productVariant.addStock(this.quantity);
+		this.productVariant.decreaseSalesCount(this.quantity);
 	}
 
 	@Override
