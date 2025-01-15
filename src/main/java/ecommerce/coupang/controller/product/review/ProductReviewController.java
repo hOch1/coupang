@@ -1,4 +1,4 @@
-package ecommerce.coupang.controller.product;
+package ecommerce.coupang.controller.product.review;
 
 import java.util.List;
 

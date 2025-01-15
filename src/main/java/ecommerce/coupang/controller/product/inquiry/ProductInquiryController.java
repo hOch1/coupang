@@ -1,4 +1,4 @@
-package ecommerce.coupang.controller.product;
+package ecommerce.coupang.controller.product.inquiry;
 
 import ecommerce.coupang.domain.product.inquiry.ProductInquiry;
 import ecommerce.coupang.dto.request.product.inquiry.UpdateInquiryRequest;
