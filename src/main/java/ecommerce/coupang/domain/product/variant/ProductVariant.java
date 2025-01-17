@@ -53,6 +53,9 @@ public class ProductVariant {
 	@Column(name = "is_active", nullable = false)
 	private boolean isActive = true;
 
+	@Version
+	private Long version;
+
 	@OneToMany(mappedBy = "productVariant", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<ProductVariantOption> productVariantOptions = new ArrayList<>();
 

@@ -1,9 +1,19 @@
 package ecommerce.coupang.service.order;
 
+import java.sql.SQLException;
+
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.service.order.strategy.OrderStrategyProvider;
+
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.dao.DeadlockLoserDataAccessException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.domain.member.Address;
@@ -16,11 +26,12 @@ import ecommerce.coupang.repository.order.OrderRepository;
 import ecommerce.coupang.service.member.query.AddressQueryService;
 import ecommerce.coupang.service.order.strategy.OrderStrategy;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 @LogLevel("OrderService")
+@Slf4j
 public class OrderService {
 
 	private final OrderRepository orderRepository;
@@ -34,9 +45,17 @@ public class OrderService {
 	 * @return 주문
 	 * @param <T> CreateOrderRequest 를 상속한 Request
 	 */
+	@Retryable(
+		value = {
+			ObjectOptimisticLockingFailureException.class,
+			CannotAcquireLockException.class,
+		},
+		maxAttempts = 3,
+		backoff = @Backoff(delay = 300)
+	)
 	@LogAction("주문 생성")
+	@Transactional
 	public <T extends CreateOrderRequest> Order createOrder(T request, Member member) throws CustomException {
-
 		@SuppressWarnings("unchecked")
 		OrderStrategy<T> strategy = (OrderStrategy<T>) orderStrategyProvider.getStrategy(request.getClass());
 		Address address = addressQueryService.getAddress(request.getAddressId());
@@ -48,6 +67,11 @@ public class OrderService {
 		return order;
 	}
 
+	@Recover
+	public <T extends CreateOrderRequest> Order recover() throws CustomException {
+		throw new CustomException(ErrorCode.PLEASE_RETRY);
+	}
+
 	/**
 	 * 주문 취소
 	 * @param orderId 주문 ID
@@ -55,6 +79,7 @@ public class OrderService {
 	 * @return 취소한 주문 ID
 	 */
 	@LogAction("주문 취소")
+	@Transactional
 	public Order cancelOrder(Long orderId, Member member) throws CustomException {
 		Order order = orderRepository.findByIdWithMemberAndAddress(orderId)
 				.orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
