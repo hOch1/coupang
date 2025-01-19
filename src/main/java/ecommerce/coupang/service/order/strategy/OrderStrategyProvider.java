@@ -25,8 +25,8 @@ public class OrderStrategyProvider {
     }
 
     private Class<?> getGenericType(Class<?> strategy) {
-        return (Class<?>) ((ParameterizedType) strategy.getGenericInterfaces()[0])
-            .getActualTypeArguments()[0];
+        return (Class<?>) ((ParameterizedType) strategy.getGenericSuperclass())
+                .getActualTypeArguments()[0];
     }
 
     @SuppressWarnings("unchecked")

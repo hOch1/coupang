@@ -44,6 +44,8 @@ public abstract class AbstractOrderStrategy<T extends CreateOrderRequest> implem
 	protected abstract List<OrderItemData> getOrderItemData(T request) throws CustomException;
 	protected abstract void doAfter(T request);
 
+
+
 	@Getter
 	@AllArgsConstructor
 	protected static class OrderItemData {
