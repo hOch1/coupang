@@ -6,6 +6,7 @@ import java.util.List;
 import ecommerce.coupang.domain.BaseTimeEntity;
 import ecommerce.coupang.domain.member.Address;
 import ecommerce.coupang.domain.member.Member;
+import ecommerce.coupang.dto.request.order.CreateOrderRequest;
 import ecommerce.coupang.dto.request.order.OrderByCartRequest;
 import ecommerce.coupang.dto.request.order.OrderByProductRequest;
 import ecommerce.coupang.common.exception.CustomException;
@@ -73,19 +74,8 @@ public class Order extends BaseTimeEntity {
 		this.orderMessage = orderMessage;
 	}
 
-	/* 상품 주문 */
-	public static Order of(OrderByProductRequest request, Member member, Address address) {
-		return new Order(
-			member,
-			address,
-			request.getPayment(),
-			(request.getPayment().equals(Payment.TRANSFER) ? OrderStatus.PENDING : OrderStatus.PAID),
-			request.getOrderMessage()
-		);
-	}
-
-	/* 장바구니 주문 */
-	public static Order of(OrderByCartRequest request, Member member, Address address) {
+	/* 주문 생성 */
+	public static <T extends CreateOrderRequest> Order of(T request, Member member, Address address) {
 		return new Order(
 			member,
 			address,

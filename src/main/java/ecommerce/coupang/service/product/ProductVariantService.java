@@ -1,10 +1,7 @@
 package ecommerce.coupang.service.product;
 
-import java.sql.SQLException;
-
 import ecommerce.coupang.common.aop.log.LogLevel;
 
-import org.springframework.dao.CannotAcquireLockException;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Recover;
@@ -28,7 +25,6 @@ import ecommerce.coupang.dto.request.product.variant.UpdateProductVariantRequest
 import ecommerce.coupang.repository.product.ProductRepository;
 import ecommerce.coupang.repository.product.ProductVariantRepository;
 import lombok.RequiredArgsConstructor;
-
 
 @Service
 @RequiredArgsConstructor

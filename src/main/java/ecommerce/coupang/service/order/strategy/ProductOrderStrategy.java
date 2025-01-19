@@ -1,37 +1,29 @@
 package ecommerce.coupang.service.order.strategy;
 
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
-import ecommerce.coupang.common.exception.CustomException;
-import ecommerce.coupang.common.exception.ErrorCode;
-import ecommerce.coupang.domain.member.Address;
-import ecommerce.coupang.domain.member.Member;
-import ecommerce.coupang.domain.order.Order;
-import ecommerce.coupang.domain.order.OrderItem;
-import ecommerce.coupang.domain.product.variant.ProductVariant;
 import ecommerce.coupang.dto.request.order.OrderByProductRequest;
-import ecommerce.coupang.repository.product.ProductVariantRepository;
 import ecommerce.coupang.service.order.OrderItemFactory;
 import ecommerce.coupang.service.product.ProductVariantService;
-import lombok.RequiredArgsConstructor;
 
 @Component
-@RequiredArgsConstructor
-public class ProductOrderStrategy implements OrderStrategy<OrderByProductRequest> {
+public class ProductOrderStrategy extends AbstractOrderStrategy<OrderByProductRequest> {
 
-	private final ProductVariantService productVariantService;
-	private final OrderItemFactory orderItemFactory;
+	public ProductOrderStrategy(ProductVariantService productVariantService, OrderItemFactory orderItemFactory) {
+		super(productVariantService, orderItemFactory);
+	}
 
 	@Override
-	public Order createOrder(OrderByProductRequest request, Member member, Address address) throws CustomException {
-		Order order = Order.of(request, member, address);
-
-		ProductVariant productVariant = productVariantService.reduceStockForOrder(request.getProductVariantId(), request.getQuantity());
-
-		OrderItem orderItem = orderItemFactory.createOrderItem(order, productVariant, member, request.getQuantity(), request.getCouponId());
-
-		order.addOrderItem(orderItem);
-
-		return order;
+	protected List<OrderItemData> getOrderItemData(OrderByProductRequest request) {
+		return List.of(OrderItemData.from(
+			request.getProductVariantId(),
+			request.getQuantity(),
+			request.getCouponId()
+		));
 	}
+
+	@Override
+	protected void doAfter(OrderByProductRequest request) {}
 }
