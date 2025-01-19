@@ -24,8 +24,15 @@ public class OrderItemFactory {
 		int totalPrice = productVariant.getPrice() * quantity;
 
 		/* 할인 계산 */
-		MemberCoupon memberCoupon = couponId != null ? couponService.getMemberCoupon(member, couponId) : null;
-		int totalDiscountPrice = discountService.calculateTotalDiscount(totalPrice, member, memberCoupon);
+		int totalDiscountPrice;
+		MemberCoupon memberCoupon = null;
+
+		if (couponId != null) {
+			memberCoupon = couponService.getMemberCoupon(member, couponId);
+			memberCoupon.use();
+		}
+
+		totalDiscountPrice = discountService.calculateTotalDiscount(totalPrice, member, memberCoupon);
 
 		OrderItem orderItem = OrderItem.of(order, productVariant, memberCoupon, quantity, totalDiscountPrice);
 		/* 배송 연결 */

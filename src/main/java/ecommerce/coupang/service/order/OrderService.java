@@ -1,19 +1,14 @@
 package ecommerce.coupang.service.order;
 
-import java.sql.SQLException;
+import java.util.List;
 
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;
+import ecommerce.coupang.domain.order.OrderItem;
+import ecommerce.coupang.repository.order.OrderItemRepository;
 import ecommerce.coupang.service.order.strategy.OrderStrategyProvider;
 
-import org.springframework.dao.CannotAcquireLockException;
-import org.springframework.dao.DeadlockLoserDataAccessException;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
-import org.springframework.retry.annotation.Backoff;
-import org.springframework.retry.annotation.Recover;
-import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.domain.member.Address;
@@ -25,6 +20,7 @@ import ecommerce.coupang.common.exception.ErrorCode;
 import ecommerce.coupang.repository.order.OrderRepository;
 import ecommerce.coupang.service.member.query.AddressQueryService;
 import ecommerce.coupang.service.order.strategy.OrderStrategy;
+import ecommerce.coupang.service.product.ProductVariantService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,8 +31,10 @@ import lombok.extern.slf4j.Slf4j;
 public class OrderService {
 
 	private final OrderRepository orderRepository;
+	private final OrderItemRepository orderItemRepository;
 	private final AddressQueryService addressQueryService;
 	private final OrderStrategyProvider orderStrategyProvider;
+	private final ProductVariantService productVariantService;
 
 	/**
 	 * 주문 생성
@@ -45,14 +43,6 @@ public class OrderService {
 	 * @return 주문
 	 * @param <T> CreateOrderRequest 를 상속한 Request
 	 */
-	@Retryable(
-		value = {
-			ObjectOptimisticLockingFailureException.class,
-			CannotAcquireLockException.class,
-		},
-		maxAttempts = 3,
-		backoff = @Backoff(delay = 300)
-	)
 	@LogAction("주문 생성")
 	@Transactional
 	public <T extends CreateOrderRequest> Order createOrder(T request, Member member) throws CustomException {
@@ -65,11 +55,6 @@ public class OrderService {
 		orderRepository.save(order);
 
 		return order;
-	}
-
-	@Recover
-	public <T extends CreateOrderRequest> Order recover() throws CustomException {
-		throw new CustomException(ErrorCode.PLEASE_RETRY);
 	}
 
 	/**
@@ -87,6 +72,26 @@ public class OrderService {
 		order.validateOrderOwner(member);
 		order.cancel();
 
+		List<OrderItem> orderItems = orderItemRepository.findByOrderId(orderId);
+		for (OrderItem orderItem : orderItems) {
+			orderItem.cancel();
+			productVariantService.addStockForCancelOrder(orderItem.getProductVariant().getId(), orderItem.getQuantity());
+		}
+
 		return order;
+	}
+
+	@LogAction("주문 상품 취소")
+	@Transactional
+	public OrderItem cancelOrderItem(Long orderItemId, Member member) throws CustomException {
+		OrderItem orderItem = orderItemRepository.findById(orderItemId)
+			.orElseThrow(() -> new CustomException(ErrorCode.ORDER_NOT_FOUND));
+
+		orderItem.getOrder().validateOrderOwner(member);
+		orderItem.cancel();
+
+		productVariantService.addStockForCancelOrder(orderItem.getProductVariant().getId(), orderItem.getQuantity());
+
+		return orderItem;
 	}
 }

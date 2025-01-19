@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -85,7 +86,7 @@ public class OrderController {
 		return ResponseEntity.ok(new Result<>(response));
 	}
 
-	@DeleteMapping("/{orderId}")
+	@PatchMapping("/{orderId}")
 	@Operation(summary = "주문 취소 API", description = "주문을 취소합니다.")
 	public ResponseEntity<Void> cancelOrder(
 		@PathVariable Long orderId,
@@ -94,4 +95,16 @@ public class OrderController {
 		orderService.cancelOrder(orderId, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
+
+	@PatchMapping("/{orderItemId}/item")
+	@Operation(summary = "주문 상품 개별 취소 API", description = "주문 상품을 취소합니다")
+	public ResponseEntity<Void> cancelOrderItem(
+		@PathVariable Long orderItemId,
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
+
+		orderService.cancelOrderItem(orderItemId, userDetails.getMember());
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+
+
 }

@@ -1,7 +1,16 @@
 package ecommerce.coupang.service.product;
 
+import java.sql.SQLException;
+
 import ecommerce.coupang.common.aop.log.LogLevel;
+
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Recover;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import ecommerce.coupang.common.aop.log.LogAction;
@@ -102,7 +111,15 @@ public class ProductVariantService {
 	 * @param member 요청한 회원
 	 * @return 변경된 상품 변형
 	 */
+	@Retryable(
+		retryFor = {
+			ObjectOptimisticLockingFailureException.class,
+		},
+		maxAttempts = 3,
+		backoff = @Backoff(delay = 300)
+	)
 	@LogAction("상품 재고 변경")
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public ProductVariant updateProductStock(Long productVariantId, UpdateProductStockRequest request, Member member) throws CustomException {
 		ProductVariant productVariant = getProductVariantWithMember(productVariantId);
 		productVariant.getProduct().getStore().validateOwner(member);
@@ -110,6 +127,11 @@ public class ProductVariantService {
 		productVariant.changeStock(request.getStockQuantity());
 
 		return productVariant;
+	}
+
+	@Recover
+	public ProductVariant recoverUpdateProductStock(Exception e, Long productVariantId, UpdateProductStockRequest request, Member member) throws CustomException {
+		throw new CustomException(ErrorCode.PLEASE_RETRY);
 	}
 
 	/**
@@ -142,6 +164,50 @@ public class ProductVariantService {
 
 		productVariant.delete();
 		return productVariant;
+	}
+
+	@Retryable(
+		retryFor = {
+			ObjectOptimisticLockingFailureException.class,
+		},
+		maxAttempts = 3,
+		backoff = @Backoff(delay = 100)
+	)
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public ProductVariant reduceStockForOrder(Long productVariantId, int quantity) throws CustomException {
+		ProductVariant productVariant = getProductVariantWithMember(productVariantId);
+
+		productVariant.verifyStatusAndReduceStock(quantity);
+		productVariant.increaseSalesCount(quantity);
+
+		return productVariant;
+	}
+
+	@Recover
+	public ProductVariant recoverReduceStockForOrder(Exception e, Long productVariantId, int quantity) throws CustomException {
+		throw new CustomException(ErrorCode.PLEASE_RETRY);
+	}
+
+	@Retryable(
+		retryFor = {
+			ObjectOptimisticLockingFailureException.class,
+		},
+		maxAttempts = 3,
+		backoff = @Backoff(delay = 300)
+	)
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	public ProductVariant addStockForCancelOrder(Long productVariantId, int quantity) throws CustomException {
+		ProductVariant productVariant = getProductVariantWithMember(productVariantId);
+
+		productVariant.addStock(quantity);
+		productVariant.decreaseSalesCount(quantity);
+
+		return productVariant;
+	}
+
+	@Recover
+	public ProductVariant recoverAddStock(Exception e, Long productVariantId, int quantity) throws CustomException {
+		throw new CustomException(ErrorCode.PLEASE_RETRY);
 	}
 
 	/* 상품 변형 가져오기 */

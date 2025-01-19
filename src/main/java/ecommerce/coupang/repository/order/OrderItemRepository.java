@@ -1,6 +1,7 @@
 package ecommerce.coupang.repository.order;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +18,10 @@ public interface OrderItemRepository extends JpaRepository<OrderItem, Long> {
 		+ "join fetch oi.delivery d "
 		+ "where oi.order.id = :orderId")
 	List<OrderItem> findByOrderId(Long orderId);
+
+	@Query("select oi from OrderItem oi "
+		+ "join fetch oi.order o "
+		+ "join fetch o.member "
+		+ "where oi.id = :orderItemId")
+	Optional<OrderItem> findByIdWithOrderAndMember(Long orderItemId);
 }

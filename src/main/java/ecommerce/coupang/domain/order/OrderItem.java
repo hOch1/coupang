@@ -8,6 +8,8 @@ import ecommerce.coupang.domain.product.variant.ProductVariant;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -56,6 +58,10 @@ public class OrderItem {
 	@Column(name = "total_price", nullable = false)
 	private int totalPrice;
 
+	@Enumerated(EnumType.STRING)
+	@Column(name = "order_item_status", nullable = false)
+	private OrderItemStatus status = OrderItemStatus.ORDERED;
+
 	@Setter
 	@OneToOne(fetch = FetchType.LAZY, mappedBy = "orderItem", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Delivery delivery;
@@ -71,9 +77,6 @@ public class OrderItem {
 	}
 
 	public static OrderItem of(Order order, ProductVariant productVariant, MemberCoupon memberCoupon, int quantity, int discountPrice) {
-		productVariant.increaseSalesCount(quantity);
-		if (memberCoupon != null)
-			memberCoupon.use();
 		return new OrderItem(order,
 			productVariant,
 			memberCoupon,
@@ -87,8 +90,7 @@ public class OrderItem {
 	/* 주문 상품 취소 */
 	public void cancel() throws CustomException {
 		this.delivery.cancel();
-		this.productVariant.addStock(this.quantity);
-		this.productVariant.decreaseSalesCount(this.quantity);
+		this.status = OrderItemStatus.CANCEL;
 	}
 
 	@Override

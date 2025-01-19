@@ -19,6 +19,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -63,6 +64,9 @@ public class Coupon extends BaseTimeEntity {
 
 	@Column(name = "limit_date", nullable = false)
 	private LocalDateTime limitDate = LocalDateTime.MAX;
+
+	@Version
+	private Long version;
 
 	@OneToMany(mappedBy = "coupon", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<CouponProduct> couponProducts = new ArrayList<>();

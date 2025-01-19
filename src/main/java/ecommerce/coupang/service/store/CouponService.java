@@ -3,6 +3,11 @@ package ecommerce.coupang.service.store;
 import ecommerce.coupang.common.aop.log.LogAction;
 import ecommerce.coupang.common.aop.log.LogLevel;
 import ecommerce.coupang.service.store.query.StoreQueryService;
+
+import org.springframework.dao.CannotAcquireLockException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +69,14 @@ public class CouponService {
 	 * @param member 요청한 회원
 	 * @return 쿠폰
 	 */
+	@Retryable(
+		value = {
+			ObjectOptimisticLockingFailureException.class,
+			CannotAcquireLockException.class,
+		},
+		maxAttempts = 3,
+		backoff = @Backoff(delay = 300)
+	)
 	@LogAction("쿠폰 다운로드")
 	public Coupon downloadCoupon(Long couponId, Member member) throws CustomException {
 		Coupon coupon = couponRepository.findById(couponId)
