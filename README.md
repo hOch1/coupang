@@ -1,15 +1,16 @@
-# 이커머스 플랫폼 개발
+# 이커머스 서비스 개발
 
 ---
-# Version
-- Java 17  
-- Spring boot 3.4  
-- Mysql 8.4  
----
-# Stacks
-- Spring Boot
-- JPA  
-- QueryDsl  
+# Stacks & Version
+```
+Java          17
+Spring Boot   3.4
+QueryDsl      5.0.0
+MySQL         8.4
+JWT           0.11.5
+JPA
+Spring Batch
+```
 ---
 # Features
 ### 회원

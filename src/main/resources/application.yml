@@ -24,9 +24,9 @@ spring:
 #      mode: always
 #      data-locations: classpath:data.sql
 
-#logging:
-#  level:
-#    org.hibernate.SQL: debug
+logging:
+  level:
+    org.hibernate.SQL: debug
 
 jwt:
   secret: qweqweqqweqweqweqweqeqweqweqwewqeqeqweqweqwe123
