@@ -51,3 +51,4 @@ Spring Batch
 - 주문 생성, 취소, 조회
 
 # ERD
+[LINK](https://www.erdcloud.com/d/cMHPTMGbH3g5Z68iz)
