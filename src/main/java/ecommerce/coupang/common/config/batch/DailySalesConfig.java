@@ -58,24 +58,30 @@ public class DailySalesConfig {
 
 		MySqlPagingQueryProvider provider = new MySqlPagingQueryProvider();
 		provider.setSelectClause(
-			"select s.store_id AS store_id, " +
-			"COALESCE(SUM(o.totalPrice), 0) AS totalSalesPrice, " +
-			"COALESCE(COUNT(oi.order_item_id), 0) AS totalSalesCount"
+			"SELECT MAIN_QRY.store_id AS store_id, "
+				+ "MAIN_QRY.totalSalesPrice, "
+				+ "MAIN_QRY.totalSalesCount"
 		);
 		provider.setFromClause(
-			"FROM Store s " +
-			"LEFT JOIN Product p ON s.store_id = p.store_id " +
-			"LEFT JOIN ProductVariant pv ON p.product_id = pv.product_id " +
-			"LEFT JOIN OrderItem oi ON pv.product_variant_id = oi.product_variant_id " +
-			"LEFT JOIN ("
-				+ "SELECT order_id, total_price "
-				+ "FROM Orders "
-				+ "WHERE DATE(created_at) = CURDATE() - INTERVAL 1 DAY "
-				+ "AND order_status != 'CANCELED' "
-				+ ") o ON oi.order_id = o.order_id"
+			"FROM ( "
+				+ "SELECT "
+					+ "s.store_id AS store_id, "
+					+ "COALESCE(SUM(o.total_price), 0) AS totalSalesPrice, "
+					+ "SUM(IF(o.order_id IS NOT NULL, 1, 0)) AS totalSalesCount "
+				+ "FROM store s "
+					+ "LEFT JOIN product p ON s.store_id = p.store_id "
+					+ "LEFT JOIN product_variant pv ON p.product_id = pv.product_id "
+					+ "LEFT JOIN order_item oi ON pv.product_variant_id = oi.product_variant_id "
+					+ "LEFT JOIN ( "
+						+ "SELECT order_id, total_price "
+						+ "FROM orders o "
+						+ "WHERE DATE(o.created_at) = CURDATE() - INTERVAL 1 DAY "
+						+ "AND o.order_status != 'CANCELED' "
+					+ ") o ON oi.order_id = o.order_id "
+				+ "GROUP BY s.store_id "
+			+ ") AS MAIN_QRY "
 		);
-		provider.setGroupClause("GROUP BY s.store_id");
-		provider.setSortKeys(Map.of("s.store_id", org.springframework.batch.item.database.Order.ASCENDING));
+		provider.setSortKeys(Map.of("MAIN_QRY.store_id", org.springframework.batch.item.database.Order.ASCENDING));
 
 		reader.setQueryProvider(provider);
 		return reader;
@@ -84,9 +90,9 @@ public class DailySalesConfig {
 	@Bean
 	public ItemProcessor<Map<String, Object>, DailySalesStatistics> dailySalesProcessor() {
 		return item -> {
-			Long storeId = (Long) item.get("store_id");
-			int totalSalesPrice = (int) item.get("totalSalesPrice");
-			int totalSalesCount = (int) item.get("totalSalesCount");
+			Long storeId = ((Number) item.get("store_id")).longValue();
+			int totalSalesPrice = ((Number) item.get("totalSalesPrice")).intValue();
+			int totalSalesCount = ((Number) item.get("totalSalesCount")).intValue();
 
 			return DailySalesStatistics.of(storeId, totalSalesPrice, totalSalesCount);
 		};
@@ -97,7 +103,7 @@ public class DailySalesConfig {
 		JdbcBatchItemWriter<DailySalesStatistics> writer = new JdbcBatchItemWriter<>();
 		writer.setDataSource(dataSource);
 		writer.setSql(
-			"INSERT INTO daily_sales_statistics (store_id, total_sales_price, total_sales_count) "
+			"INSERT INTO daily_sales_statistics (store_id, total_sales_price, total_sales_count, date) "
 			+ "VALUES (:storeId, :totalSalesPrice, :totalSalesCount, :date)"
 		);
 

@@ -16,8 +16,10 @@ spring:
       ddl-auto: update
 
   batch:
+    jdbc:
+      initialize-schema: always
     job:
-      enabled: false
+      enabled: true
 
 #  sql:
 #    init:
