@@ -12,17 +12,22 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import ecommerce.coupang.domain.store.Store;
+import ecommerce.coupang.domain.store.statistics.DailySalesStatistics;
 import ecommerce.coupang.dto.request.store.CreateStoreRequest;
 import ecommerce.coupang.dto.request.store.UpdateStoreRequest;
+import ecommerce.coupang.dto.request.store.statics.SalesStaticsType;
 import ecommerce.coupang.dto.response.Result;
 import ecommerce.coupang.dto.response.store.StoreDetailResponse;
 import ecommerce.coupang.dto.response.store.StoreResponse;
 import ecommerce.coupang.common.exception.CustomException;
 import ecommerce.coupang.common.security.CustomUserDetails;
+import ecommerce.coupang.dto.response.store.statics.DailyStaticsResponse;
 import ecommerce.coupang.service.store.StoreService;
+import ecommerce.coupang.service.store.StoreStaticsService;
 import ecommerce.coupang.service.store.query.StoreQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -37,6 +42,7 @@ public class StoreController {
 
 	private final StoreService storeService;
 	private final StoreQueryService storeQueryService;
+	private final StoreStaticsService storeStaticsService;
 
 	@PostMapping
 	@Operation(summary = "상점 등록 API", description = "상점을 등록합니다")
@@ -89,5 +95,16 @@ public class StoreController {
 
 		storeService.deleteStore(storeId, userDetails.getMember());
 		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+	}
+
+	@GetMapping("/salesStatics/{storeId}")
+	@Operation(summary = "판매량 통계 API", description = "판매량 통계를 조회합니다")
+	public ResponseEntity<DailyStaticsResponse> getSalesStatics(
+		@PathVariable Long storeId,
+		@RequestParam String date,
+		@AuthenticationPrincipal CustomUserDetails userDetails) throws CustomException {
+
+		DailySalesStatistics dailySalesStatics = storeStaticsService.findDailySalesStatics(storeId, date, userDetails.getMember());
+		return ResponseEntity.ok(DailyStaticsResponse.of(dailySalesStatics));
 	}
 }

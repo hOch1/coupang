@@ -40,6 +40,8 @@ public enum ErrorCode {
 	ALREADY_USE_COUPON(400, "이미 사용한 쿠폰입니다."),
 	OPTION_NOT_CONTAINS(400, "필요한 옵션이 없습니다."),
 
+	STATICS_NOT_FOUND(400, "해당 날짜의 통계가 없습니다"),
+
 	FORBIDDEN(401, "권한이 없습니다."),
 
 	CART_NOT_FOUND(500, "장바구니를 찾을 수 없습니다."),
@@ -48,7 +50,6 @@ public enum ErrorCode {
 	PRODUCT_STATUS_NOT_ACTIVE(500, "상품이 판매가능한 상태가 아닙니다."),
 
 	PLEASE_RETRY(500, "서버 오류로인해 다시 요청해주세요")
-
 	;
 
 	private final int errorStatus;
