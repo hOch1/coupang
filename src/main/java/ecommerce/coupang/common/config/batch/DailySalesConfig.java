@@ -17,6 +17,7 @@ import org.springframework.batch.item.database.support.MySqlPagingQueryProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.ColumnMapRowMapper;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import ecommerce.coupang.domain.store.statistics.DailySalesStatistics;
@@ -30,6 +31,7 @@ public class DailySalesConfig {
 	private final PlatformTransactionManager transactionManager;
 
 	@Bean
+	@Scheduled(cron = "0 0 2 * * ?") // 매일 새벽 2시
 	public Job daliySalesJob(Step dailyStep) {
 		return new JobBuilder("dailySalesJob", jobRepository)
 			.start(dailyStep)
